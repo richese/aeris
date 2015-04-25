@@ -35,6 +35,7 @@ class CServer
 		std::thread *printing_thread;
 
 		class CMap *map;
+		std::vector<class CCollectiveBrain*> collective_brain;
 
 	public:
 		CServer();

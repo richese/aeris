@@ -30,6 +30,10 @@ class CCollectiveBrain
 		void merge_max(u32 x, u32 y, float value);
 		void merge_min(u32 x, u32 y, float value);
 		void merge_average(u32 x, u32 y, float value, float weight);
+
+		
+		u32 get_height();
+		u32 get_width();
 };
 
 #endif
