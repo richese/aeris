@@ -412,3 +412,39 @@ Sat Apr 25 19:59:08 2015
 Sat Apr 25 19:59:08 2015
  : real time error
 
+Sat Apr 25 20:54:47 2015
+ : server init done
+
+Sat Apr 25 20:54:47 2015
+ : local robots init done
+
+Sat Apr 25 20:54:47 2015
+ : server start sucess
+
+Sat Apr 25 20:54:47 2015
+ : real time error
+
+Sat Apr 25 21:10:30 2015
+ : server init done
+
+Sat Apr 25 21:10:30 2015
+ : local robots init done
+
+Sat Apr 25 21:10:30 2015
+ : server start sucess
+
+Sat Apr 25 21:10:30 2015
+ : real time error
+
+Sat Apr 25 21:10:54 2015
+ : server init done
+
+Sat Apr 25 21:10:54 2015
+ : local robots init done
+
+Sat Apr 25 21:10:54 2015
+ : server start sucess
+
+Sat Apr 25 21:10:54 2015
+ : real time error
+

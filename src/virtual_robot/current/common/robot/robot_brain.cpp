@@ -22,6 +22,10 @@ void CRobotBrain::process(struct sRobot *robot)
 		case ROBOT_TYPE_RED_ROBOT: 		red_robot_process(); break;
 		case ROBOT_TYPE_GREEN_ROBOT:	green_robot_process(); break;
 		case ROBOT_TYPE_BLUE_ROBOT: 	blue_robot_process(); break;
+
+		case ROBOT_TYPE_RED_PHEROMONE: 	blue_robot_process(); break;
+		case ROBOT_TYPE_BLUE_PHEROMONE: 	blue_robot_process(); break;
+		case ROBOT_TYPE_GREEN_PHEROMONE: 	blue_robot_process(); break;
 		default : break;
 	}
 

@@ -39,4 +39,7 @@ void visualisation_init();
 void visualisation_rendering_thread();
 
 void visualisation_update(struct sRobot robot);
+
+void visualisation_update_all(std::vector<struct sRobot> *robots);
+
 #endif

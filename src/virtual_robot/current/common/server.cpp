@@ -205,8 +205,11 @@ void CServer::robots_refresh()
         if (this->time > this->time_refresh)
         {
             #ifdef VISUALISATION_IN_SERVER
+            /*
             for (j = 0; j < robots.size(); j++)
                 visualisation_update(robots[j]);
+            */
+            visualisation_update_all(&robots);
             #endif
  
 

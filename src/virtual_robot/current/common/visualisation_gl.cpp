@@ -272,18 +272,10 @@ void visualisation_update_all(std::vector<struct sRobot> *robots)
     g_visualisation.mutex.lock();
 
     if (g_visualisation.robots.size() != robots->size())
-    {
-        
-    }
+        g_visualisation.robots.resize(robots->size());
     
     for (i = 0; i < g_visualisation.robots.size(); i++)
-        if (g_visualisation.robots[i].id == robot.id)
-        {   
-            g_visualisation.robots[i] = robot;
-            break;  
-        } 
-
-    if (i == g_visualisation.robots.size())
-        g_visualisation.robots.push_back(robot);
+        g_visualisation.robots[i] = (*robots)[i];
+            
     g_visualisation.mutex.unlock();
 }
