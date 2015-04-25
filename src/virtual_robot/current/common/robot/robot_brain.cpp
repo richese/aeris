@@ -80,4 +80,4 @@ void CRobotBrain::blue_robot_process()
 
 	if ((rand()%1000) == 0)
 		robot.request = REQUEST_ROBOT_DELETE;
-}
+} 
