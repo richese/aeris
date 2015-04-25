@@ -44,6 +44,9 @@ void CRobotBrain::red_robot_process()
 
 	if ((rand()%tmp) == 0)
 		robot.request = REQUEST_ROBOT_RESPAWN;
+
+	if ((rand()%1000) == 0)
+		robot.request = REQUEST_ROBOT_DELETE;
 }
 
 void CRobotBrain::green_robot_process()

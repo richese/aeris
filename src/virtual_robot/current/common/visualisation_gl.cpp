@@ -194,16 +194,16 @@ void visualisation_render()
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
 
+    struct sRobot robot;
+    g_visualisation.mutex.lock();
+
     for (j = 0; j < g_visualisation.robots.size(); j++)
     {
-        struct sRobot robot;
-        g_visualisation.mutex.lock();
-        robot = g_visualisation.robots[j];
-        g_visualisation.mutex.unlock();
-    	
+        robot = g_visualisation.robots[j];    	
         visualisation_paint_robot(robot, g_visualisation.base_size);
     }
 
+    g_visualisation.mutex.unlock();
 
 	glutSwapBuffers();
 }
@@ -261,5 +261,29 @@ void visualisation_update(struct sRobot robot)
 
 	if (i == g_visualisation.robots.size())
 	    g_visualisation.robots.push_back(robot);
+    g_visualisation.mutex.unlock();
+}
+
+
+void visualisation_update_all(std::vector<struct sRobot> *robots)
+{
+    u32 i;
+
+    g_visualisation.mutex.lock();
+
+    if (g_visualisation.robots.size() != robots->size())
+    {
+        
+    }
+    
+    for (i = 0; i < g_visualisation.robots.size(); i++)
+        if (g_visualisation.robots[i].id == robot.id)
+        {   
+            g_visualisation.robots[i] = robot;
+            break;  
+        } 
+
+    if (i == g_visualisation.robots.size())
+        g_visualisation.robots.push_back(robot);
     g_visualisation.mutex.unlock();
 }
