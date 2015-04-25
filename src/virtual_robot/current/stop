@@ -1,0 +1,3 @@
+killall server.elf
+killall robot.elf
+killall visualisation.elf

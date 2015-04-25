@@ -1,0 +1,19 @@
+#ifndef _CONFIGURATION_H_
+#define _CONFIGURATION_H_
+
+#include "common.h"
+
+#define VISUALISATION_3D_MODE			1
+
+#define VISUALISATION_SCREEN_WIDTH		(u32)1280	
+#define VISUALISATION_SCREEN_HEIGHT		(u32)720 
+
+// #define VISUALISATION_FULL_SCREEN		(u32)1 
+
+#define VISUALISATION_SIZE 				(float)(32.0)
+#define VISUALISATION_SIZE_RATIO		(float)(0.03)
+// #define VISUALISATION_SIZE_RATIO		(float)0.01 
+
+
+
+#endif

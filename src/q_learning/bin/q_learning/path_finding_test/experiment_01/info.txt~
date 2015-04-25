@@ -1,0 +1,10 @@
+robots count 1
+grid size 16
+iterations count 100000
+
+gamma 0.9
+alpha 0.7
+
+
+average error 0.377642
+maximum error 0.556715

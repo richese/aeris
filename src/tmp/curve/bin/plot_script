@@ -1,0 +1,24 @@
+set   autoscale                        # scale axes automatically
+unset log                              # remove any log-scaling
+unset label                            # remove any previous labels
+set xtic auto                         	# set xtics automatically
+set ytic auto                         # set ytics automatically
+
+set key right bottom
+
+set grid ytics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+set grid xtics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+set terminal png size 1024,768 enhanced font "Helvetica,20"
+
+
+
+set key
+set xlabel "x position"
+set ylabel "y position"
+
+set output 'result.png'
+
+plot "result.txt" using 1:2 title "reference trajectory" with line, \
+	"result.txt" using 3:4 title "interpolated trajectory" with line, \
+	"result.txt" using 3:5 title "error" with line, \
+	"input_points.txt" using 1:2 title "reference points" with points
