@@ -12,6 +12,7 @@ void server_main()
 
 int main()
 {
+	debug_log_init((char*)"server_debug_log.txt");
 	server_main();
 
 	return 0;

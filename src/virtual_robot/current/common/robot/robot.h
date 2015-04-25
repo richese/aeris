@@ -11,12 +11,12 @@ class CRobot
 		class CClient *client;
 
 		u32 state; 
+
 	public:
 		CRobot(u32 robot_type = ROBOT_TYPE_COMMON);
 		~CRobot();
 
 		void main();
-
 };
 
 

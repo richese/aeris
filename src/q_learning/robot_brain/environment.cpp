@@ -76,10 +76,10 @@ void CEnvironment::process(u32 iteration)
 
 		if (target_dist < 0.01)
 			reward+= 1.0; 
-		/*
+		
+
 		if (trap_dist < 2.0)
 			reward = -10.0; 
-		*/
 
 		robots[j]->process(reward);
 	

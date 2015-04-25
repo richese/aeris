@@ -1,6 +1,5 @@
 #include "collective_brain.h"
 
-
 CCollectiveBrain::CCollectiveBrain(u32 width, u32 height)
 {
 	u32 i, j;
@@ -36,7 +35,6 @@ i32 CCollectiveBrain::load_from_file(char *file_name)
 	
 	read_res = fread(&magic, sizeof(magic),  1, f);
 
-
 	if (magic != COLLECTIVE_BRAIN_MAGIC)
 		return -2;
 
@@ -45,10 +43,9 @@ i32 CCollectiveBrain::load_from_file(char *file_name)
 	read_res = fread(&width, sizeof(width),  1, f);
 	read_res = fread(&height, sizeof(height),  1, f);
 
-
 	u32 i, j;
 
-	for (j = 0; j < height; j++)
+	for (j = 0; j < q.size(); j++)
 		q[j].clear();
 
 	q.clear();
@@ -88,11 +85,9 @@ i32 CCollectiveBrain::save_to_file(char *file_name)
 	u32 width = q[0].size();
 	u32 height = q.size();
 
-
 	write_res = fwrite(&magic, sizeof(magic),  1, f);
 	write_res = fwrite(&width, sizeof(width),  1, f);
 	write_res = fwrite(&height, sizeof(height),  1, f);
-
 
 	u32 i, j;
 
@@ -113,7 +108,6 @@ i32 CCollectiveBrain::save_to_file(char *file_name)
 
 	if (write_res != 0)
 		return 0;
-
 
 	return -2;
 }
@@ -161,4 +155,15 @@ void CCollectiveBrain::merge_average(u32 x, u32 y, float value, float weight)
 	q_mutex.lock();
 	q[y][x] = weight*q[y][x] + (1.0 - weight)*value;
 	q_mutex.unlock();
+}
+
+
+u32 CCollectiveBrain::get_height()
+{
+	return q.size();
+}
+
+u32 CCollectiveBrain::get_width()
+{
+	return q[0].size();
 }

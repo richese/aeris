@@ -22,14 +22,18 @@ void debug_log_add(char *s)
 {
 	pthread_mutex_lock(&g_debug_log.mutex);
 
+	time_t clk = time(NULL);
 
-	printf("\nDEBUG LOG : %f : %s\n", get_ms_time(), s);
+	printf("\nDEBUG LOG : %s : %s\n\n", ctime(&clk), s);
 
-	/*
+
 	g_debug_log.fd = fopen(g_debug_log.file_name, "a+");
-	fprintf(g_debug_log.fd, "%f : %s\n", get_ms_time(), s);
-	fclose(g_debug_log.fd);
-	*/
+
+	if (g_debug_log.fd != NULL)
+	{
+		fprintf(g_debug_log.fd, "%s : %s\n\n", ctime(&clk), s);
+		fclose(g_debug_log.fd);
+	}
 
 	pthread_mutex_unlock(&g_debug_log.mutex);
 }

@@ -308,3 +308,26 @@ float vect_distance(float *va, float *vb, u32 size)
 
     return sqrt(sum);
 }
+
+
+void vector_normalise(std::vector<float> *vector)
+{
+    u32 i;
+
+    float min_v = 1000000000000.0;
+    float max_v = -min_v;
+
+    for (i = 0; i < vector->size(); i++)
+    {
+        if ((*vector)[i] < min_v)
+            min_v = (*vector)[i];
+
+        if ((*vector)[i] > max_v)
+            max_v = (*vector)[i];
+    }
+
+    float tmp = max(abs_(min_v), abs_(max_v));
+
+    for (i = 0; i < vector->size(); i++)
+        (*vector)[i]/= tmp;
+}

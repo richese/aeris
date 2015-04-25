@@ -1,6 +1,6 @@
 #include "robot.h"
 
-CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_position)
+CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_position, class CCollectiveBrain *collective_brain)
 {
 	state = 0;
 	action_id = 0;
@@ -8,7 +8,7 @@ CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_p
 
 	this->robot_init = robot_init;
 
-	u32 j;
+	u32 i, j;
 
 	for (j = 0; j < robot_init.inputs_count; j++)
 		input.push_back(0.0);
@@ -28,13 +28,47 @@ CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_p
 	for (j = 0; j < robot_init.path_max_length; j++)
 		path.push_back(position);
 
+
 	alpha = 0.7;
 	gamma = 0.9;
 	
+	float states_density = 1.0/16.0;
+	std::vector<float> state_range_min, state_range_max;
 
 
-	actions = new CAction(robot_init.states_count , robot_init.actions_per_state, robot_init.outputs_count);
-	q_learning = new CQLearning(actions, gamma, alpha);
+	std::vector<std::vector<float>> action_init;
+
+	for (j = 0; j < robot_init.position_max.size(); j++)
+	{
+		state_range_min.push_back(0.0);
+		state_range_max.push_back(robot_init.position_max[j]);
+	}
+		
+	for (j = 0; j < robot_init.actions_per_state; j++)
+	{	
+		std::vector<float> tmp;
+		for (i = 0; i < robot_init.outputs_count; i++)
+		{
+			float f = 0.0;
+
+			if (i == (j/2))
+			{
+				if ((j%2) == 0)
+					f = 1.0;
+				else
+					f = -1.0;
+			}
+			
+			tmp.push_back(f);
+		}
+
+		action_init.push_back(tmp);
+		
+	}
+	
+	this->collective_brain = collective_brain;
+	q_learning 	= new CQLearning(state_range_min, state_range_max, states_density, robot_init.actions_per_state, gamma, alpha);
+	actions 	= new CAction(q_learning->get_states_count(), robot_init.actions_per_state, robot_init.outputs_count, &action_init);
 }
 
 CRobot::~CRobot()
@@ -128,17 +162,12 @@ void CRobot::reset()
 
 void CRobot::process(float reward)
 {
-	u32 x = position[0];
-	u32 y = position[1];
+	u32 i;
+	std::vector<float> state_vect;
 
-	state = x + y*robot_init.position_max[0]; 
-
-	if (state > (robot_init.states_count-1))
-		state = robot_init.states_count-1;
-
-
-	q_learning->process(state, reward);
-
+	state_vect = position;
+	q_learning->process(state_vect, reward, 0.1);
+	state = q_learning->get_state_idx();
 	action_id =  q_learning->get_output_id();
 }
 
@@ -148,8 +177,7 @@ void CRobot::print()
 
 	CLog *log_q_learing;
 
-	log_q_learing = new CLog((char*)"q_learning/q_map.txt", 5);
-
+	log_q_learing = new CLog((char*)"q_map.txt", 5);
 
 	float error_average = 0.0;
 	float error_max = 0.0;

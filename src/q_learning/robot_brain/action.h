@@ -18,8 +18,8 @@ class CAction
 		std::vector<std::vector<struct sAction>> actions;
 
 	public:
-		
-		CAction(u32 states_count, u32 actions_per_state, u32 action_width = 1);
+		 
+		CAction(u32 states_count, u32 actions_per_state, u32 action_width = 1, std::vector<std::vector<float>> *action_init = NULL);
 		~CAction();
 
 		struct sAction get(u32 state, u32 id);

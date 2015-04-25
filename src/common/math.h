@@ -3,6 +3,7 @@
 
 #include "int_def.h"
 #include <math.h>
+#include <vector>
 
 #define PI 3.141592654
 
@@ -56,4 +57,6 @@ float fast_tanh(float x);
 float line_circle_intersection(float x1, float y1, float x2, float y2, float xc, float yc, float r);
 
 float vect_distance(float *va, float *vb, u32 size);
+
+void vector_normalise(std::vector<float> *vector);
 #endif

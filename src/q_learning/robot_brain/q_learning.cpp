@@ -1,14 +1,15 @@
 #include "q_learning.h"
 
-CQLearning::CQLearning(class CAction *actions, float gamma, float alpha)
+CQLearning::CQLearning(std::vector<float> state_range_min, std::vector<float> state_range_max,
+					   float states_density, u32 actions_per_state, float gamma, float alpha)
 {
+	u32 i, j;
+
 	action_id = 0;
  	
- 	state = 0;
-	state_prev = 0;
+ 	state_idx = 0;
+	state_prev_idx = 0;
 	action_id_prev = 0;
-
-	this->actions = actions;
 
 	this->reward = 0.0;
 	this->reward_prev = 0.0;
@@ -16,12 +17,21 @@ CQLearning::CQLearning(class CAction *actions, float gamma, float alpha)
 	this->gamma = gamma;
 	this->alpha = alpha;
 
+	this->states_density = states_density;
+	this->state_range_min = state_range_min;
+	this->state_range_max = state_range_max;
 
-	u32 i, j;
-	for (j = 0; j < actions->get_states_count(); j++)
+	float tmp = 1.0;
+
+	for (i = 0; i < this->state_range_max.size(); i++)
+		tmp = tmp*1.0/this->states_density;
+
+	u32 states_count = tmp;
+
+	for (j = 0; j < states_count; j++)
 	{
 		std::vector<float> tmp;
-		for (i = 0; i < actions->get_actions_per_state(); i++)
+		for (i = 0; i < actions_per_state; i++)
 			tmp.push_back(0.0);
 
 		q.push_back(tmp);
@@ -33,30 +43,80 @@ CQLearning::~CQLearning()
 
 }
 
-void CQLearning::process(u32 state, float reward)
+void CQLearning::process(std::vector<float> state, float reward, float explore_prob)
 {
-	//find action using current state and fitness as probability
-	action_id = select_action(2.0);
+	u32 i, j;
 
-	u32 i;
-	u32 max_i = 0;
-	for (i = 0; i < q[state].size(); i++)
+	explore_prob = 0.01;
+	//find action using current state and fitness as probability
+	action_id = select_action(2.0, explore_prob);
+
+	this->state = state; 
+
+	//check state range
+	for (i = 0; i < this->state.size(); i++)
+	{	
+		if (this->state[i] > state_range_max[i])
+			this->state[i] = state_range_max[i];
+
+		if (this->state[i] < state_range_min[i])
+			this->state[i] = state_range_min[i];
+	}
+
+	//normalise state into interval <-1, 1>
+	for (i = 0; i < this->state.size(); i++)
 	{
-		if (q[state][i] > q[state][max_i])
+		float k = (1.0 - (-1.0) )/(state_range_max[i] - state_range_min[i]);
+		float q = 1.0 - k*state_range_max[i];
+		this->state[i] = k*this->state[i] + q;
+	}
+
+
+	float tmp = 0.0;
+
+	//tmp = ((this->state[0] + 1.0)/2.0)/states_density;
+	//tmp+= ((this->state[1] + 1.0)/2.0)/(states_density*states_density);
+
+	for (i = 0; i < this->state.size(); i++)
+		tmp+= ((this->state[i] + 1.0)/2.0)/pow(states_density, i+1);
+
+	if (tmp < 0.0)
+	{
+		tmp = 0.0;
+	}
+
+	if (tmp > q.size())
+	{
+		tmp = q.size();
+	}
+
+	state_idx = tmp;
+
+
+	u32 max_i = 0;
+	for (i = 0; i < q[state_idx].size(); i++)
+	{
+		if (q[state_idx][i] > q[state_idx][max_i])
 			max_i = i;
 	}
 
-	q[state_prev][action_id_prev] = alpha*q[state_prev][action_id_prev] +
-									(1.0 - alpha)*(reward_prev + gamma*q[state][max_i]);
+	q[state_prev_idx][action_id_prev] = alpha*q[state_prev_idx][action_id_prev] +
+										(1.0 - alpha)*(reward_prev + gamma*q[state_idx][max_i]);
 
-	state_prev = state;
+	state_prev_idx = state_idx;
 	reward_prev = reward;
 	action_id_prev = action_id;
 }
 
-struct sAction CQLearning::get_output()
+
+u32 CQLearning::get_states_count()
 {
-	return actions->get(state, action_id);
+	return q.size();
+}
+
+u32 CQLearning::get_state_idx()
+{
+	return state_idx;
 }
 
 u32 CQLearning::get_output_id()
@@ -72,31 +132,51 @@ std::vector<std::vector<float>> CQLearning::get_q()
 void CQLearning::merge_q(std::vector<std::vector<float>> q)
 {
 	u32 j, i;
-
 	for (j = 0; j < this->q.size(); j++)
 		for (i = 0; i < this->q[j].size(); i++)
-		{
 			this->q[j][i] = max(this->q[j][i], q[j][i]);
-		}
 
 	normalise();
 }
 
-u32 CQLearning::select_action(float k)
+
+
+
+
+u32 CQLearning::select_action(float k, float explore_prob)
 {
 	u32 i;
 
 	float sum = 0.0;
 	float sum_tmp = 0.0;
-
 	float p = abs_(rnd_());
+ 
 
-	for (i = 0; i < q[state].size(); i++)
-		sum+= pow(k, q[state][i]);
-	
-	for (i = 0; i < q[state].size(); i++)
+
+	u32 non_visited_action_id = 0;
+	bool non_visited_action_found = false;
+
+	for (i = 0; i < q[state_idx].size(); i++)
 	{
-		sum_tmp+= pow(k, q[state][i]);
+		sum+= pow(k, q[state_idx][i]);
+		if (abs_(q[state_idx][i]) == 0.0)
+		{
+			non_visited_action_id = i;
+			non_visited_action_found = true;
+		}
+	}
+
+	p = abs_(rnd_());
+
+	if ( (non_visited_action_found == true) && (p < explore_prob ) )
+	{
+		return non_visited_action_id;
+	}
+	else
+	for (i = 0; i < q[state_idx].size(); i++)
+	{
+		sum_tmp+= pow(k, q[state_idx][i]);
+
 		if (p < (sum_tmp/sum))
 			return i;
 	}

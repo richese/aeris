@@ -37,10 +37,10 @@ CServer::CServer()
 
     position_max[0] = map->get_width()/2.0;
     position_max[1] = map->get_height()/2.0;
-
+ 
         
     print_time = 0.0;
-    dt = 4.0; 
+    dt = 10.0; 
     time = 0.0;
     time_refresh = 0.0;
 
@@ -62,7 +62,21 @@ CServer::CServer()
 
     #endif
 
-  
+    //TODO
+    u32 width =  2*position_max[0]*position_max[1];
+    u32 height = 4;
+
+    //printf("%f %f %u\n", position_max[0], position_max[1], width);
+
+    u32 i;
+
+    for (i = 0; i < ROBOT_TYPE_COUNT; i++)
+    {
+        class CCollectiveBrain *tmp;
+        tmp = new CCollectiveBrain(width, height);
+
+        collective_brain.push_back(tmp);
+    }
 
     #ifdef ROBOTS_IN_SERVER
     init_robots(0); 
@@ -77,6 +91,12 @@ CServer::~CServer()
 { 
     delete this->printing_thread;
     delete this->map;
+
+    u32 i;
+    for (i = 0; i < ROBOT_TYPE_COUNT; i++)
+    {
+        delete this->collective_brain[i];
+    }
 
     debug_log_add((char*)"server uninit done");
 }
@@ -179,18 +199,31 @@ void CServer::robots_refresh()
 {
         u32 j;
  
+        std::vector<u32> robots_erase_list;
+
         /*check for refresh time*/
         if (this->time > this->time_refresh)
         {
-            this->time_refresh = this->dt + get_ms_time();
+            #ifdef VISUALISATION_IN_SERVER
+            for (j = 0; j < robots.size(); j++)
+                visualisation_update(robots[j]);
+            #endif
  
+
+            this->time_refresh = this->dt + get_ms_time();
+
             for (j = 0; j < robots.size(); j++)
             {
+
                 switch (robots[j].request)
                 {
                     case REQUEST_ROBOT_RESPAWN:
                                 respawn(&robots[j]);
                                 update_sensors(j);
+                            break;
+
+                    case REQUEST_ROBOT_DELETE:
+                                robots_erase_list.push_back(j);
                             break;
 
                     default:
@@ -204,11 +237,15 @@ void CServer::robots_refresh()
 
                 robots[j].request = REQUEST_NULL;
             }
+        }
 
-            #ifdef VISUALISATION_IN_SERVER
-            for (j = 0; j < robots.size(); j++)
-                visualisation_update(robots[j]);
-            #endif
+        for (j = 0; j < robots_erase_list.size(); j++)
+        {
+            u32 idx = robots_erase_list[j];
+
+            robots.erase(robots.begin() + idx);
+            delete c_robots[idx];
+            c_robots.erase(c_robots.begin() + idx);
         }
 }
 
@@ -241,30 +278,8 @@ void CServer::process_data(struct sRobot *rx_data, struct sRobot *tx_data)
 
     if (robots[idx].request == REQUEST_ROBOT_RESPAWN)
         respawn(&robots[idx]);
+} 
 
-    
-    //send robot state/data with idx in parameter
-    if (rx_data->request == REQUEST_ROBOT_DATA)
-    {
-        idx = rx_data->parameter;
-        if (idx < robots.size())
-        {
-            *tx_data = robots[idx];
-            tx_data->request = REQUEST_ROBOT_SUCESS;
-        } 
-        else
-        {
-            tx_data->request = REQUEST_ROBOT_FAILED;  
-            tx_data->type = ROBOT_TYPE_NULL;  
-        }
-    }
-    else
-    //send back to same robot answer with updated state
-    if (rx_data->request == REQUEST_NULL)
-    {
-        *tx_data = robots[idx];
-    } 
-}
 
 
 void CServer::print()
@@ -292,6 +307,8 @@ void CServer::print()
                 printf(" ]");
                 printf("\n");
 
+
+                printf("r: %f\n", robots[j].reward);
                 /*
 
                 u32 i;            
@@ -422,9 +439,25 @@ void CServer::init_robots(u32 robots_count)
 
                     for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
                     {
+                        robot.force_max[i] = 0.0;
+                        robot.force[i] = 0.0;
+
+                        if (robot_type&ROBOT_STRONG_SOLID_FLAG)
+                        {
+                            robot.force_max[i] = ROBOT_FORCE_MAX;
+                            robot.force[i] = ROBOT_FORCE_MAX;
+                        }
+                        else
+                        if (robot_type&ROBOT_MOVEABLE_FLAG)
+                        {
+                            robot.force_max[i] = 1.0;
+                            robot.force[i] = 0.0;
+                        }
+
                         robot.d[i] = 0.0;
                         robot.position[i] = 0.0;
                         robot.angles[i] = 0.0;
+                        robot.position_max[i] = position_max[i];
                     }
 
                     float x = field.position[0] - position_max[0];
@@ -434,7 +467,7 @@ void CServer::init_robots(u32 robots_count)
                     robot.position[1] = y;
 
                     robots.push_back(robot);
-                    c_robots.push_back(new CRobotBrain(robot));  
+                    c_robots.push_back(new CRobotBrain(robot, collective_brain[robot.type&ROBOT_TYPE_MASK])) ;  
                 }
             }
 
@@ -477,36 +510,49 @@ void CServer::update_position(u32 robot_idx)
 {
     u32 i, j;
 
-    bool colision = false;
-    // float colision_distance = 14.0;
-
     float position_new[ROBOT_SPACE_DIMENSION];
-
     float tmp_dist = ROBOT_SPACE_DIMENSION;
+    std::vector<u32> colisions_idx;
+
+    i32 wall_idx = -1;
 
     for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
-        position_new[i] = robots[robot_idx].position[i] + 10.0*robots[robot_idx].d[i]*dt*0.001;
+        position_new[i] = robots[robot_idx].position[i] + 5.0*robots[robot_idx].d[i]*dt*0.001 + 0.001*rnd_();
 
     for (j = 0; j < robots.size(); j++)
         if ( (j != robot_idx) && (robots[j].type&ROBOT_SOLID_FLAG) )
+        //if ( (j != robot_idx) && (robots[j].type&ROBOT_STRONG_SOLID_FLAG) )
         {
             tmp_dist = vect_distance(position_new, robots[j].position, ROBOT_SPACE_DIMENSION);
 
             if (tmp_dist < colision_distance)
             {
-                colision = true;
-                break;
+                colisions_idx.push_back(j);
+                if (robots[j].type&ROBOT_STRONG_SOLID_FLAG)
+                    wall_idx = j;
             }
         }
 
 
-    if (colision == false)
+    if (colisions_idx.size() == 0)
+        //there is no colision
         for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
             robots[robot_idx].position[i] = saturate(position_new[i], -position_max[i], position_max[i]);
     else
+    {
         for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
-            robots[robot_idx].position[i] = saturate(robots[robot_idx].position[i] - 1.1*robots[robot_idx].d[i]*dt*0.001, -position_max[i], position_max[i]);
+        {
+            float tmp = 0.0;
+            if (wall_idx == -1)
+                tmp = -5.0*robots[robot_idx].d[i]*dt*0.001 + 0.001*rnd_();
+            else
+            {
+                tmp = 0.1*(robots[robot_idx].position[i] - robots[wall_idx].position[i] + 0.001*rnd_());
+            }
 
+            robots[robot_idx].position[i] = saturate(robots[robot_idx].position[i] + tmp, -position_max[i], position_max[i]);   
+        }
+    }
 }
 
 

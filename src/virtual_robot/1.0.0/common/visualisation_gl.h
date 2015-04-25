@@ -17,7 +17,7 @@ struct sVisualisation
 {
 	i32 window_width, window_height;
 
-	float size, angle, ratio;
+	float base_size, angle;
 
 	float position_max_x;
 	float position_max_y;

@@ -24,8 +24,7 @@ CVisualisation::CVisualisation()
 	g_visualisation.window_width = width; 
     g_visualisation.window_height = height;   
   
-	g_visualisation.size = VISUALISATION_SIZE;  
-    g_visualisation.ratio = VISUALISATION_SIZE_RATIO; //0.03;
+	g_visualisation.base_size = VISUALISATION_ROBOT_SIZE;  
 
     g_visualisation.position_max_x = width;
     g_visualisation.position_max_y = height;

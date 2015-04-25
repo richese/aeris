@@ -3,7 +3,7 @@
 
 #include "../common.h"
 #include "q_learning.h"
-
+#include "collective_brain.h"
 
 struct sRobotInitStruct
 {
@@ -40,8 +40,10 @@ class CRobot
 
 		u32 state, action_id;
 
+		class CCollectiveBrain *collective_brain;
+
 	public:
-		CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_position = NULL);
+		CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_position = NULL, class CCollectiveBrain *collective_brain = NULL);
 		~CRobot();
 
 

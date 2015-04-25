@@ -1,0 +1,5 @@
+
+
+all:
+	doxygen doxygen.cfg
+	make -C latex

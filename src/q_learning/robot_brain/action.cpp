@@ -1,6 +1,6 @@
 #include "action.h"
 
-CAction::CAction(u32 states_count, u32 actions_per_state, u32 action_width)
+CAction::CAction(u32 states_count, u32 actions_per_state, u32 action_width, std::vector<std::vector<float>> *action_init)
 {
 	u32 k, j, i;
 
@@ -8,7 +8,7 @@ CAction::CAction(u32 states_count, u32 actions_per_state, u32 action_width)
 	{
 		//actions in one state
 		std::vector<struct sAction> actions_tmp;
-
+ 
 		//actions initialziation
 		for (j = 0; j < actions_per_state; j++)
 		{
@@ -17,23 +17,10 @@ CAction::CAction(u32 states_count, u32 actions_per_state, u32 action_width)
 			for (i = 0; i < action_width; i++)
 				action.action.push_back(0.0);
 
-			for (i = 0; i < action_width; i++)
-			{
-				float v = 0.0;
+			if (action_init != NULL)
+				for (i = 0; i < action_width; i++)
+					action.action[i] = (*action_init)[j][i];
 
-				if ((j%2) == 0)
-					v = 1.0; 
-				else
-					v = -1.0;
-
-				if ((j/2) != i)
-					v = 0.0;
-
-				// v = rnd();
-				action.action[i] = v;
-			}
-
-			
 			action.fitness = ACTION_FITNESS_MIN;
 			actions_tmp.push_back(action);
 		}

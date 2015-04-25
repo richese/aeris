@@ -10,8 +10,8 @@
 
 // #define VISUALISATION_FULL_SCREEN		(u32)1 
 
-#define VISUALISATION_SIZE 				(float)(32.0)
-#define VISUALISATION_SIZE_RATIO		(float)(0.03)
+#define VISUALISATION_ROBOT_SIZE 				(float)(0.5)	//robot size
+#define VISUALISATION_SIZE_RATIO		(float)(1.0) 
 // #define VISUALISATION_SIZE_RATIO		(float)0.01 
 
 

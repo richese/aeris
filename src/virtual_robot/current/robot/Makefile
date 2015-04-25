@@ -19,6 +19,7 @@ COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/visualisation_gl.o
 
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/robot.o
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/robot_brain.o
+COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/collective_brain.o
 
  
 CC = g++

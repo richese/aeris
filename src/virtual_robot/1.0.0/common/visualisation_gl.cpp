@@ -1,9 +1,9 @@
 #include "visualisation_gl.h"
-
+ 
 
 struct sVisualisation g_visualisation;
 
-void visualisation_paint_cube(float x, float y, float z, float a, float b, float c, float angle, float x0, float y0)
+void visualisation_paint_cube(float x, float y, float z, float a, float b, float c, float angle, float x0, float y0, u32 cube)
 {
     float ax, ay;
     float bx, by;
@@ -34,32 +34,36 @@ void visualisation_paint_cube(float x, float y, float z, float a, float b, float
         glVertex3f(dx + x_, dy + y_, z_pos_down + z);
 
         #ifdef VISUALISATION_3D_MODE
-        glVertex3f(ax + x_, ay + y_, z_pos_up + z);
-        glVertex3f(bx + x_, by + y_, z_pos_up + z);
-        glVertex3f(cx + x_, cy + y_, z_pos_up + z);
-        glVertex3f(dx + x_, dy + y_, z_pos_up + z);
 
-        glVertex3f(bx + x_, by + y_, z_pos_up + z);
-        glVertex3f(bx + x_, by + y_, z_pos_down + z);
-        glVertex3f(cx + x_, cy + y_, z_pos_down + z);
-        glVertex3f(cx + x_, cy + y_, z_pos_up + z);
+        if (cube != 0)
+        {
+            glVertex3f(ax + x_, ay + y_, z_pos_up + z);
+            glVertex3f(bx + x_, by + y_, z_pos_up + z);
+            glVertex3f(cx + x_, cy + y_, z_pos_up + z);
+            glVertex3f(dx + x_, dy + y_, z_pos_up + z);
 
- 
-        glVertex3f(ax + x_, ay + y_, z_pos_up + z);
-        glVertex3f(ax + x_, ay + y_, z_pos_down + z);
-        glVertex3f(dx + x_, dy + y_, z_pos_down + z);
-        glVertex3f(dx + x_, dy + y_, z_pos_up + z);
-        
-        glVertex3f(cx + x_, cy + y_, z_pos_down + z);
-        glVertex3f(dx + x_, dy + y_, z_pos_down + z);
-        glVertex3f(dx + x_, dy + y_, z_pos_up + z);
-        glVertex3f(cx + x_, cy + y_, z_pos_up + z);
-       
-        
-        glVertex3f(ax + x_, ay + y_, z_pos_down + z);
-        glVertex3f(bx + x_, by + y_, z_pos_down + z);
-        glVertex3f(bx + x_, by + y_, z_pos_up + z);
-        glVertex3f(ax + x_, ay + y_, z_pos_up + z);
+            glVertex3f(bx + x_, by + y_, z_pos_up + z);
+            glVertex3f(bx + x_, by + y_, z_pos_down + z);
+            glVertex3f(cx + x_, cy + y_, z_pos_down + z);
+            glVertex3f(cx + x_, cy + y_, z_pos_up + z);
+
+     
+            glVertex3f(ax + x_, ay + y_, z_pos_up + z);
+            glVertex3f(ax + x_, ay + y_, z_pos_down + z);
+            glVertex3f(dx + x_, dy + y_, z_pos_down + z);
+            glVertex3f(dx + x_, dy + y_, z_pos_up + z);
+            
+            glVertex3f(cx + x_, cy + y_, z_pos_down + z);
+            glVertex3f(dx + x_, dy + y_, z_pos_down + z);
+            glVertex3f(dx + x_, dy + y_, z_pos_up + z);
+            glVertex3f(cx + x_, cy + y_, z_pos_up + z);
+           
+            
+            glVertex3f(ax + x_, ay + y_, z_pos_down + z);
+            glVertex3f(bx + x_, by + y_, z_pos_down + z);
+            glVertex3f(bx + x_, by + y_, z_pos_up + z);
+            glVertex3f(ax + x_, ay + y_, z_pos_up + z);
+        }
         #endif
     glEnd();
 }
@@ -72,13 +76,13 @@ void visualisation_paint_robot(struct sRobot robot, float base_size)
     float z_pos = 0.0; 
 
     if (ROBOT_SPACE_DIMENSION > 0)
-        x_pos = (robot.position[0])*g_visualisation.ratio*base_size;
+        x_pos = (robot.position[0]*base_size);
 
     if (ROBOT_SPACE_DIMENSION > 1)
-        y_pos = -(robot.position[1])*g_visualisation.ratio*base_size;
+        y_pos = -(robot.position[1]*base_size);
 
     if (ROBOT_SPACE_DIMENSION > 2)
-        z_pos = (robot.position[2])*g_visualisation.ratio*base_size;
+        z_pos = (robot.position[2]*base_size);
 
 
     switch (robot.type)
@@ -105,13 +109,17 @@ void visualisation_paint_robot(struct sRobot robot, float base_size)
 
         default:  glColor3f(1.0, 1.0, 1.0); break;
     }
+
+    u32 cube = 0;
+
+    if ((robot.type&ROBOT_3D_FLAG) != 0)
+        cube = 1;
  
-    float robot_size = 10.0;
-    visualisation_paint_cube(x_pos*base_size, y_pos*base_size, z_pos*base_size, 
-                g_visualisation.ratio*robot_size, 
-                g_visualisation.ratio*robot_size, 
-                g_visualisation.ratio*robot_size, 
-                robot.angles[0], x_pos, y_pos);  
+    visualisation_paint_cube(x_pos*base_size*2.0, y_pos*base_size*2.0, z_pos*base_size*2.0, 
+                             base_size, 
+                             base_size, 
+                             base_size, 
+                             robot.angles[0], x_pos, y_pos, cube);  
 }
 
 
@@ -164,15 +172,15 @@ void visualisation_render()
                 glRotatef(g_visualisation.angle, 0.0, 0.0, 1.0);
                 g_visualisation.angle+= 0.4; 
                 break;
-
+ 
         case 2:
                 glTranslatef(0.0, -1.0, -18.5);  
                 glRotatef(-70.0, 1.0, 0.0, 0.0); 
                 glRotatef(g_visualisation.angle, 0.0, 0.0, 1.0);
                 g_visualisation.angle+= 0.4; 
                 break; 
-    }
-
+    } 
+  
     /*
     glTranslatef(0.0, 0.0, -4.5);  
     glRotatef(0.0, 1.0, 0.0, 0.0); 
@@ -181,39 +189,10 @@ void visualisation_render()
     /*
  	glTranslatef(0.0, 0.0, -2.5);  
     glRotatef(-70.0, 1.0, 0.0, 0.0); 
-    */
+    */ 
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    float x_limit = 2*g_visualisation.position_max_x*g_visualisation.ratio/2;
-  	float y_limit = 2*g_visualisation.position_max_y*g_visualisation.ratio/2;
-	float base_size = g_visualisation.size*g_visualisation.ratio;
-
-    /*
-    float x, y;
-
-    j = 0;
-    for (y = -y_limit; y <= y_limit; y+= base_size*0.5)
-    {
-        for (x = -x_limit; x <= x_limit; x+= base_size*0.5)
-        {
-            if (j%2) 
-                glColor3f(0.9, 0.9, 0.9);
-            else
-                glColor3f(0.8, 0.8, 0.8);
-            j++;
-
-            glBegin(GL_QUADS);
-                glVertex3f(- base_size + x,  base_size + y, -0.01);
-                glVertex3f( base_size + x,  base_size + y, -0.01);
-                glVertex3f( base_size + x, - base_size + y, -0.01);
-                glVertex3f(- base_size + x, - base_size + y, -0.01);
-            glEnd();
-        }
-        
-       // j++;
-    }
-    */
 
     for (j = 0; j < g_visualisation.robots.size(); j++)
     {
@@ -222,7 +201,7 @@ void visualisation_render()
         robot = g_visualisation.robots[j];
         g_visualisation.mutex.unlock();
     	
-        visualisation_paint_robot(robot, base_size);
+        visualisation_paint_robot(robot, g_visualisation.base_size);
     }
 
 
