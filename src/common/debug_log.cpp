@@ -26,7 +26,7 @@ void debug_log_add(char *s)
 
 	printf("\nDEBUG LOG : %s : %s\n\n", ctime(&clk), s);
 
-
+	/*
 	g_debug_log.fd = fopen(g_debug_log.file_name, "a+");
 
 	if (g_debug_log.fd != NULL)
@@ -34,6 +34,7 @@ void debug_log_add(char *s)
 		fprintf(g_debug_log.fd, "%s : %s\n\n", ctime(&clk), s);
 		fclose(g_debug_log.fd);
 	}
+	*/
 
 	pthread_mutex_unlock(&g_debug_log.mutex);
 }
