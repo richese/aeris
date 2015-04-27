@@ -13,6 +13,7 @@
 #include <thread>
 #include <mutex>
 #include <unistd.h>
+#include <string.h>
 
 #include "int_def.h"
 #include "log.h"

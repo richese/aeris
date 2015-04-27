@@ -41,8 +41,8 @@ set zrange [0:1]
 
 set output 'q_map.png' 
 
-splot 'q_map.txt' using 1:2:3 title "q learning result" with lines, \
-	'q_map.txt' using 1:2:4 title "optional result" with lines
+splot 'q_map.txt' using 1:2:4 title "optional result" with lines, \
+	'q_map.txt' using 1:2:3 title "q learning result" with lines
 
 
 set zlabel "error"

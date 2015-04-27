@@ -1,6 +1,7 @@
 #include "q_learning.h"
 
-CQLearning::CQLearning(std::vector<float> state_range, float states_density, u32 actions_per_state, float gamma, float alpha)
+CQLearning::CQLearning(std::vector<float> state_range_min, std::vector<float> state_range_max,
+					   float states_density, u32 actions_per_state, float gamma, float alpha)
 {
 	u32 i, j;
 
@@ -16,14 +17,18 @@ CQLearning::CQLearning(std::vector<float> state_range, float states_density, u32
 	this->gamma = gamma;
 	this->alpha = alpha;
 
-	this->state_range = state_range;
+	this->states_density = states_density;
+	this->state_range_min = state_range_min;
+	this->state_range_max = state_range_max;
 
 	float tmp = 1.0;
 
-	for (i = 0; i < this->state_range.size(); i++)
-		tmp = tmp*(this->state_range[i]*2.0)/states_density;
+	for (i = 0; i < this->state_range_max.size(); i++)
+		tmp = tmp*1.0/this->states_density;
 
 	u32 states_count = tmp;
+
+	printf("states count %u\n", states_count);
 
 	for (j = 0; j < states_count; j++)
 	{
@@ -40,36 +45,19 @@ CQLearning::~CQLearning()
 
 }
 
-void CQLearning::process(std::vector<float> state, float reward)
+
+
+void CQLearning::process(std::vector<float> state, float reward, float explore_prob)
 {
 	u32 i, j;
 
+	explore_prob = 0.01;
 	//find action using current state and fitness as probability
-	action_id = select_action(2.0);
+	action_id = select_action(2.0, explore_prob);
 
 	this->state = state; 
 
-	for (i = 0; i < this->state.size(); i++)
-	{
-		if (this->state[i] > state_range[i])
-			this->state[i] = state_range[i];
-
-		if (this->state[i] < -state_range[i])
-			this->state[i] = -state_range[i];
-	}
-
-	float tmp = (this->state[0] + this->state_range[0])/2.0;
-
-	for (i = 1; i < this->state.size(); i++)
-		tmp = tmp*this->state_range[i] + (this->state[i] + this->state_range[i])/2.0;
-
-	if (tmp < 0.0)
-		tmp = 0.0;
-
-	if (tmp > q.size())
-		tmp = q.size();
-
-	state_idx = tmp;
+	state_idx = get_state_index_in_table(this->state);
 
 	u32 max_i = 0;
 	for (i = 0; i < q[state_idx].size(); i++)
@@ -92,6 +80,11 @@ u32 CQLearning::get_states_count()
 	return q.size();
 }
 
+u32 CQLearning::get_state_idx()
+{
+	return state_idx;
+}
+
 u32 CQLearning::get_output_id()
 {
 	return action_id;
@@ -109,11 +102,51 @@ void CQLearning::merge_q(std::vector<std::vector<float>> q)
 		for (i = 0; i < this->q[j].size(); i++)
 			this->q[j][i] = max(this->q[j][i], q[j][i]);
 
-	// normalise();
+	normalise();
 }
 
 
+u32 CQLearning::get_state_index_in_table(std::vector<float> state)
+{
+	u32 i;
 
+	//check state range
+	for (i = 0; i < state.size(); i++)
+	{	
+		if (state[i] > state_range_max[i])
+			state[i] = state_range_max[i];
+
+		if (state[i] < state_range_min[i])
+			state[i] = state_range_min[i];
+	}
+
+	//normalise state into interval <-1, 1>
+	for (i = 0; i < state.size(); i++)
+	{
+		float k = (1.0 - (-1.0) )/(state_range_max[i] - state_range_min[i]);
+		float q = 1.0 - k*state_range_max[i];
+		state[i] = k*state[i] + q;
+	}
+
+
+	float tmp = 0.0;
+
+	
+	for (i = 0; i < state.size(); i++)
+		tmp+= ((state[i] + 1.0)/2.0)/pow(states_density, i+1);
+
+	if (tmp < 0.0)
+	{
+		tmp = 0.0;
+	}
+
+	if (tmp > (q.size()-1))
+	{
+		tmp = q.size()-1;
+	}
+
+	return tmp;
+}
 
 
 u32 CQLearning::select_action(float k, float explore_prob)
@@ -122,24 +155,28 @@ u32 CQLearning::select_action(float k, float explore_prob)
 
 	float sum = 0.0;
 	float sum_tmp = 0.0;
-
 	float p = abs_(rnd_());
+ 
 
 
-	i32 non_visited_state_id = -1;
+	u32 non_visited_action_id = 0;
+	bool non_visited_action_found = false;
 
 	for (i = 0; i < q[state_idx].size(); i++)
 	{
 		sum+= pow(k, q[state_idx][i]);
-		if (abs_(q[state_idx][i]) < 0.00000001)
+		if (abs_(q[state_idx][i]) == 0.0)
 		{
-			non_visited_state_id = i;
+			non_visited_action_id = i;
+			non_visited_action_found = true;
 		}
 	}
 
-	if ( (non_visited_state_id != -1) && (explore_prob < abs_(rnd_())) )
+	p = abs_(rnd_());
+
+	if ( (non_visited_action_found == true) && (p < explore_prob ) )
 	{
-		return non_visited_state_id;
+		return non_visited_action_id;
 	}
 	else
 	for (i = 0; i < q[state_idx].size(); i++)
@@ -167,3 +204,5 @@ void CQLearning::normalise()
 			for (i = 0; i < this->q[j].size(); i++)
 				this->q[j][i]/= max_v;
 }
+
+

@@ -62,8 +62,7 @@ CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_p
 			tmp.push_back(f);
 		}
 
-		action_init.push_back(tmp);
-		
+		action_init.push_back(tmp);	
 	}
 	
 	this->collective_brain = collective_brain;
@@ -173,7 +172,7 @@ void CRobot::process(float reward)
 
 void CRobot::print()
 {
-	u32 y, x;
+	u32 i;
 
 	CLog *log_q_learing;
 
@@ -182,20 +181,30 @@ void CRobot::print()
 	float error_average = 0.0;
 	float error_max = 0.0;
 	float error_cnt = 0.0;
+
+	std::vector<std::vector<float>> q;
+	q = q_learning->get_q();
+
+	float x, y;
+
+	float step = 1.0/2.0;
  
-	for (y = 0; y < robot_init.position_max[1]; y++)
+	for (y = 0.0; y < robot_init.position_max[1]; y+=step)
 	{
-		for (x = 0; x < robot_init.position_max[0]; x++)
+		for (x = 0.0; x < robot_init.position_max[0]; x+=step)
 		{
-			u32 state = x + y*robot_init.position_max[0];
+			std::vector<float> state;
 
-			u32 i;
+			state.push_back(x);
+			state.push_back(y);
+
+			u32 state_idx = q_learning->get_state_index_in_table(state);
+
 			float max_v = 0.0;
-
-			for (i = 0; i < q_learning->get_q()[state].size(); i++)
-				if (q_learning->get_q()[state][i] > max_v)
-					max_v = q_learning->get_q()[state][i];
-
+			for (i = 0; i < q[state_idx].size(); i++)
+				if (q[state_idx][i] > max_v)
+					max_v = q[state_idx][i];
+			
 			printf("%6.4f ", max_v); 
 
 			log_q_learing->add(0, x);
