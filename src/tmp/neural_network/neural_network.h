@@ -4,6 +4,8 @@
 #include "neuron.h"
 
 
+
+
 class CNeuralNetwork
 {
 	private:

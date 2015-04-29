@@ -24,6 +24,7 @@
 #include "time.h"
 
 #include "map.h"
+#include "rewards.h"
 #include "colors.h"
 
 #endif

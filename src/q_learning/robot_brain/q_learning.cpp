@@ -57,6 +57,7 @@ void CQLearning::process(std::vector<float> state, float reward, float explore_p
 
 	this->state = state; 
 
+
 	state_idx = get_state_index_in_table(this->state);
 
 	u32 max_i = 0;
@@ -69,8 +70,8 @@ void CQLearning::process(std::vector<float> state, float reward, float explore_p
 	q[state_prev_idx][action_id_prev] = alpha*q[state_prev_idx][action_id_prev] +
 										(1.0 - alpha)*(reward_prev + gamma*q[state_idx][max_i]);
 
-	state_prev_idx = state_idx;
 	reward_prev = reward;
+	state_prev_idx = state_idx;
 	action_id_prev = action_id;
 }
 
@@ -206,3 +207,21 @@ void CQLearning::normalise()
 }
 
 
+void CQLearning::print()
+{
+	u32 j, i;
+
+	printf("\n\nQ table:\n");
+
+	for (j = 0; j < q.size(); j++)
+	{
+		float max_v = 0.0;
+		for (i = 0; i < q[j].size(); i++)
+			if (q[j][i] > max_v)
+				max_v = q[j][i];
+
+		printf("%6.5f ", max_v);
+	}
+
+	printf("\n\n");
+}

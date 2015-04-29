@@ -3,6 +3,8 @@
 
 #include "action.h"
 
+#include "neural_network.h"
+
 class CQLearning
 {
 	private:
@@ -35,6 +37,8 @@ class CQLearning
 
 
 		u32 get_state_index_in_table(std::vector<float> state);
+
+		void print();
 
 
 	private:

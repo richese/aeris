@@ -35,7 +35,6 @@ CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_p
 	float states_density = 1.0/16.0;
 	std::vector<float> state_range_min, state_range_max;
 
-
 	std::vector<std::vector<float>> action_init;
 
 	for (j = 0; j < robot_init.position_max.size(); j++)
@@ -168,6 +167,14 @@ void CRobot::process(float reward)
 	q_learning->process(state_vect, reward, 0.1);
 	state = q_learning->get_state_idx();
 	action_id =  q_learning->get_output_id();
+
+	/*
+	if (reward != 0.0)
+	{
+		printf("non zero reward %f\n", reward);
+		q_learning->print();
+	}
+	*/
 }
 
 void CRobot::print()
@@ -187,7 +194,9 @@ void CRobot::print()
 
 	float x, y;
 
-	float step = 1.0/2.0;
+	float step = 1.0/1.0;
+
+	q_learning->print();
  
 	for (y = 0.0; y < robot_init.position_max[1]; y+=step)
 	{
