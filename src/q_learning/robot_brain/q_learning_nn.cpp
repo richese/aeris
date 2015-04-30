@@ -1,14 +1,13 @@
 #include "q_learning_nn.h"
 
- 
-
-
-CQlearningNN::CQlearningNN(	std::vector<float> state_range_min, std::vector<float> state_range_max, 
-							u32 hidden_neurons_count, u32 neuron_type, 
-							float gamma, float eta, std::vector<std::vector<float>> *action_init)
+CQlearningNN::CQlearningNN(	std::vector<float> state_range_min, 
+							std::vector<float> state_range_max, 
+							u32 hidden_neurons_count, 
+							u32 neuron_type, 
+							float gamma, float eta, 
+							std::vector<std::vector<float>> *action_init)
 {
 	u32 i, j;
-
 
 	this->state_range_min = state_range_min;
 	this->state_range_max = state_range_max;
@@ -19,7 +18,6 @@ CQlearningNN::CQlearningNN(	std::vector<float> state_range_min, std::vector<floa
 	this->gamma = gamma;
 	this->eta = eta;
 		
-
 	for (j = 0; j < action_output.size(); j++)
 	{
 		std::vector<float> tmp;
@@ -28,6 +26,7 @@ CQlearningNN::CQlearningNN(	std::vector<float> state_range_min, std::vector<floa
 			tmp.push_back(0.0);
 
 		this->action_output.push_back(tmp);
+		this->action_fitness.push_back(0.0);
 	}
 
 	q_res = 0.0;
@@ -48,7 +47,7 @@ CQlearningNN::CQlearningNN(	std::vector<float> state_range_min, std::vector<floa
 	for (i = 0; i < state.size(); i++)
 		nn_input.push_back(0.0);
 
-	for (i = 0; i < action_output[action_idx].size(); i++)
+	for (i = 0; i < (action_output[action_idx].size() + 1); i++)
 		nn_input.push_back(0.0);
 
 	
@@ -64,16 +63,12 @@ CQlearningNN::CQlearningNN(	std::vector<float> state_range_min, std::vector<floa
 
 	for (i = 0; i < 3; i++)
 		nn_init_structure.init_vector[i] = init_vector[i];
-
-
 }
 
 CQlearningNN::~CQlearningNN()
 {
 
-
 }
-
 
 void CQlearningNN::process(std::vector<float> state, float reward)
 {
@@ -93,11 +88,59 @@ void CQlearningNN::process(std::vector<float> state, float reward)
 		ptr++;
 	}
 
-	for (i = 0; i < action_output[action_idx].size(); i++)
+	u32 max_idx = 0;
+	float max_v = 0.0;
+	float action_sum = 0.0;
+
+	u32 ptr_old = ptr;
+
+	for (j = 0; j < action_output.size(); j++)
 	{
-		nn_input[ptr] = action_output[action_idx][i];
-		ptr++;
+		ptr = ptr_old;
+		for (i = 0; i < action_output[action_idx].size(); i++)
+		{
+			nn_input[ptr] = action_output[action_idx][i];
+			ptr++;
+		}
+
+		nn_input[ptr] = 1.0;	//aditional bias
+		nn->process(nn_input);
+
+		action_fitness[j] = nn->get()[0];
+		action_sum+= action_fitness[j];
+
+		if (action_fitness[j] > max_v)
+		{
+			max_v = action_fitness[j];
+			max_idx = j;
+		}
 	}
+
+
+
+	float p = abs_(rnd_());
+	float sum_tmp = 0.0;
+	float k = 2.0;
+
+	for (i = 0; i < action_fitness.size(); i++)
+	{
+		sum_tmp+= pow(k, action_fitness[i]);
+
+		if (p < (sum_tmp/action_sum))
+		{
+			action_idx = i;
+			break;
+		}
+	}
+
+
+	float req_output = reward_prev + gamma*max_v;
+	std::vector<float> required_output;
+
+	required_output.push_back(req_output);
+
+
+	nn->learn(required_output);
 }
 
 

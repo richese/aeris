@@ -8,11 +8,11 @@
 class CQlearningNN
 {
 	private:
-
 		std::vector<float> state_range_min, state_range_max;
 		u32 hidden_neurons_count, neuron_type;
 		float gamma, eta;
 
+		std::vector<float> action_fitness;
 		std::vector<std::vector<float>> action_output;
 
 		u32 action_idx, action_idx_prev;
@@ -23,9 +23,7 @@ class CQlearningNN
 
 		std::vector<float> nn_input;
 
-
 		class CNeuralNetwork *nn;
-
 		
 	public:
 
