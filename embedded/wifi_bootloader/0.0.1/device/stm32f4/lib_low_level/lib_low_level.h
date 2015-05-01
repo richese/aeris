@@ -21,7 +21,7 @@
 #include "adc/adc.h"
 #include "spi/spi.h"
 
-
+#include "uart/uart2.h"
 
 #include "../../../options.h"
 

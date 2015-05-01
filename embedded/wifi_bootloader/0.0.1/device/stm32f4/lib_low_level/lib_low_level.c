@@ -13,6 +13,10 @@ void lib_low_level_init()
 	uart_init(); 
 	#endif
 
+	#ifdef _UART2_H_
+	uart2_init();
+	#endif
+
 	#ifdef _TIMER_H_
 	timer_init();
 	#endif
