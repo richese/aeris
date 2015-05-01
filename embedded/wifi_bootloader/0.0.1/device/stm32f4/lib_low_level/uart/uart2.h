@@ -9,7 +9,7 @@
 
 
 void uart2_write(char c);
-char uart2_read();
+char uart2_read(); 
 i16 uart2_read_nonblocking();
 void uart2_init();
 
