@@ -11,6 +11,6 @@
 void uart2_write(char c);
 char uart2_read(); 
 i16 uart2_read_nonblocking();
-void uart2_init();
+void uart2_init(u32 baud_rate);
 
 #endif

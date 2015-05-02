@@ -26,7 +26,7 @@ AT+CIPSTART=4,"TCP","google.com", 80
 
 void wifi_print_init()
 {
-	uart2_init();
+	uart2_init(9600);
 	timer_delay_ms(100);
 }
 
@@ -486,7 +486,6 @@ u32 wifi_init()
 
 		timer_delay_ms(1000);
 	}
-		
-
+		 
 	return 0;
 }

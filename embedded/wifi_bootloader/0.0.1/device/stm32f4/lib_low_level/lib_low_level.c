@@ -14,7 +14,7 @@ void lib_low_level_init()
 	#endif
 
 	#ifdef _UART2_H_
-	uart2_init();
+	uart2_init(9600);
 	#endif
 
 	#ifdef _TIMER_H_

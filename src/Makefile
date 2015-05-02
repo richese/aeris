@@ -1,4 +1,4 @@
-SUBDIRS = common q_learning map_editor virtual_robot/current
+SUBDIRS = common q_learning map_editor virtual_robot/current robot_server
 
 all: $(SUBDIRS)
 

@@ -176,7 +176,7 @@ std::vector<std::vector<float>> CCollectiveBrain::get_output_all()
 
 void CCollectiveBrain::set_value_all(std::vector<std::vector<float>> q)
 {
-
+	
 }
 
 void CCollectiveBrain::merge_max_all(std::vector<std::vector<float>> q)
