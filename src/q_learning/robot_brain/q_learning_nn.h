@@ -35,7 +35,7 @@ class CQlearningNN
 
 		~CQlearningNN();
 
-		void process(std::vector<float> state, float reward);
+		void process(std::vector<float> state, float reward, float explore_prob = 0.0);
 
 		std::vector<float> get_action();
 		u32 get_action_idx();

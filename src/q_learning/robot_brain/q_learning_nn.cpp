@@ -80,7 +80,7 @@ CQlearningNN::~CQlearningNN()
 	}
 }
 
-void CQlearningNN::process(std::vector<float> state, float reward)
+void CQlearningNN::process(std::vector<float> state, float reward, float explore_prob)
 {
 	//update state and action
 	this->state_prev = this->state;

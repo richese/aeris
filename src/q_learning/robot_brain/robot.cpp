@@ -74,14 +74,16 @@ CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_p
 	float eta = 0.01;
 
 	q_learning 	= new 	CQlearningNN(	state_range_min, state_range_max, 
-										hidden_neurons_count, u32 neuron_type, 
+										hidden_neurons_count, neuron_type, 
 										gamma, eta,
-										robot_init.actions_per_state);
+										&action_init);
+
+	actions 	= new CAction(1, robot_init.actions_per_state, robot_init.outputs_count, &action_init);
+
 	#else
 	q_learning 	= new CQLearning(state_range_min, state_range_max, states_density, robot_init.actions_per_state, gamma, alpha);
-	#endif
-
 	actions 	= new CAction(q_learning->get_states_count(), robot_init.actions_per_state, robot_init.outputs_count, &action_init);
+	#endif
 }
 
 CRobot::~CRobot()
@@ -179,7 +181,9 @@ void CRobot::process(float reward)
 	std::vector<float> state_vect;
 
 	state_vect = position;
+
 	q_learning->process(state_vect, reward, 0.1);
+
 	state = q_learning->get_state_idx();
 	action_id =  q_learning->get_output_id();
 
