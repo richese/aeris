@@ -23,6 +23,7 @@ class CQlearningNN
 
 		std::vector<float> nn_input;
 
+		struct sNeuralNetworkInitStructure nn_init_structure;
 		class CNeuralNetwork *nn;
 		
 	public:

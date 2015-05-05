@@ -3,7 +3,13 @@
 
 #include "../common.h"
 #include "q_learning.h"
+#include "q_learning_nn.h"
 #include "collective_brain.h"
+
+
+#define Q_LEARNING_NEURAL_NETWORK 1
+
+
 
 struct sRobotInitStruct
 {
@@ -24,15 +30,18 @@ struct sRobotInitStruct
 class CRobot
 {
 	private:
-		
 		std::vector<float> output, input, position;
 		std::vector<std::vector<float>> path;
 
 		struct sRobotInitStruct robot_init;
 
-
 		class CAction *actions;
+
+		#ifdef Q_LEARNING_NEURAL_NETWORK
+		class CQlearningNN *q_learning;
+		#else 
 		class CQLearning *q_learning;
+		#endif
 
 		//learning parameters
 		float gamma, alpha;
