@@ -287,6 +287,33 @@ void CNeuralNetwork::learn(std::vector<float> required_output)
 	}
 }
 
+float*** CNeuralNetwork::get_weights()
+{
+	return nn.w;
+}
+
+void CNeuralNetwork::set_weights(float ***w)
+{
+	merge_weights(w, 0.0);
+}
+
+
+void CNeuralNetwork::merge_weights(float ***w, float weight)
+{
+	if (weight < 0.0)
+		weight = 0.0;
+
+	if (weight > 1.0)
+		weight = 1.0;
+
+	u32 i, j, k;
+	for (k = 0; k < nn.layers_count; k++)
+		for (j = 0; j < nn.size_output[k]; j++)
+			for (i = 0; i < nn.size_input_[k]; i++)
+				w[k][j][i] = weight*w[k][j][i] + (1.0 - weight)*w[k][j][i];
+
+}
+
 float CNeuralNetwork::rnd()
 {
 	return ((rand()%2000000) - 1000000)/1000000.0;	

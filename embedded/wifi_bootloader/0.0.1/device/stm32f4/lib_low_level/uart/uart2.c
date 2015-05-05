@@ -36,7 +36,7 @@ i16 uart2_read_nonblocking()
   return res;  
 }
 
-void uart2_init(u32 baud_rate)
+void uart2_init()
 {
   GPIO_InitTypeDef  GPIO_InitStructure;
   USART_InitTypeDef USART_InitStructure;
@@ -57,7 +57,7 @@ void uart2_init(u32 baud_rate)
   GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
   GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
 
-  USART_InitStructure.USART_BaudRate = baud_rate;
+  USART_InitStructure.USART_BaudRate = UART2_BAUD_RATE;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;

@@ -26,7 +26,6 @@ AT+CIPSTART=4,"TCP","google.com", 80
 
 void wifi_print_init()
 {
-	uart2_init(9600);
 	timer_delay_ms(100);
 }
 
@@ -290,12 +289,12 @@ u32 wifi_open(char *domain, u32 port, u32 time_out)
 {
 	u32 res;
 
-	wifi_printf("AT+CIPSTART=\"TCP\",\"%s\",%u\n\r", domain, port);
+	wifi_printf("AT+CIPSTART=\"TCP\",\"%s\",%u\r\n", domain, port);
 
 	res = wifi_wait_for_response("OK", time_out);
 	if (res != 0)
 	{
-		wifi_printf("AT+CIPCLOSE\n\r");
+		wifi_printf("AT+CIPCLOSE\r\n");
 		return 1;
 	}
 
@@ -306,7 +305,7 @@ u32 wifi_close(u32 time_out)
 {
 	u32 res;
 
-	wifi_printf("AT+CIPCLOSE\n\r");
+	wifi_printf("AT+CIPCLOSE\r\n");
 
 	res = wifi_wait_for_response("OK", time_out);
 	if (res != 0)
@@ -321,7 +320,7 @@ u32 wifi_send_packet(u8 *tx_buffer, u32 tx_buffer_length, u8 *rx_buffer, u32 rx_
 {
 	u32 i, res;
 
-	wifi_printf("AT+CIPSEND=%u\n\r", tx_buffer_length);
+	wifi_printf("AT+CIPSEND=%u\r\n", tx_buffer_length);
 	res = wifi_wait_for_response(">", time_out);
 	if (res != 0)
 	{
@@ -412,7 +411,7 @@ u32 wifi_init()
 	timer_delay_ms(1000);
 
 
-	wifi_printf("AT+RST\n");
+	wifi_printf("AT+RST\r\n");
 	res = wifi_wait_for_response("OK", 1000);
 
 	if (res != 0)
@@ -426,7 +425,7 @@ u32 wifi_init()
 
 	timer_delay_ms(2000);
 
-	wifi_printf("AT+CWMODE=1\n\r");
+	wifi_printf("AT+CWMODE=1\r\n");
 	res = wifi_wait_for_response("OK", 200);
 
 	if (res != 0)
@@ -439,13 +438,13 @@ u32 wifi_init()
 	}
 
 	/*
-	wifi_printf("AT+CIPMUX=1\n\r");
+	wifi_printf("AT+CIPMUX=1\r\n");
 	res = wifi_wait_for_response("OK", 2000);
 	*/
 
 
 	//AT+CWJAP="disconnected","veryhard"
-	wifi_printf("AT+CWJAP=\"%s\",\"%s\"\n\r", WIFI_SSID, WIFI_PASS);
+	wifi_printf("AT+CWJAP=\"%s\",\"%s\"\r\n", WIFI_SSID, WIFI_PASS);
 	res = wifi_wait_for_response("OK", 25000);
 
 	if (res != 0)
@@ -484,7 +483,7 @@ u32 wifi_init()
 			printf_("<\n");
 		}
 
-		timer_delay_ms(1000);
+		timer_delay_ms(500);
 	}
 		 
 	return 0;
