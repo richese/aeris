@@ -183,21 +183,21 @@ void CRobot::process(float reward)
 	state_vect = position;
 
 	q_learning->process(state_vect, reward, 0.1);
+	#ifdef Q_LEARNING_NEURAL_NETWORK
 
+	// std::vector<float> get_action();
+
+	action_id = q_learning->get_action_idx();
+	#else
 	state = q_learning->get_state_idx();
 	action_id =  q_learning->get_output_id();
-
-	/*
-	if (reward != 0.0)
-	{
-		printf("non zero reward %f\n", reward);
-		q_learning->print();
-	}
-	*/
+	#endif
+	
 }
 
 void CRobot::print()
 {
+	
 	u32 i;
 
 	CLog *log_q_learing;

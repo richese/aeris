@@ -7,7 +7,7 @@
 #include "collective_brain.h"
 
 
-#define Q_LEARNING_NEURAL_NETWORK 1
+// #define Q_LEARNING_NEURAL_NETWORK 1
 
 
 
