@@ -64,7 +64,12 @@ class CNeuralNetwork
 		~CNeuralNetwork();
 
 		void process(std::vector<float> input);
+
 		std::vector<float> get();
+
+		float*** get_weights();
+		void set_weights(float ***w);
+		void merge_weights(float ***w, float weight = 0.5);
 		
 		void learn(std::vector<float> required_output);
 
