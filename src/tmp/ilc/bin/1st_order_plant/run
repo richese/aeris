@@ -1,0 +1,4 @@
+cd ..
+ruby main.rb
+cd bin
+gnuplot plot_script

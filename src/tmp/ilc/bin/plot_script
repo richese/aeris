@@ -1,0 +1,70 @@
+set   autoscale                        # scale axes automatically
+unset log                              # remove any log-scaling
+unset label                            # remove any previous labels
+set xtic auto                         	# set xtics automatically
+set ytic auto                         # set ytics automatically
+
+set key
+
+
+set xlabel "iteration"
+set ylabel "output"
+
+set grid ytics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+set grid xtics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+
+set terminal png size 1024,768 enhanced font "Helvetica,20"
+
+set output 'result.png'
+plot "result.txt" using 1 with line title "requred output" lw 2 ,\
+	 "result.txt" using 2 with line title "plant output" lw 2 ,\
+	 "result.txt" using 3 with line title "controller output" lw 2 ,\
+	 "result.txt" using 4 with line title "error" lw 2
+
+
+set xlabel "trial"
+set ylabel "error"
+
+set output 'maneuvers_error.png'
+plot "maneuvers_error.txt" using 1:2 with line title "error per maneuver"  lw 2
+
+
+set lmargin 5
+set key below
+set border 4095
+
+set label
+
+set xlabel "maneuver type id"
+set ylabel "n"
+set zlabel "output"
+
+
+set hidden3d
+
+set dgrid3d 32,32
+set xyplane at 0
+set surface
+
+ 	
+
+set style fill transparent solid 0.5 noborder
+
+set output 'maneuvers_result.png' 
+
+splot 'maneuvers_result.txt' using 1:2:3 title "required output" with lines lw 1.2, \
+	'maneuvers_result.txt' using 1:2:4 title "plant output" with lines lw 1.2 
+
+
+set output 'maneuvers_result_error.png' 
+splot 'maneuvers_result.txt' using 1:2:6 title "error" with lines lw 1.2
+
+set output 'maneuvers_result_error_pm3d.png' 
+splot 'maneuvers_result.txt' using 1:2:6 title "error" with pm3d
+
+
+set output 'maneuvers_result_controller_output.png' 
+splot 'maneuvers_result.txt' using 1:2:5 title "controller output" with lines lw 1.2
+
+set output 'maneuvers_result_controller_output_pm3d.png' 
+splot 'maneuvers_result.txt' using 1:2:5 title "controller output" with pm3d
