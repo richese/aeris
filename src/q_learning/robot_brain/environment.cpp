@@ -87,15 +87,23 @@ void CEnvironment::process(u32 iteration)
 		*/
 		
 		robots[j]->process(reward);
-	
-		if (vect_dist(target_position, robot_position) < 0.01)
-		{		
-			//robot on taget, so add some information into collective brain
+
+		// non zero reward, add some information into collective brain
+		if (reward != 0.0)
+		{
+			robots[j]->merge();
+			
+			//send this information to all robots
 			for (i = 0; i < robots.size(); i++)
 				robots[i]->merge();
-
-			//robots[j]->merge();
-
+		}
+	
+		if (vect_dist(target_position, robot_position) < 0.01)
+		{
+			/*
+			for (i = 0; i < robots.size(); i++)
+				robots[i]->merge();
+			*/
 			respawn(j);
 			printf("robot %u on target\n", j);
 		}
