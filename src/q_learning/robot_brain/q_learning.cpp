@@ -3,14 +3,14 @@
 CQLearning::CQLearning(std::vector<float> state_range_min, std::vector<float> state_range_max,
 					   float states_density, u32 actions_per_state, float gamma, float alpha)
 {
-	u32 i, j;
+	u32 i, j; 
 
 	action_id = 0;
  	
  	state_idx = 0;
 	state_prev_idx = 0;
 	action_id_prev = 0;
-
+ 
 	this->reward = 0.0;
 	this->reward_prev = 0.0;
 
@@ -49,7 +49,7 @@ CQLearning::~CQLearning()
 
 void CQLearning::process(std::vector<float> state, float reward, float explore_prob)
 {
-	u32 i, j;
+	u32 i;
 
 	explore_prob = 0.01;
 	//find action using current state and fitness as probability

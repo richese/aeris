@@ -3,7 +3,6 @@
 
 #include "action.h"
 #include "neural_network.h"
-#include "collective_brain.h"
 
 class CQLearning
 {
@@ -33,7 +32,6 @@ class CQLearning
 
 		u32 get_states_count();
 
-		struct sAction get_output();
 		u32 get_state_idx();
 		u32 get_output_id();
 		

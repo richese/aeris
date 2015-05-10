@@ -7,7 +7,7 @@ CQlearningNN::CQlearningNN(	std::vector<float> state_range_min,
 							float gamma, float eta, 
 							std::vector<std::vector<float>> *action_init)
 {
-	u32 i, j;
+	u32 i, j; 
 
 	this->state_range_min = state_range_min;
 	this->state_range_max = state_range_max;
@@ -175,7 +175,7 @@ std::vector<float> CQlearningNN::get_action()
 }
 
 u32 CQlearningNN::get_action_idx()
-{
+{ 
 	return action_idx;
 }
 
@@ -190,3 +190,20 @@ void CQlearningNN::print()
 
 }
 
+
+
+void CQlearningNN::merge(class CQlearningNN *q_learning)
+{
+
+
+}
+
+float CQlearningNN::get_q(u32 z, u32 y, u32 x)
+{
+	return 0.0;
+}
+
+void CQlearningNN::set_q(u32 z, u32 y, u32 x, float value)
+{
+
+}

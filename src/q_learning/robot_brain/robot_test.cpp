@@ -4,23 +4,13 @@ CRobotTest::CRobotTest()
 {
 	u32 tmp = 16;
 
-	robot_init.inputs_count = 0;
-	robot_init.outputs_count = 2;
-	robot_init.actions_per_state = 4;
-	robot_init.states_count = tmp*tmp;	
-	robot_init.type = 0; 
-
 
 	std::vector<float> position_max;
 
 	u32 i;
-	for (i = 0; i < robot_init.outputs_count; i++)
-		position_max.push_back(tmp);
+	for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
+		robot_init.position_max[i] = tmp;
 
-	robot_init.position_max = position_max;
-
-
-	robot_init.path_max_length = 64;
 	
 	environment = new CEnvironment(16, robot_init); //16 robots
 	//environment = new CEnvironment(1, robot_init); //1 robots

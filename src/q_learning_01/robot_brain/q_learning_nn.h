@@ -5,6 +5,7 @@
 #include "action_nn.h"
 #include "neural_network.h"
 
+
 class CQlearningNN
 {
 	private:
@@ -46,6 +47,12 @@ class CQlearningNN
 
 		
 		void print();
+
+		void merge(class CQlearningNN *q_learning);
+
+		float get_q(u32 z, u32 y, u32 x);
+		void set_q(u32 z, u32 y, u32 x, float value);
+ 
 };
 
 #endif

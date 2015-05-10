@@ -2,8 +2,11 @@
 #define _ROBOT_H_
 
 #include "../common.h"
+
+
 #include "q_learning.h"
-#include "q_learning_nn.h"
+
+// #include "q_learning_nn.h"
 
 
 // #define Q_LEARNING_NEURAL_NETWORK 1
@@ -83,8 +86,13 @@ class CRobot
 		void print();
 
 		void merge();
-		CQLearning* get_brain();
 
+
+		#ifdef Q_LEARNING_NEURAL_NETWORK
+		CQLearningNN* get_brain();
+		#else 
+		CQLearning* get_brain();
+		#endif
 };
 
 #endif

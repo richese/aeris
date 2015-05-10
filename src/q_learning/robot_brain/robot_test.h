@@ -6,7 +6,7 @@
 class CRobotTest
 {
 	private:
-		struct sRobotInitStruct robot_init;
+		struct sRobot robot_init;
 		class CEnvironment *environment;
 
 	public:

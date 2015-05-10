@@ -78,8 +78,8 @@ CRobot::CRobot(struct sRobotInitStruct robot_init,
 	q_learning 	= new 	CQlearningNN(	state_range_min, state_range_max, 
 										hidden_neurons_count, neuron_type, 
 										gamma, eta,
-										&action_init,
-										this->collective_brain);
+										&action_init
+									);
 
 	actions 	= new CAction(1, robot_init.actions_per_state, robot_init.outputs_count, &action_init);
 
@@ -203,7 +203,7 @@ void CRobot::process(float reward)
 
 void CRobot::print()
 {
-	
+	/*
 	u32 i;
 
 	CLog *log_q_learing;
@@ -266,7 +266,7 @@ void CRobot::print()
 		}
 
 		printf("\n");
-	}
+	} 
 
 	printf("\n");
 
@@ -274,6 +274,7 @@ void CRobot::print()
 
 	printf("average error %f\n", error_average/error_cnt);
 	printf("maximum error %f\n", error_max);
+	*/
 }
  
 void CRobot::merge()
@@ -283,8 +284,19 @@ void CRobot::merge()
 	//so, this is merging two q_learnings results
 	q_learning->merge(collective_robot->get_brain());
 }
+ 
+#ifdef Q_LEARNING_NEURAL_NETWORK
+
+CQLearningNN* CRobot::get_brain()
+{
+	return q_learning;
+}
+
+#else
 
 CQLearning* CRobot::get_brain()
 {
 	return q_learning;
 }
+
+#endif

@@ -1,19 +1,21 @@
 #ifndef _ENVIRONMENT_H_
 #define _ENVIRONMENT_H_
 
-#include "robot.h"
+#include "robot_brain.h"
 
 class CEnvironment
 {
 	private:
 
-		struct sRobotInitStruct robot_init;
-		std::vector<class CRobot *> robots;
+		struct sRobot robot_init;
+		std::vector<class CRobotBrain *> robots;
+		std::vector<struct sRobot> s_robots;
+		
 
-		class CRobot *collective_robot;
+		class CRobotBrain *collective_robot;
 
 	public:
-		CEnvironment(u32 robots_count, struct sRobotInitStruct robot_init);
+		CEnvironment(u32 robots_count, struct sRobot robot_init);
 		CEnvironment(char *file_name);
 
 		~CEnvironment();	
@@ -23,7 +25,7 @@ class CEnvironment
 		void print();
 
 	private:
-		void respawn(u32 robot_id); 
+		void respawn(struct sRobot *robot); 
 };
 
 #endif
