@@ -112,6 +112,17 @@ i32 CCollectiveBrain::save_to_file(char *file_name)
 	return -2;
 }
 
+u32 CCollectiveBrain::get_height()
+{
+	return q.size();
+}
+
+u32 CCollectiveBrain::get_width()
+{
+	return q[0].size();
+}
+
+
 
 float CCollectiveBrain::get_output(u32 x, u32 y)
 {
@@ -158,38 +169,79 @@ void CCollectiveBrain::merge_average(u32 x, u32 y, float value, float weight)
 }
 
 
-u32 CCollectiveBrain::get_height()
+
+
+
+
+
+std::vector<float> CCollectiveBrain::get_output_row(u32 row)
 {
-	return q.size();
+	return q[row];
+}
+	
+void CCollectiveBrain::set_value_row(std::vector<float> q, u32 row)
+{
+	u32 i;
+	for (i = 0; i < this->q[row].size(); i++)
+		this->q[row][i] = q[i];
 }
 
-u32 CCollectiveBrain::get_width()
+void CCollectiveBrain::merge_max_row(std::vector<float> q, u32 row)
 {
-	return q[0].size();
+	u32 i;
+	for (i = 0; i < this->q[row].size(); i++)
+		merge_max(i, row, q[i]);
 }
 
+void CCollectiveBrain::merge_min_row(std::vector<float> q, u32 row)
+{
+	u32 i;
+	for (i = 0; i < this->q[row].size(); i++)
+		merge_min(i, row, q[i]);
+}
+
+void CCollectiveBrain::merge_average_row(std::vector<float> q, float weight, u32 row)
+{
+	u32 i;
+	for (i = 0; i < this->q[row].size(); i++)
+		merge_average(i, row, q[i], weight);
+}
 
 std::vector<std::vector<float>> CCollectiveBrain::get_output_all()
 {
 	return q;
 }
 
+
+
 void CCollectiveBrain::set_value_all(std::vector<std::vector<float>> q)
 {
-	
+	u32 i, j;
+	for (j = 0; j < this->q.size(); j++)
+		for (i = 0; i < this->q[j].size(); i++)
+			set_value(i, j, q[j][i]);	
 }
 
 void CCollectiveBrain::merge_max_all(std::vector<std::vector<float>> q)
 {
-
+	u32 i, j;
+	for (j = 0; j < this->q.size(); j++)
+		for (i = 0; i < this->q[j].size(); i++)
+			merge_max(i, j, q[j][i]);	
 }
 
 void CCollectiveBrain::merge_min_all(std::vector<std::vector<float>> q)
 {
-
+	u32 i, j;
+	for (j = 0; j < this->q.size(); j++)
+		for (i = 0; i < this->q[j].size(); i++)
+			merge_min(i, j, q[j][i]);	
 }
 
 void CCollectiveBrain::merge_average_all(std::vector<std::vector<float>> q, float weight)
 {
-	
+	u32 i, j;
+	for (j = 0; j < this->q.size(); j++)
+		for (i = 0; i < this->q[j].size(); i++)
+			merge_average(i, j, q[j][i], weight);		
 }

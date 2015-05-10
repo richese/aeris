@@ -48,7 +48,7 @@ set surface
 
  	
 
-set style fill transparent solid 0.5 noborder
+#set style fill transparent solid 0.5 noborder
 
 set output 'maneuvers_result.png' 
 

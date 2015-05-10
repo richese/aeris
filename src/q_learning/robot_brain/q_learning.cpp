@@ -96,14 +96,32 @@ std::vector<std::vector<float>> CQLearning::get_q()
 	return q;
 }
 
-void CQLearning::merge_q(std::vector<std::vector<float>> q)
+float CQLearning::get_q(u32 y, u32 x)
+{
+	return q[y][x];
+}
+ 
+void CQLearning::set_q(u32 y, u32 x, float value)
+{
+	q[y][x] = value;
+}
+
+void CQLearning::merge(CQLearning *q_learning)
 {
 	u32 j, i;
-	for (j = 0; j < this->q.size(); j++)
-		for (i = 0; i < this->q[j].size(); i++)
-			this->q[j][i] = max(this->q[j][i], q[j][i]);
 
 	normalise();
+
+	//merge values, in fact, it's max from tables
+	for (j = 0; j < q.size(); j++)
+		for (i = 0; i < q[j].size(); i++)
+		{
+			float tmp = max(q_learning->get_q(j, i), q[j][i]);
+			q_learning->set_q(j, i, tmp);
+
+			//rewrite local table
+			q[j][i] = tmp;
+		}
 }
 
 

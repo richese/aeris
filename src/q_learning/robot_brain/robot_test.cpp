@@ -22,7 +22,9 @@ CRobotTest::CRobotTest()
 
 	robot_init.path_max_length = 64;
 	
-	environment = new CEnvironment(16, robot_init);
+	environment = new CEnvironment(16, robot_init); //16 robots
+	//environment = new CEnvironment(1, robot_init); //1 robots
+
 }
 
 CRobotTest::~CRobotTest()

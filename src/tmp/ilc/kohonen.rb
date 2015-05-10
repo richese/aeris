@@ -2,10 +2,11 @@ class CKohonenNN
 
 	def initialize(vector_size, neurons_count, phi = 0.1)
 
+		phi = 0.01
 		@neurons = Array.new(neurons_count) { Array.new(vector_size) }
 
-		@output = Array.new(neurons_count)
-		@input = Array.new(vector_size)
+		@output0 = Array.new(neurons_count) {0.0}
+		@input = Array.new(vector_size) {0.0}
 
 		for j in 0..@neurons.size-1
 			
@@ -13,7 +14,6 @@ class CKohonenNN
 				@neurons[j][i] = rnd()
 			end
 
-			@output[j] = 0.0
 		end
 
 		@phi = phi
@@ -23,9 +23,11 @@ class CKohonenNN
 
 	def process(input)
 
-		for i in 0..@input.size-1
-			@input[i] = input[i]
+		for i in 1..@input.size-1
+			@input[@input.size-1-i] = @input[@input.size-2-i]
 		end
+
+		@input[0] = input
 
 		@result = 0 
 		@dist_min = @input.size()*100.0
@@ -60,6 +62,14 @@ class CKohonenNN
 
 
 		return @result
+	end
+
+	def get
+		return @output0[@result]
+	end
+
+	def learn(error, phi = 0.05)
+		@output0[@result] = @output0[@result] + phi*error
 	end
 	
 

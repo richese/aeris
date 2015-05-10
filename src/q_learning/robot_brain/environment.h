@@ -10,6 +10,8 @@ class CEnvironment
 		struct sRobotInitStruct robot_init;
 		std::vector<class CRobot *> robots;
 
+		class CRobot *collective_robot;
+
 	public:
 		CEnvironment(u32 robots_count, struct sRobotInitStruct robot_init);
 		CEnvironment(char *file_name);

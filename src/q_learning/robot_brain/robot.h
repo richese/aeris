@@ -4,7 +4,6 @@
 #include "../common.h"
 #include "q_learning.h"
 #include "q_learning_nn.h"
-#include "collective_brain.h"
 
 
 // #define Q_LEARNING_NEURAL_NETWORK 1
@@ -49,10 +48,13 @@ class CRobot
 
 		u32 state, action_id;
 
-		class CCollectiveBrain *collective_brain;
+		class CRobot *collective_robot;
 
 	public:
-		CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_position = NULL, class CCollectiveBrain *collective_brain = NULL);
+		CRobot(struct sRobotInitStruct robot_init,
+			   std::vector<float> *initial_position = NULL, 
+			   	class CRobot *collective_robot = NULL);
+		
 		~CRobot();
 
 
@@ -80,8 +82,8 @@ class CRobot
 
 		void print();
 
-		void merge_q(std::vector<std::vector<float>> q);
-		std::vector<std::vector<float>> get_q();
+		void merge();
+		CQLearning* get_brain();
 
 };
 

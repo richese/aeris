@@ -9,10 +9,10 @@ class CPlant
 	def reset()
 
 		#servo
-		@b = 0.1
-		@a1 = 1.0 + 0.4
-		@a2 = 0.0 - 0.4
-		@a3 = 0.0
+		#@b = 0.1
+		#@a1 = 1.0 + 0.4
+		#@a2 = 0.0 - 0.4
+		#@a3 = 0.0
 
 		#1st order
 		#@b = 0.1
@@ -25,6 +25,21 @@ class CPlant
 		#@a1 = 0.5
 		#@a2 = 0.4
 		#@a3 = 0.0
+
+		#3rd order
+		#@b = 0.1
+		#@a1 = 0.5
+		#@a2 = 0.4
+		#@a3 = 0.3
+
+
+		#oscilating
+		r = 0.8
+		omega = 0.08*(2.0*Math::PI)
+		@b = 0.3
+		@a1 = 2.0*r*Math.cos(omega)
+		@a2 = -r*r
+		@a3 = 0.0
 
 		
 		@y0 = 0.0

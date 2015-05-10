@@ -183,3 +183,10 @@ float CQlearningNN::get_action_q()
 {
 	return q_res;
 }
+
+
+void CQlearningNN::print()
+{
+
+}
+

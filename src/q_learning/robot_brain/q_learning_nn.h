@@ -25,6 +25,9 @@ class CQlearningNN
 
 		struct sNeuralNetworkInitStructure nn_init_structure;
 		class CNeuralNetwork *nn;
+
+
+		std::vector<float> q;
 		
 	public:
 
@@ -40,6 +43,9 @@ class CQlearningNN
 		std::vector<float> get_action();
 		u32 get_action_idx();
 		float get_action_q();
+
+		
+		void print();
 };
 
 #endif

@@ -1,6 +1,8 @@
 #include "robot.h"
 
-CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_position, class CCollectiveBrain *collective_brain)
+CRobot::CRobot(struct sRobotInitStruct robot_init, 
+				std::vector<float> *initial_position,
+				class CRobot *collective_robot)		
 {
 	state = 0;
 	action_id = 0;
@@ -41,7 +43,7 @@ CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_p
 	{
 		state_range_min.push_back(0.0);
 		state_range_max.push_back(robot_init.position_max[j]);
-	}
+	}  
 		
 	for (j = 0; j < robot_init.actions_per_state; j++)
 	{	
@@ -60,11 +62,11 @@ CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_p
 			
 			tmp.push_back(f);
 		}
-
+ 
 		action_init.push_back(tmp);	
 	}
 	
-	this->collective_brain = collective_brain;
+	this->collective_robot = collective_robot;
 
 	#ifdef Q_LEARNING_NEURAL_NETWORK
 	
@@ -76,12 +78,16 @@ CRobot::CRobot(struct sRobotInitStruct robot_init, std::vector<float> *initial_p
 	q_learning 	= new 	CQlearningNN(	state_range_min, state_range_max, 
 										hidden_neurons_count, neuron_type, 
 										gamma, eta,
-										&action_init);
+										&action_init,
+										this->collective_brain);
 
 	actions 	= new CAction(1, robot_init.actions_per_state, robot_init.outputs_count, &action_init);
 
 	#else
-	q_learning 	= new CQLearning(state_range_min, state_range_max, states_density, robot_init.actions_per_state, gamma, alpha);
+	q_learning 	= new CQLearning(	state_range_min, state_range_max, 
+									states_density, robot_init.actions_per_state, 
+ 									gamma, alpha);
+
 	actions 	= new CAction(q_learning->get_states_count(), robot_init.actions_per_state, robot_init.outputs_count, &action_init);
 	#endif
 }
@@ -248,7 +254,7 @@ void CRobot::print()
 			float error = dist - max_v;
 
 			log_q_learing->add(3, dist);
-
+ 
 			log_q_learing->add(4, error);
 
 			error_average+= abs_(error);
@@ -270,12 +276,15 @@ void CRobot::print()
 	printf("maximum error %f\n", error_max);
 }
  
-void CRobot::merge_q(std::vector<std::vector<float>> q)
+void CRobot::merge()
 { 
-	q_learning->merge_q(q);
+	//add information from q_learning into collective brain
+	//and update collective brain too
+	//so, this is merging two q_learnings results
+	q_learning->merge(collective_robot->get_brain());
 }
 
-std::vector<std::vector<float>> CRobot::get_q()
+CQLearning* CRobot::get_brain()
 {
-	return q_learning->get_q();
+	return q_learning;
 }

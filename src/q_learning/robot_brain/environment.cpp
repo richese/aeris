@@ -21,14 +21,16 @@ CEnvironment::CEnvironment(u32 robots_count, struct sRobotInitStruct robot_init)
 
  	this->robot_init = robot_init;
 
+ 	//this robot is for sharing solution
+ 	collective_robot = new CRobot(robot_init, NULL, NULL);
+
  	for (j = 0; j < robots_count; j++)
  	{
- 		class CRobot *robot;
- 		robot = new CRobot(robot_init);
+ 		class CRobot *robot; 
+ 		robot = new CRobot(robot_init, NULL, collective_robot);
 
  		robots.push_back(robot);
  	}
-
 }
 
 CEnvironment::CEnvironment(char *file_name)
@@ -45,6 +47,8 @@ CEnvironment::~CEnvironment()
 			delete robots[j];
 			robots[j] = NULL;
 		}
+
+	delete collective_robot;
 }
 
 void CEnvironment::process(u32 iteration)
@@ -86,8 +90,11 @@ void CEnvironment::process(u32 iteration)
 	
 		if (vect_dist(target_position, robot_position) < 0.01)
 		{		
+			//robot on taget, so add some information into collective brain
 			for (i = 0; i < robots.size(); i++)
-				robots[i]->merge_q(robots[j]->get_q());
+				robots[i]->merge();
+
+			//robots[j]->merge();
 
 			respawn(j);
 			printf("robot %u on target\n", j);
@@ -110,7 +117,7 @@ void CEnvironment::process(u32 iteration)
 
 void CEnvironment::print()
 {
-	robots[0]->print();
+ 	collective_robot->print();
 }
  
 

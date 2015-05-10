@@ -7,7 +7,7 @@ void test()
 
 	robot_test = new CRobotTest();
 
-	robot_test->run(100000);
+	robot_test->run(10000);
 
 	//robot_test->run(1000);
 
