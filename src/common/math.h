@@ -59,4 +59,10 @@ float line_circle_intersection(float x1, float y1, float x2, float y2, float xc,
 float vect_distance(float *va, float *vb, u32 size);
 
 void vector_normalise(std::vector<float> *vector);
+
+
+
+float map_to_interval(float min_a, float max_a, float min_b, float max_b, float value);
+void normalise_mat(std::vector<std::vector<float>> *mat);
+
 #endif

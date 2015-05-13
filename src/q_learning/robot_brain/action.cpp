@@ -18,10 +18,19 @@ CAction::CAction(u32 states_count, u32 actions_per_state, u32 action_width, std:
 				action.action.push_back(0.0);
 
 			if (action_init != NULL)
+			{
 				for (i = 0; i < action_width; i++)
 					action.action[i] = (*action_init)[j][i];
 
+			}
+			else
+			{
+				for (i = 0; i < action_width; i++)
+					action.action[i] = sgn(rnd_());				
+			}
+
 			action.fitness = ACTION_FITNESS_MIN;
+			action.usability = 0.0;
 			actions_tmp.push_back(action);
 		}
 
@@ -64,3 +73,8 @@ u32 CAction::get_actions_per_state()
 {
 	return actions[0].size();
 }
+
+void CAction::set_usability(u32 state, u32 id, float usability)
+{
+	actions[state][id].usability = usability;
+}	

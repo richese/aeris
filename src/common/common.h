@@ -31,4 +31,6 @@
 #include "s_robot_packet.h"
 #include "robot_container.h"
 
+#include "associative_array.h"
+
 #endif

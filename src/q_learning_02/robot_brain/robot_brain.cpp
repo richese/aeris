@@ -31,7 +31,7 @@ CRobotBrain::CRobotBrain(
 	this->collective_robot = collective_robot;
 
 
-	u32 actions_per_state = 4;
+	u32 actions_per_state = ROBOT_SPACE_DIMENSION*2;
 
 	u32 j, i;
 
@@ -47,29 +47,28 @@ CRobotBrain::CRobotBrain(
 	{
 		state_range_min.push_back(0.0);
 		state_range_max.push_back(robot_init.position_max[j]);
-	}  
-		
+	}
+
+
 	for (j = 0; j < actions_per_state; j++)
-	{	
+	{
 		std::vector<float> tmp;
 		for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
 		{
-			float f = 0.0;
+			tmp.push_back(0.0);
 
-			if (i == (j/2))
+
+			if ( i == (j/2) )
 			{
 				if ((j%2) == 0)
-					f = 1.0;
+					tmp[i] = 1.0;
 				else
-					f = -1.0;
+					tmp[i] = -1.0;
 			}
-			
-			tmp.push_back(f);
 		}
- 
+
 		action_init.push_back(tmp);	
 	}
-
 
 	actions = new CAction(1, action_init.size(), action_init[0].size(), &action_init);
 	action_id = 0;
@@ -112,9 +111,13 @@ void CRobotBrain::process(struct sRobot *robot_)
 
 	std::vector<float> state_vect;
 
-	state_vect.push_back(robot.sensors[ROBOT_SENSOR_POSITION_0_IDX]);
-	state_vect.push_back(robot.sensors[ROBOT_SENSOR_POSITION_1_IDX]);
+	u32 i;
+	for (i = 0; i < ROBOT_SENSORS_COUNT; i++)
+		state_vect.push_back(0.0);
 
+	state_vect[0]  = robot.sensors[ROBOT_SENSOR_POSITION_0_IDX];
+	state_vect[1]  = robot.sensors[ROBOT_SENSOR_POSITION_1_IDX];
+	
 
 	q_learning->process(state_vect, robot.reward, 0.1);
 
@@ -122,7 +125,6 @@ void CRobotBrain::process(struct sRobot *robot_)
 
 	action = actions->get(0, action_id);
 
-	u32 i;
 	for (i = 0; i < action.action.size(); i++)
 		robot.d[i] = action.action[i];
 
@@ -159,16 +161,23 @@ void CRobotBrain::print()
 
 	float step = 1.0/1.0;
 
-	q_learning->print();
- 
-	for (y = 0.0; y < robot.position_max[1]; y+=step)
-	{
-		for (x = 0.0; x < robot.position_max[0]; x+=step)
-		{
-			std::vector<float> state;
 
-			state.push_back(x);
-			state.push_back(y);
+	std::vector<float> state;
+	std::vector<float> target_position;
+	for (i = 0; i < ROBOT_SENSORS_COUNT; i++)
+		state.push_back(0.0);
+	
+
+	for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
+		target_position.push_back(robot.position_max[i]/2);
+
+ 
+	for (y = 0; y < robot.position_max[1]; y+=step)
+	{
+		for (x = 0; x < robot.position_max[0]; x+=step)
+		{
+			state[ROBOT_SENSOR_POSITION_0_IDX] = x;
+			state[ROBOT_SENSOR_POSITION_1_IDX] = y;	
 
 			u32 state_idx = q_learning->get_state_index_in_table(state);
 
@@ -179,14 +188,13 @@ void CRobotBrain::print()
 			
 			printf("%6.4f ", max_v); 
 
-			log_q_learing->add(0, x);
-			log_q_learing->add(1, y);
+			log_q_learing->add(0, state[ROBOT_SENSOR_POSITION_0_IDX]);
+			log_q_learing->add(1, state[ROBOT_SENSOR_POSITION_1_IDX]);
 			log_q_learing->add(2, max_v);
 
-
-			float target_x = robot.position_max[0]/2.0;
-			float target_y = robot.position_max[1]/2.0;
-			float dist = abs_(x - target_x) + abs_(y - target_y);
+			float dist = 0.0;
+			for (i = 0; i < ROBOT_SENSORS_COUNT; i++)
+				dist+= abs_(target_position[i] - state[i]);
 			dist = pow(0.9, dist);
 
 			float error = dist - max_v;

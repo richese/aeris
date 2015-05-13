@@ -331,3 +331,56 @@ void vector_normalise(std::vector<float> *vector)
     for (i = 0; i < vector->size(); i++)
         (*vector)[i]/= tmp;
 }
+
+//                          -1.0, 1.0, 0.0, 256, 
+float map_to_interval(float min_a, float max_a, float min_b, float max_b, float value)
+{
+    float k = (max_b - min_b)/(max_a - min_a);
+    float q = min_b - k*min_a;
+
+    return (k*value + q);
+}
+
+void normalise_mat(std::vector<std::vector<float>> *mat)
+{
+    /*
+    float max_v = -1.0;
+    float min_v = -1.0;
+
+    u32 i, j;
+
+    for (j = 0; j < mat->size(); j++)
+        for (i = 0; i < (*mat)[j].size(); i++)
+        {
+            max_v = max((*mat)[j][i], max_v);
+            min_v = min((*mat)[j][i], min_v);
+        }
+
+
+    if (max_v != min_v)
+        for (j = 0; j < mat->size(); j++)
+            for (i = 0; i < (*mat)[j].size(); i++)
+            { 
+                // this->q[j][i]/= max_v;
+                (*mat)[j][i] = map_to_interval(min_v, max_v, -1.0, 1.0, (*mat)[j][i]);
+            }
+    */
+
+    float max_v = 0.0;
+
+    u32 i, j;
+
+    for (j = 0; j < mat->size(); j++)
+        for (i = 0; i < (*mat)[j].size(); i++)
+        {
+            max_v = max(abs_((*mat)[j][i]), max_v);
+        }
+
+    
+    if (max_v != 0.0)
+        for (j = 0; j < mat->size(); j++)
+            for (i = 0; i < (*mat)[j].size(); i++)
+            { 
+                (*mat)[j][i]/= max_v;
+            }
+}

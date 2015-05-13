@@ -1,18 +1,15 @@
 #include "common.h"
-#include "robot_brain/robot_test.h"
+#include "robot_brain/q_learning_test.h"
 
 void test()
 {
-	class CRobotTest *robot_test;
+	class CQlearningTest *q_learning_test;
+	q_learning_test = new CQlearningTest();
+	//q_learning_test->run(100000);
 
-	robot_test = new CRobotTest();
+	q_learning_test->run(10000);
 
-	robot_test->run(10000);
-
-	//robot_test->run(1000);
-
-
-	delete robot_test;
+	delete q_learning_test;
 }
 
 

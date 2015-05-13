@@ -8,7 +8,7 @@
  
 struct sAction
 {
-	float fitness;
+	float fitness, usability;
 	std::vector<float> action;
 };
 
@@ -26,6 +26,8 @@ class CAction
 		
 		void set(u32 state, u32 id, struct sAction action, float weight);
 		void set_fitness(u32 state, u32 id, float fitness);
+
+		void set_usability(u32 state, u32 id, float usability);
 
 		u32 get_states_count();
 		u32 get_actions_per_state();

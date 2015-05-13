@@ -1,31 +1,30 @@
 #ifndef _ENVIRONMENT_H_
 #define _ENVIRONMENT_H_
 
-#include "robot_brain.h"
+#include "agent.h"
 
 class CEnvironment
 {
 	private:
 
-		struct sRobot robot_init;
-		std::vector<class CRobotBrain *> robots;
-		std::vector<struct sRobot> s_robots;
+		struct sAgent agent_init;
+
+		std::vector<class CAgent *> agents;
+		std::vector<struct sAgent> s_agents;
 		
 
-		class CRobotBrain *collective_robot;
+		class CAgent *collective_agent;
 
 	public:
-		CEnvironment(u32 robots_count, struct sRobot robot_init);
-		CEnvironment(char *file_name);
-
+		CEnvironment(u32 agents_count);
 		~CEnvironment();	
 
 
-		void process(u32 iteration = 0);
-		void print();
+		void process();
+		void print(std::vector<float> subspace);
 
 	private:
-		void respawn(struct sRobot *robot); 
+		void respawn(struct sAgent *agent); 
 };
 
 #endif

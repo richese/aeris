@@ -4,6 +4,7 @@ COMMON_PATH = ../common
 
 COMMON+= $(COMMON_PATH)/math.o
 COMMON+= $(COMMON_PATH)/log.o
+COMMON+= $(COMMON_PATH)/associative_array.o
 
 
 CC = g++
@@ -32,3 +33,4 @@ $(ELF): $(OBJS)
 
 clean:
 	rm $(OBJS) -rf
+	rm $(ELF) -rf
