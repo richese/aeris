@@ -54,9 +54,6 @@ void CQLearning::process(std::vector<float> state, float reward, float k, float 
 
 	this->state = state; 
 
-
-	// alpha = 0.0;	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 	state_idx = associative_array->get(this->state);
 
 	u32 max_i = 0;
@@ -68,7 +65,7 @@ void CQLearning::process(std::vector<float> state, float reward, float k, float 
 
 	q[state_prev_idx][action_id_prev] = 
 							alpha*q[state_prev_idx][action_id_prev] +
-							(1.0 - alpha)*(reward_prev + gamma*q[state_idx][max_i]);
+							(1.0 - alpha)*tanh(reward_prev + gamma*q[state_idx][max_i]);
 
 	reward_prev = reward;
 	state_prev_idx = state_idx;
@@ -137,9 +134,13 @@ void CQLearning::merge(CQLearning *q_learning)
 			q[j][i] = tmp;
 		}
 
+	/*
+
 	//TODO
 	normalise();
 	q_learning->normalise();
+
+	*/
 	
 }
 

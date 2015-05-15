@@ -26,6 +26,7 @@ CEnvironment::CEnvironment(u32 agents_count)
  	
  	//float state_density = 1.0/9.0;
  	float state_density = 1.0/9.0;
+ 	//float state_density = 1.0/5.0;
  	
  	u32 id = 0;
  	u32 type = AGENT_TYPE_NULL;
@@ -111,10 +112,9 @@ void CEnvironment::process()
 
 		if (target_dist < target_min_dist)
 			reward+= 1.0;
-
 		
-
-
+		//reward = 1.0 - target_dist;
+		
 		s_agents[j].reward = reward; 
 
 		agents[j]->process(&s_agents[j]);

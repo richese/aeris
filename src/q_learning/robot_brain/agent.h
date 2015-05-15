@@ -3,6 +3,10 @@
 
 #include "action.h"
 #include "q_learning.h"
+#include "q_learning_nn.h"
+
+
+#define Q_LEARNING_NN 			1
 
 
 #define AGENT_TYPE_NULL			(u32)0
@@ -43,7 +47,12 @@ class CAgent
 
 		class CAgent 		*collective_agent;
 		class CAction 		*actions;
+
+		#ifdef Q_LEARNING_NN
+		class CQLearningNN 	*q_learning;
+		#else
 		class CQLearning 	*q_learning;
+		#endif
 
 	public:
 		
@@ -61,7 +70,11 @@ class CAgent
 		struct sAction get_action();
 
 		//merging functions
+		#ifdef Q_LEARNING_NN
+		CQLearningNN* get_brain();
+		#else
 		CQLearning* get_brain();
+		#endif
 		void merge();
 
 		void print(std::vector<float> subspace);

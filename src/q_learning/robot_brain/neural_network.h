@@ -14,7 +14,7 @@ struct sNeuralNetworkInitStructure
 	u32 init_vector_size;
 	u32 *init_vector;
 
-	float weight_range, learning_constant;
+	float weight_range, learning_constant, weight_range_init;
 	
 	u32 order, neuron_type;
 };
@@ -42,7 +42,8 @@ void NeuralNetworkInitStructure_init(
 										float weight_range,
 										u32 order,
 										u32 neuron_type,
-										float learning_constant
+										float learning_constant,
+										float weight_range_init
 									);
 
 void NeuralNetworkInitStructure_uninit(struct sNeuralNetworkInitStructure *nn_init_structure);
@@ -69,6 +70,8 @@ class CNeuralNetwork
 
 		float*** get_weights();
 		void set_weights(float ***w);
+		void set_weight(u32 i, u32 j, u32 k, float value);
+
 		void merge_weights(float ***w, float weight = 0.5);
 		
 		void learn(std::vector<float> required_output);

@@ -366,6 +366,7 @@ void normalise_mat(std::vector<std::vector<float>> *mat)
             }
     */
 
+
     float max_v = 0.0;
 
     u32 i, j;
