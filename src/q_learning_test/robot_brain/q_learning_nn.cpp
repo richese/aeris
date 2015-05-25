@@ -1,6 +1,6 @@
 #include "q_learning_nn.h"
 
-CQLearningNN::CQLearningNN( 
+CQLearningNN::CQLearningNN(
 								u32 state_dimensions,
 
 								float gamma, float eta,
@@ -9,11 +9,11 @@ CQLearningNN::CQLearningNN(
 								class CAction *actions
 							)
 {
-	u32 i; 
+	u32 i;
 
 	action_id = 0;
 	action_id_prev = 0;
- 
+
 	this->reward = 0.0;
 	this->reward_prev = 0.0;
 
@@ -21,7 +21,7 @@ CQLearningNN::CQLearningNN(
 	this->eta = eta;
 
 	for (i = 0; i < state_dimensions; i++)
-	{ 
+	{
 		state.push_back(0.0);
 		state_prev.push_back(0.0);
 	}
@@ -29,7 +29,7 @@ CQLearningNN::CQLearningNN(
 	this->actions = actions;
 
 	NeuralNetworkInitStructure_init(&nn_init,
-									3, 1.0, 3, neuron_type, this->eta, 0.1);
+									3, 1.0, 4, neuron_type, this->eta, 0.1);
 
 	//neural network input : state and action vector size, +1 for bias
 	nn_init.init_vector[0] = state_dimensions + actions->get_actions_per_state() + 1;
@@ -38,7 +38,7 @@ CQLearningNN::CQLearningNN(
 
 	nn = new CNeuralNetwork(nn_init);
 	//nn = new CNN(nn_init.init_vector[0], nn_init.init_vector[1], this->eta, 1.0);
-			
+
 
 
 	for (i = 0; i < (state_dimensions + actions->get_actions_per_state() + 1); i++)
@@ -59,7 +59,7 @@ CQLearningNN::~CQLearningNN()
 
 
 
-void CQLearningNN::process(	std::vector<float> state, float reward, 
+void CQLearningNN::process(	std::vector<float> state, float reward,
 							float k, float explore_prob
 							)
 {
@@ -74,7 +74,7 @@ void CQLearningNN::process(	std::vector<float> state, float reward,
 
 
 	this->reward = reward;
-	this->state = state; 
+	this->state = state;
 
 
 	u32 max_j = 0;
@@ -86,7 +86,7 @@ void CQLearningNN::process(	std::vector<float> state, float reward,
 		std::vector<float> nn_input_test;
 		for (i = 0; i < this->state.size(); i++)
 			nn_input_test.push_back(this->state[i]);
-			
+
 		for (i = 0; i < action.action.size(); i++)
 			nn_input_test.push_back(action.action[i]);
 
@@ -107,16 +107,16 @@ void CQLearningNN::process(	std::vector<float> state, float reward,
 		}
 	}
 
-	
+
 	std::vector<float> required_output;
 	nn->process(nn_input_prev);
 	required_output.push_back(tanh(reward_prev + gamma*nn_res_max));
-	
+
 	nn->learn(required_output);
-	
+
 
 	//nn->learn(reward_prev + gamma*nn_res_max);
-	
+
 	action_id_prev = action_id;
 	nn_input_prev = nn_input;
 
@@ -139,7 +139,7 @@ u32 CQLearningNN::get_state_idx()
 u32 CQLearningNN::get_output_id()
 {
 	return action_id;
-} 
+}
 
 
 float CQLearningNN::get_max_q(std::vector<float> state)
@@ -184,7 +184,7 @@ void CQLearningNN::merge(CQLearningNN *q_learning)
 	/*
 	q_learning->nn->merge_weights(nn->get_weights(), w);
 	nn->merge_weights(q_learning->nn->get_weights(), 0.0);
-	
+
 
 	q_learning->nn->merge_weights(nn->get_w(), nn->get_v(), w);
 	nn->merge_weights(q_learning->nn->get_w(), q_learning->nn->get_v(), 0.0);
@@ -199,7 +199,7 @@ u32 CQLearningNN::select_action(float k, float explore_prob)
 	float sum = 0.0;
 	float sum_tmp = 0.0;
 	float p = abs_(rnd_());
- 
+
 	u32 non_visited_action_id = 0;
 	bool non_visited_action_found = false;
 

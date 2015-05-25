@@ -1,9 +1,9 @@
 #include "agent.h"
- 
-void s_agent_init( 
-					struct sAgent *agent, 
 
-					u32 id, u32 type, 
+void s_agent_init(
+					struct sAgent *agent,
+
+					u32 id, u32 type,
 					u32 outputs_count, u32 inputs_count,
 					u32 actions_per_state,
 					float state_density
@@ -33,16 +33,16 @@ CAgent::CAgent(struct sAgent agent_init, class CAgent *collective_agent)
 
 	float alpha = 0.7;
 	float gamma = 0.9;	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	
+
 	std::vector<std::vector<float>> action_init;
 
 	u32 state_dimensions = agent_init.state.size();
 
-	this->agent = agent_init;  
+	this->agent = agent_init;
 	this->collective_agent = collective_agent;
-  
+
 	for (j = 0; j < agent_init.actions_per_state; j++)
-	{ 
+	{
 		std::vector<float> tmp;
 		for (i = 0; i < agent_init.outputs_count; i++)
 		{
@@ -57,35 +57,35 @@ CAgent::CAgent(struct sAgent agent_init, class CAgent *collective_agent)
 			}
 		}
 
-		action_init.push_back(tmp);	
+		action_init.push_back(tmp);
 	}
 
-	actions = new CAction(	1, 
-							action_init.size(), 
-							action_init[0].size(), 
+	actions = new CAction(	1,
+							action_init.size(),
+							action_init[0].size(),
 							&action_init
 						);
-  
+
 
 	#ifdef Q_LEARNING_NN
 
 	float eta = 0.01;
 	//u32 neuron_type = NEURON_TYPE_COMMON;
-	u32 neuron_type = NEURON_TYPE_MIXED;
-	u32 hidden_neurons_count = 16;
+  u32 neuron_type = NEURON_TYPE_MIXED;
+	u32 hidden_neurons_count = 8;
 
 	q_learning = new CQLearningNN(
-									state_dimensions, 
+									state_dimensions,
 									gamma, eta,
 									neuron_type,
-									hidden_neurons_count, 
+									hidden_neurons_count,
 									actions
 								);
 
 	#else
 	q_learning = new CQLearning(
-									agent_init.state_density, 
-									agent_init.actions_per_state, 
+									agent_init.state_density,
+									agent_init.actions_per_state,
 									state_dimensions,
 									gamma, alpha
 								);
@@ -114,15 +114,15 @@ CAgent::~CAgent()
 	{
 		delete actions;
 		actions = NULL;
-	}  
-} 
+	}
+}
 
 void CAgent::process(struct sAgent *agent_)
 {
 	u32 i, action_id;
 	std::vector<float> state_vect;
 
-	agent = *agent_; 
+	agent = *agent_;
 
 	for (i = 0; i < this->agent.inputs_count; i++)
 		state_vect.push_back(agent.state[i]);
@@ -137,13 +137,13 @@ void CAgent::process(struct sAgent *agent_)
 		case AGENT_TYPE_GREEDY : k = 10000.0; explore_probality = 0.0; break;
 	}
 
- 
+
 	q_learning->process(state_vect, agent.reward, k, explore_probality);
 	agent.reward = 0.0;
 
 	agent.score+= 1.0;
 
-	action_id =  q_learning->get_output_id();	
+	action_id =  q_learning->get_output_id();
 
 	//in all states are some action, so state is allways 0
 	agent.output_action = actions->get(0, action_id);
@@ -155,7 +155,7 @@ void CAgent::process(struct sAgent *agent_)
 //agent output
 struct sAction CAgent::get_action()
 {
-	return agent.output_action;	
+	return agent.output_action;
 }
 
 #ifdef Q_LEARNING_NN
@@ -177,7 +177,7 @@ void CAgent::merge()
 	if (collective_agent != NULL)
 		q_learning->merge(collective_agent->get_brain());
 }
- 
+
 void CAgent::print(std::vector<float> subspace)
 {
 	CLog log((char*)"q_map.txt", 3);
@@ -216,4 +216,4 @@ void CAgent::print(std::vector<float> subspace)
 	printf("\n\n");
 
 	log.save();
-} 
+}

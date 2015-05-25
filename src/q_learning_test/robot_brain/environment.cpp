@@ -24,9 +24,9 @@ CEnvironment::CEnvironment(u32 agents_count)
  	u32 outputs_count = 1;
  	u32 agent_inputs_count = 2;
  	u32 actions_per_state = 2;
- 	
- 	state_density = 1.0/4.0;
- 	
+
+ 	state_density = 1.0/10.0;
+
  	u32 id = 0;
  	u32 type = AGENT_TYPE_NULL;
  	s_agent_init(
@@ -46,7 +46,7 @@ CEnvironment::CEnvironment(u32 agents_count)
  	{
  		id++;
  		agent_init.id = id;
- 		
+
 
  		agent_init.type = AGENT_TYPE_COMMON;
 
@@ -61,7 +61,7 @@ CEnvironment::CEnvironment(u32 agents_count)
  			agent_init.type = AGENT_TYPE_GREEDY;
 		*/
 
- 		class CAgent *agent;  		
+ 		class CAgent *agent;
 
  		respawn(&agent_init);
 
@@ -102,7 +102,7 @@ void CEnvironment::process()
 {
 	u32 j, i;
 
-	
+
 
 	for (j = 0; j < agents.size(); j++)
 	{
@@ -114,7 +114,7 @@ void CEnvironment::process()
 		if (target_dist < target_min_dist)
 			reward = 1.0;
 
-		s_agents[j].reward = reward; 
+		s_agents[j].reward = reward;
 
 		agents[j]->process(&s_agents[j]);
 
@@ -128,20 +128,20 @@ void CEnvironment::process()
 			for (i = 0; i < agents.size(); i++)
 				agents[i]->merge();
 		}
-	
+
 		if (target_dist < target_min_dist)
 		{
 			printf("robot %u on target, score %f\n", j, s_agents[j].score);
 
-			s_agents[j].reward = 0.0; 
+			s_agents[j].reward = 0.0;
 
 			respawn(&s_agents[j]);
 
 			target_position[0] = rnd_();
 		}
-		else 
+		else
 		{
-			s_agents[j].state[0] = s_agents[j].state[0] + 
+			s_agents[j].state[0] = s_agents[j].state[0] +
 									s_agents[j].output_action.action[0]*s_agents[j].state_density;
 
 			s_agents[j].state[1] = target_position[0];
@@ -163,7 +163,7 @@ void CEnvironment::print(std::vector<float> subspace)
 
  	agents[0]->print(subspace);
 }
- 
+
 void CEnvironment::respawn(struct sAgent *agent)
 {
 	u32 i;

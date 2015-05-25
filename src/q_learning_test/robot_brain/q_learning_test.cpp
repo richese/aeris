@@ -13,8 +13,8 @@ CQlearningTest::~CQlearningTest()
 		delete environment;
 		environment = NULL;
 	}
-} 
- 
+}
+
 void CQlearningTest::run(u32 iterations)
 {
 	u32 n;
@@ -24,7 +24,7 @@ void CQlearningTest::run(u32 iterations)
 	}
 
 	std::vector<float> subspace;
-	
+
 	environment->print(subspace);
 
 	printf("test done\n");
