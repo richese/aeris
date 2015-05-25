@@ -75,8 +75,8 @@ class CAgent
 		#else
 		CQLearning* get_brain();
 		#endif
-		void merge();
 
+		void merge();
 		void print(std::vector<float> subspace);
 };
 

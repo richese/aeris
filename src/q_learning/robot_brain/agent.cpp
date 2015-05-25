@@ -32,15 +32,15 @@ CAgent::CAgent(struct sAgent agent_init, class CAgent *collective_agent)
 	u32 i, j;
 
 	float alpha = 0.7;
-	float gamma = 0.9;	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	float gamma = 0.9*0.0;	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
 	std::vector<std::vector<float>> action_init;
 
 	u32 state_dimensions = agent_init.state.size();
 
-	this->agent = agent_init;
+	this->agent = agent_init;  
 	this->collective_agent = collective_agent;
-
+  
 	for (j = 0; j < agent_init.actions_per_state; j++)
 	{ 
 		std::vector<float> tmp;
@@ -60,14 +60,18 @@ CAgent::CAgent(struct sAgent agent_init, class CAgent *collective_agent)
 		action_init.push_back(tmp);	
 	}
 
-	actions = new CAction(1, action_init.size(), action_init[0].size(), &action_init);
+	actions = new CAction(	1, 
+							action_init.size(), 
+							action_init[0].size(), 
+							&action_init
+						);
   
 
 	#ifdef Q_LEARNING_NN
 
 	float eta = 0.1;
-	// u32 neuron_type = NEURON_TYPE_COMMON;
-	u32 neuron_type = NEURON_TYPE_MIXED;
+	u32 neuron_type = NEURON_TYPE_COMMON;
+	//u32 neuron_type = NEURON_TYPE_MIXED;
 	u32 hidden_neurons_count = 16;
 
 	q_learning = new CQLearningNN(

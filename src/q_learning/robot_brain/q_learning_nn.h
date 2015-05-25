@@ -4,6 +4,7 @@
 #include "action.h"
 #include "neural_network.h"
 
+#include "nn.h"
 
 class CQLearningNN
 {
@@ -21,7 +22,8 @@ class CQLearningNN
 		
 
 		class CAction *actions;
-		class CNeuralNetwork *nn;
+		//class CNeuralNetwork *nn;
+		class CNN *nn;
 		struct sNeuralNetworkInitStructure nn_init;
 
 		std::vector<float> nn_input, nn_input_prev, nn_output;

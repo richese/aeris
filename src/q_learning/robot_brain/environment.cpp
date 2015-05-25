@@ -71,6 +71,9 @@ CEnvironment::CEnvironment(u32 agents_count)
  		s_agents.push_back(agent_init);
  	}
 
+ 	for (j = 0; j < agents.size(); j++)
+				agents[j]->merge();
+
  	printf("init done\n");
 }
 
@@ -100,7 +103,9 @@ void CEnvironment::process()
 	std::vector<float> target_position;
 
 	for (i = 0; i < agent_init.inputs_count; i++) 
+	{
 		target_position.push_back(0.0);
+	}
 	
 
 	for (j = 0; j < agents.size(); j++)
@@ -112,9 +117,11 @@ void CEnvironment::process()
 
 		if (target_dist < target_min_dist)
 			reward+= 1.0;
-		
-		//reward = 1.0 - target_dist;
-		
+
+		reward = 1.0 - target_dist/pow(2.0, 0.5);
+
+		reward = sgn(s_agents[j].state[0])*sgn(s_agents[j].state[1]);
+
 		s_agents[j].reward = reward; 
 
 		agents[j]->process(&s_agents[j]);

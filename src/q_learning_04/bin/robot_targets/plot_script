@@ -1,0 +1,31 @@
+set   autoscale                        # scale axes automatically
+unset log                              # remove any log-scaling
+unset label                            # remove any previous labels
+set xtic auto                         	# set xtics automatically
+set ytic auto                         # set ytics automatically
+
+set key right top
+
+set grid ytics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+set grid xtics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+set terminal png size 1024,768 enhanced font "Helvetica,20"
+
+
+
+set key
+set xlabel "input[0]"
+set ylabel "input[1]"
+
+set output 'learing_result.png'
+
+plot "targets_log.txt" using 1:2 title "input" with points, \
+	"clusters_log.txt" using 1:2 title "centroid" with points lw 3, \
+	"clusters_log.txt" using 1:2:($0+1) with labels offset 1 notitle
+
+
+
+set output 'testing_result.png'
+
+plot "testing_targets_log.txt" using 1:2 title "target" with points lw 3, \
+	"testing_trajectory_log.txt" using 1:2 title "trajectory" with points lw 1
+

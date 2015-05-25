@@ -29,14 +29,16 @@ CQLearningNN::CQLearningNN(
 	this->actions = actions;
 
 	NeuralNetworkInitStructure_init(&nn_init,
-									3, 1.0, 5, neuron_type, this->eta, 0.1);
+									3, 1.0, 3, neuron_type, this->eta, 0.01);
 
 	//neural network input : state and action vector size, +1 for bias
 	nn_init.init_vector[0] = state_dimensions + actions->get_actions_per_state() + 1;
 	nn_init.init_vector[1] = hidden_neurons_count;
 	nn_init.init_vector[2] = 1;
 
-	nn = new CNeuralNetwork(nn_init);
+	// nn = new CNeuralNetwork(nn_init);
+	nn = new CNN(nn_init.init_vector[0], nn_init.init_vector[1], this->eta, 1.0);
+			
 
 
 	for (i = 0; i < (state_dimensions + actions->get_actions_per_state() + 1); i++)
@@ -66,7 +68,7 @@ void CQLearningNN::process(	std::vector<float> state, float reward,
 
 	//find action using current state and fitness as probability
 	this->action_id_prev = this->action_id;
-	action_id = select_action(k, explore_prob);
+	this->action_id = select_action(k, explore_prob);
 
 	float nn_res_max = -1.0;
 
@@ -90,6 +92,7 @@ void CQLearningNN::process(	std::vector<float> state, float reward,
 
 		nn_input.push_back(1.0); //bias
 
+
 		nn->process(nn_input);
 
 		std::vector<float> tmp = nn->get();
@@ -104,12 +107,14 @@ void CQLearningNN::process(	std::vector<float> state, float reward,
 		}
 	}
 
+	/*
 	std::vector<float> required_output;
-
 	nn->process(nn_input_prev);
 	required_output.push_back(tanh(reward_prev + gamma*nn_res_max));
 	nn->learn(required_output);
+	*/
 
+	nn->learn(reward_prev + gamma*nn_res_max);
 	
 	action_id_prev = action_id;
 	nn_input_prev = nn_input;
@@ -156,14 +161,9 @@ float CQLearningNN::get_max_q(std::vector<float> state)
 
 		nn_input.push_back(1.0); //bias
 
-		//TODO here is segmentation fault
 		nn->process(nn_input);
 
-		std::vector<float> tmp = nn->get();
-
-		nn_output[j] = tmp[0];
-
-
+		nn_output[j] = nn->get()[0];
 
 		if (nn_output[j] > nn_res_max)
 		{
@@ -179,13 +179,15 @@ float CQLearningNN::get_max_q(std::vector<float> state)
 void CQLearningNN::merge(CQLearningNN *q_learning)
 {
 	float w = 0.9;
+
+	/*
 	q_learning->nn->merge_weights(nn->get_weights(), w);
 	nn->merge_weights(q_learning->nn->get_weights(), 0.0);
+	*/
 
+	q_learning->nn->merge_weights(nn->get_w(), nn->get_v(), w);
+	nn->merge_weights(q_learning->nn->get_w(), q_learning->nn->get_v(), 0.0);
 
-
-	//q_learning->nn->merge_weights(nn->get_weights(), 0.0);
-	// nn->merge_weights(q_learning->nn->get_weights(), 0.0);
 }
 
 
