@@ -65,4 +65,7 @@ void vector_normalise(std::vector<float> *vector);
 float map_to_interval(float min_a, float max_a, float min_b, float max_b, float value);
 void normalise_mat(std::vector<std::vector<float>> *mat);
 
+
+void vect_print(std::vector<float> v);
+
 #endif

@@ -385,3 +385,13 @@ void normalise_mat(std::vector<std::vector<float>> *mat)
                 (*mat)[j][i]/= max_v;
             }
 }
+
+
+void vect_print(std::vector<float> v)
+{
+    u32 i;
+    printf("(");
+    for (i = 0; i < v.size(); i++)
+        printf("%6.3f ", v[i]);
+    printf(") ");
+}

@@ -12,7 +12,7 @@ CAssociativeArray::CAssociativeArray(u32 dimensions, float density)
 	do
 	{
 		array.push_back(tmp);
-		
+
 		tmp[0]+= density;
 
 		for (i = 0; i < (dimensions-1); i++)
@@ -22,7 +22,7 @@ CAssociativeArray::CAssociativeArray(u32 dimensions, float density)
 				tmp[i+1]+= density;
 			}
 	}
-	while (tmp[dimensions-1] < 1.0);
+		while (tmp[dimensions-1] < 1.0);
 }
 
 CAssociativeArray::~CAssociativeArray()
