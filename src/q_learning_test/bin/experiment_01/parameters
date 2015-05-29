@@ -1,0 +1,11 @@
+goal : 1D target hunting, 1 Robot
+
+iterations = 10000000
+
+state_density = 1/8.0
+hidden layers = 2
+neurons in hidden layers = 10
+weight range = 4.0
+neuron order = 7
+init weight range = 0.1
+eta = 0.001

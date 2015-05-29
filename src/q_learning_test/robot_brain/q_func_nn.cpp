@@ -7,13 +7,13 @@ CQFuncNN::CQFuncNN(u32 state_size, u32 action_size, float state_density,
 
     struct sNeuralNetworkInitStructure nn_init;
 
-    //u32 neuron_type = NEURON_TYPE_COMMON;
-	u32 neuron_type = NEURON_TYPE_MIXED;
+    u32 neuron_type = NEURON_TYPE_COMMON;
+	//u32 neuron_type = NEURON_TYPE_MIXED;
 	u32 hidden_neurons_count = 10;
     float eta = 0.001;
 
     NeuralNetworkInitStructure_init(&nn_init,
-                                    4, 4.0, 5, neuron_type, eta, 0.1);
+                                    4, 4.0, 7, neuron_type, eta, 0.1);
 
     //neural network input : state and action vector size, +1 for bias
     nn_init.init_vector[0] = state_size + action_size + 1;
@@ -57,7 +57,7 @@ void CQFuncNN::learn(std::vector<float> state, std::vector<float> action, float 
 {
     std::vector<float> required_value_;
 
-    required_value_.push_back(required_value);
+    required_value_.push_back(tanh(1.3*required_value));
 
     u32 ptr = 0, i;
 

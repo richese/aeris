@@ -17,7 +17,7 @@ set xlabel "s[0]"
 set ylabel "s[1]"
 set zlabel "Q max"
 
-set view 60,110 
+set view 60,110
 
 set xtic auto
 set ytic auto
@@ -34,7 +34,11 @@ set surface
 
 set autoscale
 
-set output 'q_map.png' 
-
+set output 'q_map.png'
 splot 'q_map.txt' using 1:2:3 title "q learning result" with pm3d
 
+set output 'q_action_id.png'
+splot 'q_action_id.txt' using 1:2:3 title "best action id" with pm3d
+
+set output 'q_action.png'
+splot 'q_action.txt' using 1:2:3 title "best action" with pm3d

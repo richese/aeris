@@ -1,8 +1,8 @@
 #include "neural_network.h"
 
 
-void NeuralNetworkInitStructure_init(	
-										struct sNeuralNetworkInitStructure *nn_init_structure, 
+void NeuralNetworkInitStructure_init(
+										struct sNeuralNetworkInitStructure *nn_init_structure,
 										u32 init_vector_size,
 										float weight_range,
 										u32 order,
@@ -59,10 +59,10 @@ CNeuralNetwork::CNeuralNetwork(struct sNeuralNetworkInitStructure nn_init_struct
 
 		u32 _j, _i;
 		u32 tmp = 0;
-		
+
 		for (_j = 0; _j < nn.size_input[k]; _j++)
 			tmp++;
-		
+
 		for (_j = 0; _j < nn.size_input[k]; _j++)
 			for (_i = _j; _i < nn.size_input[k]; _i++)
 				tmp++;
@@ -79,7 +79,7 @@ CNeuralNetwork::CNeuralNetwork(struct sNeuralNetworkInitStructure nn_init_struct
 
 	nn.output = (float**)malloc(nn.layers_count*sizeof(float*));
 	nn.error = (float**)malloc(nn.layers_count*sizeof(float*));
-	
+
 	nn.input = (float**)malloc(nn.layers_count*sizeof(float*));
 	nn.input_ = (float**)malloc(nn.layers_count*sizeof(float*));
 
@@ -92,10 +92,10 @@ CNeuralNetwork::CNeuralNetwork(struct sNeuralNetworkInitStructure nn_init_struct
 		nn.error[k] = (float*)malloc(nn.size_output[k]*sizeof(float));
 		nn.input[k] = (float*)malloc(nn.size_input[k]*sizeof(float));
 		nn.input_[k] = (float*)malloc(nn.size_input_[k]*sizeof(float));
-	
+
 		for (j = 0; j < nn.size_output[k]; j++)
 		{
-			
+
 			nn.w[k][j] = (float*)malloc(nn.size_input_[k]*sizeof(float));
 			nn.dw[k][j] = (float*)malloc(nn.size_input_[k]*sizeof(float));
 
@@ -116,8 +116,11 @@ CNeuralNetwork::CNeuralNetwork(struct sNeuralNetworkInitStructure nn_init_struct
 			nn.input_[k][j] = 0.0;
 	}
 
-	for (j = 0; j < nn.size_output[nn.layers_count-1]; j++)	
+	for (j = 0; j < nn.size_output[nn.layers_count-1]; j++)
 		output.push_back(0.0);
+
+	nn_output_limit = 1.0;
+
 
 	/*
 	k = 1;
@@ -132,7 +135,7 @@ CNeuralNetwork::CNeuralNetwork(struct sNeuralNetworkInitStructure nn_init_struct
 		sleep(1);
 
 	*/
-		
+
 }
 
 CNeuralNetwork::~CNeuralNetwork()
@@ -141,7 +144,7 @@ CNeuralNetwork::~CNeuralNetwork()
 	output.clear();
 
 	for (k = 0; k < nn.layers_count; k++)
-	{	
+	{
 		for (j = 0; j < nn.size_output[k]; j++)
 		{
 			free(nn.w[k][j]);
@@ -196,7 +199,7 @@ void CNeuralNetwork::process(std::vector<float> input)
 		u32 ptr = 0;
 		for (j = 0; j < nn.size_input[k]; j++)
 		{
-			nn.input_[k][ptr] = nn.input[k][j]; 
+			nn.input_[k][ptr] = nn.input[k][j];
 			ptr++;
 		}
 
@@ -226,11 +229,12 @@ void CNeuralNetwork::process(std::vector<float> input)
 			if (nn.neuron_type == NEURON_TYPE_COMMON)
 				sum = tanh(sum);
 
-			if (sum > 1.0)
-				sum = 1.0;
 
-			if (sum < -1.0)
-				sum = -1.0;
+			if (sum > nn_output_limit)
+				sum = nn_output_limit;
+
+			if (sum < -nn_output_limit)
+				sum = -nn_output_limit;
 
 			nn.output[k][j] = sum;
 		}
@@ -287,7 +291,7 @@ void CNeuralNetwork::learn(std::vector<float> required_output)
 			}
 		}
 
-		if (k > 0)	
+		if (k > 0)
 		{
 			for (j = 0; j < nn.size_output[k-1]; j++)
 				nn.error[k-1][j] = 0.0;
@@ -342,7 +346,7 @@ void CNeuralNetwork::merge_weights(float ***w, float weight)
 	u32 i, j, k;
 	for (k = 0; k < nn.layers_count; k++)
 		for (j = 0; j < nn.size_output[k]; j++)
-			for (i = 0; i < nn.size_input_[k]; i++) 
+			for (i = 0; i < nn.size_input_[k]; i++)
 				nn.w[k][j][i] = weight*nn.w[k][j][i] + (1.0 - weight)*w[k][j][i];
 
 }
@@ -353,14 +357,14 @@ void CNeuralNetwork::merge_dweights(float ***dw)
 	u32 i, j, k;
 	for (k = 0; k < nn.layers_count; k++)
 		for (j = 0; j < nn.size_output[k]; j++)
-			for (i = 0; i < nn.size_input_[k]; i++) 
+			for (i = 0; i < nn.size_input_[k]; i++)
 				nn.w[k][j][i]+= dw[k][j][i];
 
 }
 
 float CNeuralNetwork::rnd()
 {
-	return ((rand()%2000000) - 1000000)/1000000.0;	
+	return ((rand()%2000000) - 1000000)/1000000.0;
 }
 
 

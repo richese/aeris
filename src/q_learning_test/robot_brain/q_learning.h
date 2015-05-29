@@ -5,7 +5,7 @@
 #include "q_func.h"
 #include "q_func_nn.h"
 
-// #define Q_FUNC_NN  1
+#define Q_FUNC_NN  1
 
 struct sQRes
 {

@@ -14,7 +14,7 @@ struct sNeuralNetworkInitStructure
 	u32 *init_vector;
 
 	float weight_range, learning_constant, weight_range_init;
-	
+
 	u32 order, neuron_type;
 };
 
@@ -39,7 +39,7 @@ struct sNeuralNetwork
 };
 
 void NeuralNetworkInitStructure_init(
-										struct sNeuralNetworkInitStructure *nn_init_structure, 
+										struct sNeuralNetworkInitStructure *nn_init_structure,
 										u32 init_vector_size,
 										float weight_range,
 										u32 order,
@@ -56,13 +56,15 @@ void NeuralNetworkInitStructure_uninit(struct sNeuralNetworkInitStructure *nn_in
 
 class CNeuralNetwork
 {
-	private:	
+	private:
 		struct sNeuralNetwork nn;
+		float nn_output_limit;
+
 
 		std::vector<float> input;
 		std::vector<float> output;
 	public:
-	
+
 		CNeuralNetwork(struct sNeuralNetworkInitStructure nn_init_structure);
 		~CNeuralNetwork();
 
@@ -84,7 +86,7 @@ class CNeuralNetwork
 		void set_learning_constant(float learning_constant);
 
 	private:
-	
+
 		float rnd();
 };
 

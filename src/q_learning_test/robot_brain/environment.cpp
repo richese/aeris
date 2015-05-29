@@ -14,7 +14,7 @@ float vect_dist(std::vector<float> *va, std::vector<float> *vb)
 
 	return sqrt(res);
 }
-*/ 
+*/
 
 
 
@@ -27,7 +27,7 @@ CEnvironment::CEnvironment(u32 agents_count)
  	u32 agent_inputs_count = 2;
  	u32 actions_per_state = 2;
 
- 	state_density = 1.0/5.0;
+ 	state_density = 1.0/8.0;
 
  	u32 id = 0;
  	u32 type = AGENT_TYPE_NULL;
@@ -112,6 +112,9 @@ void CEnvironment::process()
 
 		if (target_dist < target_min_dist)
 			reward = 1.0;
+
+        //if (abs_(s_agents[j].state[0] - 0.5) < target_min_dist)
+        //    reward+= 0.5;
 
 		s_agents[j].reward = reward;
 

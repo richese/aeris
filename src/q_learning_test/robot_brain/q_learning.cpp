@@ -7,7 +7,7 @@ void q_res_init(struct sQRes *q_res, u32 state_dimensions, u32 action_size)
 	q_res->q = 0.0;
 	q_res->q_max = 0.0;
 	q_res->action_id = 0;
-
+ 
 	q_res->action.fitness = 0.0;
 	q_res->action.usability = 0.0;
 
@@ -168,7 +168,7 @@ u32 CQLearning::select_action(std::vector<float> state, float k, float explore_p
 		if (p < (sum_tmp/sum))
 			return i;
 	}
- 
+
 	return 0;
 }
 

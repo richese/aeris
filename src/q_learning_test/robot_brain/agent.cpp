@@ -237,6 +237,9 @@ void CAgent::print(std::vector<float> subspace)
 
 
 	printf("\n q id \n");
+
+	CLog log_action_id((char*)"q_action_id.txt", 3);
+
 	for (y = -1.0; y < 1.0; y+= agent.state_density)
 	{
 		for (x = -1.0; x < 1.0; x+= agent.state_density)
@@ -247,6 +250,10 @@ void CAgent::print(std::vector<float> subspace)
 			u32 res = q_learning->get_max_q_id(state);
 
 			printf("%3i ", res);
+
+			log_action_id.add(0, x);
+			log_action_id.add(1, y);
+			log_action_id.add(2, res);
 		}
 
 		printf("\n");
@@ -254,7 +261,12 @@ void CAgent::print(std::vector<float> subspace)
 
 	printf("\n\n");
 
+	log_action_id.save();
+
+
 	printf("\nbest action matrix \n");
+
+	CLog log_action((char*)"q_action.txt", 2 + actions->get_action_size());
 	for (y = -1.0; y < 1.0; y+= agent.state_density)
 	{
 		for (x = -1.0; x < 1.0; x+= agent.state_density)
@@ -267,10 +279,17 @@ void CAgent::print(std::vector<float> subspace)
 			struct sAction action = actions->get(0, action_id);
 
 			vect_print(action.action);
+
+			log_action.add(0, x);
+			log_action.add(1, y);
+			for (i = 0; i < action.action.size(); i++)
+				log_action.add(2 + i, action.action[i]);
 		}
 
 		printf("\n");
 	}
 
 	printf("\n\n");
+
+	log_action.save();
 }
