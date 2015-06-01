@@ -1,4 +1,0 @@
-./main.elf
-cd q_learning
-gnuplot plot_script
-cd ..
