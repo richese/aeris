@@ -35,7 +35,6 @@ CQFuncNN::~CQFuncNN()
     delete nn;
 }
 
-
 float CQFuncNN::get(std::vector<float> state, std::vector<float> action)
 {
     u32 ptr = 0, i;
