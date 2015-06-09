@@ -22,7 +22,6 @@ CEnvironment::CEnvironment(u32 agents_count)
 {
  	u32 j;
 
-
  	u32 outputs_count = 1;
  	u32 agent_inputs_count = 2;
  	u32 actions_per_state = 2;
@@ -61,7 +60,7 @@ CEnvironment::CEnvironment(u32 agents_count)
  			agent_init.type = AGENT_TYPE_GREEDY;
 		*/
 
- 		class CAgent *agent; 
+ 		class CAgent *agent;
 
  		respawn(&agent_init);
 
