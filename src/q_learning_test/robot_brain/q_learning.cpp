@@ -2,7 +2,7 @@
 
 void q_res_init(struct sQRes *q_res, u32 state_dimensions, u32 action_size)
 {
-	u32 i;
+	u32 i; 
 
 	q_res->q = 0.0;
 	q_res->q_max = 0.0;
@@ -27,7 +27,7 @@ CQLearning::CQLearning(
 						u32 state_dimensions,
 						float gamma, float alpha,
 						class CAction *actions
-						)
+	 					)
 {
 	this->actions = actions;
 
@@ -38,11 +38,15 @@ CQLearning::CQLearning(
 	this->states_density = states_density;
 
 	float actions_density = 1.0;
- 
+
 	#ifdef Q_FUNC_NN
 	q_func = new CQFuncNN(state_dimensions, actions->get_action_size(), states_density, actions_density, alpha);
 	#else
+	#ifdef Q_FUNC_KNN
+	q_func = new CQFuncKNN(state_dimensions, actions->get_action_size(), states_density, actions_density, alpha);
+	#else
 	q_func = new CQFunc(state_dimensions, actions->get_action_size(), states_density, actions_density, alpha);
+	#endif
 	#endif
 
 	q_res_init(&q_res, state_dimensions, actions->get_action_size());
@@ -179,10 +183,17 @@ class CQFuncNN* CQLearning::get_func()
 	return q_func;
 }
 #else
+#ifdef Q_FUNC_KNN
+class CQFuncKNN* CQLearning::get_func()
+{
+	return q_func;
+}
+#else
 class CQFunc* CQLearning::get_func()
 {
 	return q_func;
 }
+#endif
 #endif
 
 void CQLearning::merge(CQLearning *q_learning)

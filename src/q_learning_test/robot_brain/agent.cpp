@@ -119,7 +119,7 @@ void CAgent::process(struct sAgent *agent_)
 
 	float k = 2.0;
 	float explore_probality = 0.0;
- 
+
 	switch (agent.type)
 	{
 		case AGENT_TYPE_EXPLORER : k = 1.1; explore_probality = 0.9; break;

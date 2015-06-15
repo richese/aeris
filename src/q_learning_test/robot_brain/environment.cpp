@@ -49,16 +49,9 @@ CEnvironment::CEnvironment(u32 agents_count)
  		agent_init.id = id;
 
         //agent_init.type = AGENT_TYPE_COMMON;
-
  		agent_init.type = AGENT_TYPE_GREEDY;
  		//agent_init.type = AGENT_TYPE_EXPLORER;
 
- 		/*
- 		if ((j%8) == 0)
- 			agent_init.type = AGENT_TYPE_EXPLORER;
- 		else
- 			agent_init.type = AGENT_TYPE_GREEDY;
-		*/
 
  		class CAgent *agent;
 

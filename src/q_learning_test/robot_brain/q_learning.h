@@ -4,8 +4,10 @@
 #include "action.h"
 #include "q_func.h"
 #include "q_func_nn.h"
+#include "q_func_knn.h"
 
-#define Q_FUNC_NN  1
+//#define Q_FUNC_NN  1
+#define Q_FUNC_KNN  1
 
 struct sQRes
 {
@@ -31,13 +33,16 @@ class CQLearning
 		class CAction *actions;
 
 		#ifdef Q_FUNC_NN
-
 		class CQFuncNN  *q_func;
+		#else
 
+		#ifdef Q_FUNC_KNN
+		class CQFuncKNN  *q_func;
 		#else
 
 		class CQFunc *q_func;
 
+		#endif
 		#endif
 
 	public:
@@ -64,8 +69,13 @@ class CQLearning
 		#ifdef Q_FUNC_NN
 		class CQFuncNN* get_func();
 		#else
+		#ifdef Q_FUNC_KNN
+		class CQFuncKNN* get_func();
+		#else
 		class CQFunc* get_func();
 		#endif
+		#endif
+
 		void merge(CQLearning *q_learning);
 
 	private:
