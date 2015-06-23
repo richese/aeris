@@ -127,7 +127,6 @@ void CAgent::process(struct sAgent *agent_)
 		case AGENT_TYPE_GREEDY : k = 10.0; explore_probality = 0.0; break;
 	}
 
-
 	q_learning->process(state_vect, agent.reward, k, explore_probality);
 	agent.reward = 0.0;
 

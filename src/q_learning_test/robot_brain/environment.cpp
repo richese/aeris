@@ -30,6 +30,7 @@ CEnvironment::CEnvironment(u32 agents_count)
 
  	u32 id = 0;
  	u32 type = AGENT_TYPE_NULL;
+
  	s_agent_init(
 				 	&agent_init,
 				 	id, type,
@@ -48,10 +49,9 @@ CEnvironment::CEnvironment(u32 agents_count)
  		id++;
  		agent_init.id = id;
 
-        //agent_init.type = AGENT_TYPE_COMMON;
- 		agent_init.type = AGENT_TYPE_GREEDY;
- 		//agent_init.type = AGENT_TYPE_EXPLORER;
-
+         //agent_init.type = AGENT_TYPE_EXPLORER;
+        agent_init.type = AGENT_TYPE_COMMON;
+        //agent_init.type = AGENT_TYPE_GREEDY;
 
  		class CAgent *agent;
 
@@ -67,7 +67,6 @@ CEnvironment::CEnvironment(u32 agents_count)
 		agents[j]->merge();
 
 	target_position.push_back(0.0);
-
  	printf("init done\n");
 }
 

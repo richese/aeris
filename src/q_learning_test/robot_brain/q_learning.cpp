@@ -2,7 +2,7 @@
 
 void q_res_init(struct sQRes *q_res, u32 state_dimensions, u32 action_size)
 {
-	u32 i; 
+	u32 i;
 
 	q_res->q = 0.0;
 	q_res->q_max = 0.0;
@@ -144,7 +144,6 @@ u32 CQLearning::select_action(std::vector<float> state, float k, float explore_p
 		struct sAction action = actions->get(0, i);
 		q_res_values.push_back(q_func->get(state, action.action));
 	}
-
 
 	u32 non_visited_action_id = 0;
 	bool non_visited_action_found = false;
