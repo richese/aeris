@@ -1,80 +1,64 @@
 require "./log.rb"
 require "./curve.rb"
 
-input_log = CLog.new("bin/input_points.txt", 2)
-log = CLog.new("bin/result.txt", 5)
+require "./map_smooth.rb"
 
-curve = CCurve.new(2)
+map_log = CLog.new("bin/map.txt", 2)
+input_points_log = CLog.new("bin/input_points.txt", 2)
 
-iterations = 1000
+curve = CCurve.new(0)
 
-density = 10
+iterations = 200
 
+density = 30
 
-x_required = Array.new()
-y_required = Array.new()
+dimensions = 2
 
+map = Array.new(iterations) {Array.new(dimensions) {0.0}}
 
-for t in 0..iterations-1
-	x = 0.1*t;
-	y = Math.sin(x*0.2) + Math.cos(x*0.7) + Math.cos(x*0.41)
+map_smooth = CMapSmooth.new(dimensions)
+map_smooth_log = CLog.new("bin/map_smooth.txt", dimensions)
+map_smooth_error_log = CLog.new("bin/map_smooth_error.txt", dimensions)
 
-	if t > iterations*0.6
-	#	y = 1.0
-	end
-
-	x_required[t] = x
-	y_required[t] = y
-
-	log.add(0, x)
-	log.add(1, y) 
-end
-
-error_sum = 0.0
-error_max = 0.0
-error_cnt = 0
+ptr = 0
 
 
 for t in 0..iterations-1
 
-	x = 0.1*t
+	t_ = t*0.05
+	x = Math.sin(t_*0.31) - Math.cos(t_*0.98456) + Math.cos(-t_*0.341)
+	y = Math.sin(-t_*0.2) + Math.cos(t_*0.7) + Math.cos(t_*0.41)
 
-	y_interpolated = curve.process(x);
+	map[t][0] = x
+	map[t][1] = y
 
-	if (t%density) == 0 && (t+density < iterations)
+	map_log.add(0, map[t][0])
+	map_log.add(1, map[t][1])
 
-		curve.calculate(x_required[t+density], y_required[t+density])
+	if ((t%density) == 0)
+		map_smooth.process(map[t], t)
 
-		input_log.add(0, x_required[t])
-		input_log.add(1, y_required[t])
-
-	end
-
-	error = 0.0
-
-	if (t > 0.1*iterations) && (t < 0.9*iterations)
-
-		error = y_required[t] - y_interpolated
-
-		error_sum+= error.abs()
-
-		if error.abs > error_max
-			error_max = error.abs()
+		for i in 0..dimensions-1
+			input_points_log.add(i, map[t][i])
 		end
 
-		error_cnt+=1
+	end
+
+	smooth_point = map_smooth.get(t)
+	error = 0.0
+
+	for i in 0..dimensions-1
+		map_smooth_log.add(i, smooth_point[i])
+
+		error = map[t][i] - smooth_point[i]
+
+		map_smooth_error_log.add(i, error)
 	end
 
 
-	
-	log.add(2, x)	
-	log.add(3, y_interpolated)
-	log.add(4, error)
 end
 
-log.save()
-input_log.save()
-
-
-printf("average error %f\n", error_sum/error_cnt)
-printf("maximal error %f\n", error_max)
+map_log.save()
+input_points_log.save()
+map_smooth_log.save()
+map_smooth_error_log.save()

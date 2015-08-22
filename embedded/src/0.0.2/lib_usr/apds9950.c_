@@ -1,0 +1,95 @@
+#include "apds9950.h"
+#include "rgb_i2c.h"
+#include "pca9548a.h"
+#include "../device/stm32f4/lib_low_level/i2c/i2c.h"
+
+void rgb_adr_set(struct sRGBSensor *sensor_struct,
+				 u8 sensor_adress, 
+				 u8 i2c_switch_adress,
+				 u8 sensor_adress_on_switch)
+{
+	sensor_struct->sensor_adress = sensor_adress;
+	sensor_struct->i2c_switch_adress = i2c_switch_adress;
+	sensor_struct->sensor_adress_on_switch = sensor_adress_on_switch;
+}
+
+void rgb_init_apds9950(struct sRGBSensor *rgb)
+{
+	/*i2c_init zakonponovat o uroven vyssie nech sa nevola stale?*/
+	i2c_0_init();
+
+	rgb->r = 0x00;
+	rgb->g = 0x00;
+	rgb->b = 0x00;
+
+	rgb->proximity = 0x00;
+	rgb->ambient = 0x00;
+
+	#ifdef I2C_SWITCH
+    if (rgb->i2c_switch_adress)
+    {
+        /*set i2c switch to sensor adress on switch*/
+        i2c_switch_set(rgb->i2c_switch_adress, 
+                       rgb->sensor_adress_on_switch);
+    }
+    #endif
+
+	i2c_write_reg(rgb->sensor_adress, RGB_COMMAND|RGB_ATIME, 0xFF); 			/*2.4ms time*/
+	i2c_write_reg(rgb->sensor_adress, RGB_COMMAND|RGB_WTIME, 0xFF); 			/*2.4ms time*/
+
+	i2c_write_reg(rgb->sensor_adress, RGB_COMMAND|RGB_CONFIG, 0); 				/*dont wait long*/
+	i2c_write_reg(rgb->sensor_adress, RGB_COMMAND|RGB_ENABLE, (1<<1)|(1<<0));  /*power on, RGBC enable*/
+
+
+		/*
+			proximity sensor setup
+			100mA LED current
+			use IR diode
+			60x GAIN
+		*/ 
+	i2c_write_reg(rgb->sensor_adress, RGB_COMMAND|RGB_CONTROL, (1<<5)|(1<<0)|(1<<1));
+	 
+
+	    /*proximity enable*/
+	SetHighSDA();
+	    
+	i2c_write_reg(rgb->sensor_adress, RGB_COMMAND|RGB_ENABLE, (1<<2)|(1<<1)|(1<<0));  /*power on, RGBC enable*/
+
+	i2c_write_reg(rgb->sensor_adress, RGB_COMMAND|RGB_PPULSE, 8);
+}
+
+void rgb_read_apds9950(struct sRGBSensor *rgb)
+{
+	#ifdef I2C_SWITCH
+    if (rgb->i2c_switch_adress)
+    {
+        /*set i2c switch to sensor adress on switch*/
+        i2c_switch_set(rgb->i2c_switch_adress, 
+                       rgb->sensor_adress_on_switch);
+    }
+    #endif
+
+    i2cStart();
+    i2cWrite(rgb->sensor_adress);  
+    i2cWrite(RGB_COMMAND|RGB_CDATAL|(1<<5));  
+        
+    i2cStart();
+    i2cWrite(rgb->sensor_adress|0x01); 
+
+    rgb->ambient = i2cRead(1);
+    rgb->ambient|= ((u16)i2cRead(1))<<8;
+
+    rgb->r = i2cRead(1);
+    rgb->r|= ((u16)i2cRead(1))<<8;
+
+    rgb->g = i2cRead(1);
+    rgb->g|= ((u16)i2cRead(1))<<8;
+
+    rgb->b = i2cRead(1);
+    rgb->b|= ((u16)i2cRead(1))<<8;
+
+    rgb->proximity = i2cRead(1);
+    rgb->proximity|= ((u16)i2cRead(0))<<8;
+
+    i2cStop();
+}

@@ -1,0 +1,11 @@
+#include "accel.h"
+
+void accel_adr_set(struct sAccel *sensor_struct,
+				   u8 sensor_adress, 
+				   u8 i2c_switch_adress,
+				   u8 sensor_adress_on_switch)
+{
+	sensor_struct->sensor_adress = sensor_adress;
+	sensor_struct->i2c_switch_adress = i2c_switch_adress;
+	sensor_struct->sensor_adress_on_switch = sensor_adress_on_switch;
+}
