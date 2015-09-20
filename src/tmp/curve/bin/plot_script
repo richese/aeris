@@ -18,7 +18,7 @@ set ylabel "y position"
 
 set output 'result.png'
 
-plot "result.txt" using 1:2 title "reference trajectory" with line, \
-	"result.txt" using 3:4 title "interpolated trajectory" with line, \
-	"result.txt" using 3:5 title "error" with line, \
-	"input_points.txt" using 1:2 title "reference points" with points
+plot "map.txt" using 1:2 title "reference trajectory" with line lw 2.0, \
+	"input_points.txt" using 1:2 title "reference points" with points lw 2.0, \
+	"map_smooth.txt" using 1:2 title "interpolated trajectory" with points lw 1.0, \
+	"map_smooth_error.txt" using 1:2 title "error" with line
