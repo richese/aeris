@@ -45,7 +45,7 @@ CEnvironment::CEnvironment(u32 agents_count)
  	//collective_agent = new CAgent(agent_init, NULL);
 
  	for (j = 0; j < agents_count; j++)
- 	{
+ 	{ 
  		id++;
  		agent_init.id = id;
 
