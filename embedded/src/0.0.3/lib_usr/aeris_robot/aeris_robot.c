@@ -154,11 +154,25 @@ u32 aeris_init()
   res = lsm9ds0_init();
 
   if (res != 0)
-    return res;
+    aeris_error(res);
 
 
   /*init surface sensors*/
 
+  /* init i2c switch reset pin */
+  GPIO_InitStructure.GPIO_Pin = AERIS_I2C_RESET;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+  GPIO_Init(AERIS_I2C_RESET_GPIO_BASE, &GPIO_InitStructure);
+
+  GPIO_ResetBits(AERIS_I2C_RESET_GPIO_BASE, AERIS_I2C_RESET);
+
+  timer_delay_loops(10000);
+  GPIO_SetBits(AERIS_I2C_RESET_GPIO_BASE, AERIS_I2C_RESET);
+  timer_delay_loops(10000);
 
   aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT);
   aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER);
@@ -170,6 +184,8 @@ u32 aeris_init()
   aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT_CENTER);
   aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT);
 
+  g_aeris_robot.rgbw.w = 1;
+  aeris_set_rgbw();
 
   /* init done, turn on green led */
   g_aeris_robot.rgbw.r = 0;
@@ -248,7 +264,6 @@ void aeris_set_motors()
   TIM_OC2Init(TIM5, &TIM_OCInitStructure);
 }
 
-
 void aeris_set_rgbw()
 {
   if (g_aeris_robot.rgbw.r != 0)
@@ -304,15 +319,15 @@ void aeris_read_obstacle_sensors()
 
 void aeris_read_surface_sensors()
 {
-  aeris_read_surface_sensors(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT);
-  aeris_read_surface_sensors(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER);
-  aeris_read_surface_sensors(AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT_CENTER);
-  aeris_read_surface_sensors(AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT);
+  aeris_read_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT);
+  aeris_read_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER);
+  aeris_read_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT_CENTER);
+  aeris_read_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT);
 
-  aeris_read_surface_sensors(AERIS_RGB_SENSOR_SURFACE_REAR_LEFT);
-  aeris_read_surface_sensors(AERIS_RGB_SENSOR_SURFACE_REAR_LEFT_CENTER);
-  aeris_read_surface_sensors(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT_CENTER);
-  aeris_read_surface_sensors(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT);
+  aeris_read_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_LEFT);
+  aeris_read_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_LEFT_CENTER);
+  aeris_read_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT_CENTER);
+  aeris_read_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT);
 }
 
 u32 aeris_read_key()
@@ -331,10 +346,12 @@ void aeris_init_surface_sensor(u32 sensor_id)
   i2cWrite((1<<sensor_id));
   i2cStop();
 
-  i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_ATIME, 0xFF); 			/*2.4ms time*/
-	i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_WTIME, 0xFF); 			/*2.4ms time*/
+  timer_delay_loops(1000);
 
-	i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_CONFIG, 0); 				/*dont wait long*/
+  i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_ATIME, 0xFF); 			/*2.4ms time*/
+  i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_WTIME, 0xFF); 			/*2.4ms time*/
+
+  i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_CONFIG, 0); 				/*dont wait long*/
   i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_ENABLE, (1<<1)|(1<<0));  /*power on, RGBC enable*/
 }
 
@@ -345,6 +362,8 @@ void aeris_read_surface_sensor(u32 sensor_id)
   i2cWrite(AERIS_PCA9548_ADDRESS);
   i2cWrite((1<<sensor_id));
   i2cStop();
+
+  timer_delay_loops(1000);
 
   i2cStart();
   i2cWrite(AERIS_RGB_SENSOR_ADDRESS);
@@ -366,4 +385,108 @@ void aeris_read_surface_sensor(u32 sensor_id)
   g_aeris_robot.surface_sensors.b[sensor_id]|= ((u16)i2cRead(0))<<8;
 
   i2cStop();
+}
+
+
+void aeris_imu_test()
+{
+
+    while (1)
+    {
+        g_aeris_robot.rgbw.g = 1;
+        aeris_set_rgbw();
+
+        aeris_read_imu();
+
+        g_aeris_robot.rgbw.g = 0;
+        aeris_set_rgbw();
+
+
+        printf_("[ %i %i %i ] ", g_aeris_robot.imu.ax, g_aeris_robot.imu.ay, g_aeris_robot.imu.az);
+        printf_("[ %i %i %i ] ", g_aeris_robot.imu.mx, g_aeris_robot.imu.my, g_aeris_robot.imu.mz);
+        printf_("[ %i %i %i ] ", g_aeris_robot.imu.gx, g_aeris_robot.imu.gy, g_aeris_robot.imu.gz);
+        printf_("> %i >>>>%i <", (i32)(m_atan2(g_aeris_robot.imu.ax, g_aeris_robot.imu.az)*180.0/PI_) , (i32)(m_atan2(g_aeris_robot.imu.my, g_aeris_robot.imu.mx)*180.0/PI_) );
+        printf_("\n");
+
+        timer_delay_ms(100);
+    }
+}
+
+
+void aeris_surface_sensors_test()
+{
+    while (1)
+    {
+        g_aeris_robot.rgbw.g = 1;
+        aeris_set_rgbw();
+
+        aeris_read_surface_sensors();
+
+        g_aeris_robot.rgbw.g = 0;
+        aeris_set_rgbw();
+
+
+      printf_("[ %i %i %i %i] \n",   g_aeris_robot.surface_sensors.r[AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT],
+                                       g_aeris_robot.surface_sensors.g[AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT],
+                                       g_aeris_robot.surface_sensors.b[AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT],
+                                       g_aeris_robot.surface_sensors.w[AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT]);
+
+       printf_("[ %i %i %i %i] \n",   g_aeris_robot.surface_sensors.r[AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER],
+                                      g_aeris_robot.surface_sensors.g[AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER],
+                                      g_aeris_robot.surface_sensors.b[AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER],
+                                      g_aeris_robot.surface_sensors.w[AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER]);
+
+
+       printf_("[ %i %i %i %i] \n",   g_aeris_robot.surface_sensors.r[AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT_CENTER],
+                                      g_aeris_robot.surface_sensors.g[AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT_CENTER],
+                                      g_aeris_robot.surface_sensors.b[AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT_CENTER],
+                                      g_aeris_robot.surface_sensors.w[AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT_CENTER]);
+
+       printf_("[ %i %i %i %i] \n",   g_aeris_robot.surface_sensors.r[AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT],
+                                      g_aeris_robot.surface_sensors.g[AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT],
+                                      g_aeris_robot.surface_sensors.b[AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT],
+                                      g_aeris_robot.surface_sensors.w[AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT]);
+
+
+       printf_("[ %i %i %i %i] \n",   g_aeris_robot.surface_sensors.r[AERIS_RGB_SENSOR_SURFACE_REAR_LEFT],
+                                                                      g_aeris_robot.surface_sensors.g[AERIS_RGB_SENSOR_SURFACE_REAR_LEFT],
+                                                                      g_aeris_robot.surface_sensors.b[AERIS_RGB_SENSOR_SURFACE_REAR_LEFT],
+                                                                      g_aeris_robot.surface_sensors.w[AERIS_RGB_SENSOR_SURFACE_REAR_LEFT]);
+
+       printf_("[ %i %i %i %i] \n",   g_aeris_robot.surface_sensors.r[AERIS_RGB_SENSOR_SURFACE_REAR_LEFT_CENTER],
+                                                                     g_aeris_robot.surface_sensors.g[AERIS_RGB_SENSOR_SURFACE_REAR_LEFT_CENTER],
+                                                                     g_aeris_robot.surface_sensors.b[AERIS_RGB_SENSOR_SURFACE_REAR_LEFT_CENTER],
+                                                                     g_aeris_robot.surface_sensors.w[AERIS_RGB_SENSOR_SURFACE_REAR_LEFT_CENTER]);
+
+
+       printf_("[ %i %i %i %i] \n",   g_aeris_robot.surface_sensors.r[AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT_CENTER],
+                                                                     g_aeris_robot.surface_sensors.g[AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT_CENTER],
+                                                                     g_aeris_robot.surface_sensors.b[AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT_CENTER],
+                                                                     g_aeris_robot.surface_sensors.w[AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT_CENTER]);
+
+        printf_("[ %i %i %i %i] \n",   g_aeris_robot.surface_sensors.r[AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT],
+                                                                     g_aeris_robot.surface_sensors.g[AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT],
+                                                                     g_aeris_robot.surface_sensors.b[AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT],
+                                                                     g_aeris_robot.surface_sensors.w[AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT]);
+
+        printf_("----------------------------------------------------\n\n" );
+        timer_delay_ms(100);
+    }
+}
+
+
+void aeris_motor_test()
+{
+    while (1)
+    {
+        g_aeris_robot.motors.left = 100;
+        g_aeris_robot.motors.right = 100;
+        aeris_set_motors();
+        timer_delay_ms(800);
+
+        g_aeris_robot.motors.left = 0;
+        g_aeris_robot.motors.right = 0;
+        aeris_set_motors();
+        timer_delay_ms(800);
+    }
 }

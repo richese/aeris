@@ -1,8 +1,7 @@
 #include "usr_main.h"
-#include "../lib_usr/robot/robot.h"
-//#include "../lib_usr/sh1106.h"
+// #include "../lib_usr/robot/robot.h"
+#include "../lib_usr/aeris_robot/aeris_robot.h"
 
-// #include "../lib_usr/mp3.h"
 
 thread_stack_t thread_01_stack[THREAD_STACK_SIZE];
 thread_stack_t thread_02_stack[THREAD_STACK_SIZE];
@@ -61,15 +60,24 @@ void main_thread()
 {
 	printf_(OS_WELCOME_MESSAGE);
 
-	robot_init();
+	aeris_init();
+
+	// aeris_imu_test();
+	//aeris_surface_sensors_test();
+	aeris_motor_test();
+
+	while (1)
+	{
+
+	}
+
+	//robot_init();
 
 /*
 	create_thread(thread_01, thread_01_stack, sizeof(thread_01_stack), PRIORITY_MAX);
 	create_thread(thread_03, thread_03_stack, sizeof(thread_03_stack), PRIORITY_MAX);
 */
-
-
-	robot_main();
+	//robot_main();
 }
 
 

@@ -13,8 +13,6 @@ void test()
 	delete q_learning_test;
 }
 
-
-
 int main()
 {
 	srand(time(NULL));

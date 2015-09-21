@@ -2,11 +2,14 @@
 #define _AERIS_ROBOT_H_
 
 #include "../../device/device.h"
+#include "../../os/suzuha_os.h"
 
+#include "../math.h"
 #include "../lsm9ds0.h"
 
 
-#define AERIS_SURFACE_SENSORS_COUNT   (u32)6
+
+#define AERIS_SURFACE_SENSORS_COUNT   (u32)8
 
 #define AERIS_MOTORS_MAX_SPEED        (i32)100
 
@@ -42,6 +45,10 @@
 
 #define AERIS_KEY_GPIO_BASE       GPIOB
 #define AERIS_KEY_1               (1<<10)
+
+/* i2c switch reset */
+#define AERIS_I2C_RESET_GPIO_BASE       GPIOB
+#define AERIS_I2C_RESET                 (1<<1)
 
 /*I2C switch address*/
 #define AERIS_PCA9548_ADDRESS     0xE0
@@ -161,6 +168,31 @@ struct sAerisRobot
 
 struct sAerisRobot g_aeris_robot;
 
+#define aeris_error(error_code) \
+        if (error_code != 0) \
+        { \
+            printf_("robot error %s:%u\n", __FILE__, __LINE__); \
+            sched_off(); \
+            GPIO_SetBits(AERIS_RGB_GPIO_BASE, AERIS_RGB_LED_R); \
+            GPIO_SetBits(AERIS_RGB_GPIO_BASE, AERIS_RGB_LED_G); \
+            GPIO_SetBits(AERIS_RGB_GPIO_BASE, AERIS_RGB_LED_B); \
+            while(1) \
+            { \
+                u32 _aeris_error_ii_; \
+                for (_aeris_error_ii_ = 0; _aeris_error_ii_ < error_code; _aeris_error_ii_++) \
+                { \
+                    GPIO_ResetBits(AERIS_RGB_GPIO_BASE, AERIS_RGB_LED_R); \
+                    timer_delay_loops(10000); \
+                    GPIO_SetBits(AERIS_RGB_GPIO_BASE, AERIS_RGB_LED_R); \
+                    timer_delay_loops(2000000); \
+                } \
+                timer_delay_loops(10000000); \
+                printf_("robot error %s:%u\n", __FILE__, __LINE__); \
+            }; \
+        } \
+
+
+
 u32 aeris_init();
 void aeris_sleep();
 void aeris_wake_up();
@@ -175,5 +207,9 @@ u32 aeris_read_key();
 
 void aeris_init_surface_sensor(u32 sensor_id);
 void aeris_read_surface_sensor(u32 sensor_id);
+
+void aeris_imu_test();
+void aeris_surface_sensors_test();
+void aeris_motor_test();
 
 #endif
