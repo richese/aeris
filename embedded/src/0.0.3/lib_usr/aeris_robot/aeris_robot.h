@@ -8,6 +8,9 @@
 #include "../lsm9ds0.h"
 
 
+#include "line_sensor.h"
+
+
 
 #define AERIS_SURFACE_SENSORS_COUNT   (u32)8
 
@@ -77,10 +80,10 @@
 #define AERIS_RGB_SENSOR_CONFIG			0x0D
 #define AERIS_RGB_SENSOR_PPULSE			0x0E
 
-#define AERIS_RGB_SENSOR_CONTROL			0x0F
+#define AERIS_RGB_SENSOR_CONTROL		0x0F
 #define AERIS_RGB_SENSOR_ID				0x12
 
-#define AERIS_RGB_SENSOR_STATUS 			0x13
+#define AERIS_RGB_SENSOR_STATUS 		0x13
 
 #define AERIS_RGB_SENSOR_CDATAL			0x14
 #define AERIS_RGB_SENSOR_CDATAH			0x15
@@ -90,8 +93,8 @@
 #define AERIS_RGB_SENSOR_GDATAH			0x19
 #define AERIS_RGB_SENSOR_BDATAL			0x1A
 #define AERIS_RGB_SENSOR_BDATAH			0x1B
-#define AERIS_RGB_SENSOR_PDATAL 			0x1C
-#define AERIS_RGB_SENSOR_PDATAH 			0x1D
+#define AERIS_RGB_SENSOR_PDATAL 		0x1C
+#define AERIS_RGB_SENSOR_PDATAH 		0x1D
 
 
 #define AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT             (u32)0
@@ -205,11 +208,12 @@ void aeris_read_obstacle_sensors();
 void aeris_read_surface_sensors();
 u32 aeris_read_key();
 
-void aeris_init_surface_sensor(u32 sensor_id);
+u32 aeris_init_surface_sensor(u32 sensor_id);
 void aeris_read_surface_sensor(u32 sensor_id);
 
 void aeris_imu_test();
 void aeris_surface_sensors_test();
 void aeris_motor_test();
+void aeris_line_folower_test();
 
 #endif

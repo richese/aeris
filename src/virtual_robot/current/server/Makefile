@@ -15,7 +15,7 @@ COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/load_cfg.o
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/server.o
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/client.o
 
-COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/visualisation_gl.o 
+COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/visualisation_gl.o
 
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/robot.o
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/robot_brain.o
@@ -28,6 +28,8 @@ COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/pheromone_brain.o
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/robot_red_brain.o
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/robot_green_brain.o
 COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/robot_blue_brain.o
+
+COMMON+= $(COMMON_VIRTUAL_ROBOT_PATH)/robot/path_brain.o
 
 CC = g++
 LD = g++
@@ -43,7 +45,7 @@ SRCS = $(shell find -name '*.cpp')
 OBJS = $(SRCS:.cpp=.o)
 
 OBJS+= $(COMMON)
- 
+
 all: $(ELF)
 	$(SIZE) $(ELF)
 

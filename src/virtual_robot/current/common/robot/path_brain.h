@@ -1,5 +1,5 @@
-#ifndef _ROBOT_GREEN_BRAIN_H_
-#define _ROBOT_GREEN_BRAIN_H_
+#ifndef _PATH_BRAIN_H_
+#define _PATH_BRAIN_H_
 
 #include "../common.h"
 
@@ -8,20 +8,20 @@
 #include "action.h"
 
 
-class CRobotGreenBrain
+class CPathBrain
 {
 	private:
 			struct sRobot robot;
-
 			class CCollectiveBrain *collective_brain;
 
-			u32 state;
+            float path_level;
 
 	public:
-		CRobotGreenBrain(struct sRobot robot, class CCollectiveBrain *collective_brain = NULL);
-		~CRobotGreenBrain();
+		CPathBrain(struct sRobot robot, class CCollectiveBrain *collective_brain = NULL);
+		~CPathBrain();
 
 		void process(struct sRobot *robot_);
 };
+
 
 #endif

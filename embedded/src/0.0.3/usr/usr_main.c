@@ -63,9 +63,12 @@ void main_thread()
 	aeris_init();
 
 	// aeris_imu_test();
+	//aeris_motor_test();
 	//aeris_surface_sensors_test();
-	aeris_motor_test();
 
+	aeris_line_folower_test();
+
+ 
 	while (1)
 	{
 

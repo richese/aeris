@@ -155,9 +155,11 @@ u32 aeris_init()
 
   if (res != 0)
     aeris_error(res);
-
-
   /*init surface sensors*/
+
+  /*white leds*/
+   g_aeris_robot.rgbw.w = 1;
+   aeris_set_rgbw();
 
   /* init i2c switch reset pin */
   GPIO_InitStructure.GPIO_Pin = AERIS_I2C_RESET;
@@ -174,18 +176,31 @@ u32 aeris_init()
   GPIO_SetBits(AERIS_I2C_RESET_GPIO_BASE, AERIS_I2C_RESET);
   timer_delay_loops(10000);
 
-  aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT);
-  aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER);
-  aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT_CENTER);
-  aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT);
+  if (aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT) != 0)
+    aeris_error(10);
 
-  aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_LEFT);
+  if (aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_LEFT_CENTER) != 0)
+    aeris_error(10);
+
+  if (aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT_CENTER) != 0)
+    aeris_error(10);
+
+  if (aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_FRONT_RIGHT) != 0)
+    aeris_error(10);
+
+  if (aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_LEFT) != 0)
+    aeris_error(10);
+
   aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_LEFT_CENTER);
   aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT_CENTER);
-  aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT);
 
-  g_aeris_robot.rgbw.w = 1;
+  if (aeris_init_surface_sensor(AERIS_RGB_SENSOR_SURFACE_REAR_RIGHT) != 0)
+    aeris_error(10);
+
+ /*white leds*/
+  g_aeris_robot.rgbw.w = 0;
   aeris_set_rgbw();
+
 
   /* init done, turn on green led */
   g_aeris_robot.rgbw.r = 0;
@@ -211,20 +226,21 @@ void aeris_set_motors()
   i32 ch1 = 0;
   i32 ch2 = 0;
 
-  if (g_aeris_robot.motors.left < -AERIS_MOTORS_MAX_SPEED)
-    g_aeris_robot.motors.left = -AERIS_MOTORS_MAX_SPEED;
+      if (g_aeris_robot.motors.left < -AERIS_MOTORS_MAX_SPEED)
+        g_aeris_robot.motors.left = -AERIS_MOTORS_MAX_SPEED;
 
-  if (g_aeris_robot.motors.right < -AERIS_MOTORS_MAX_SPEED)
-    g_aeris_robot.motors.right = -AERIS_MOTORS_MAX_SPEED;
+      if (g_aeris_robot.motors.right < -AERIS_MOTORS_MAX_SPEED)
+        g_aeris_robot.motors.right = -AERIS_MOTORS_MAX_SPEED;
 
-  if (g_aeris_robot.motors.left > AERIS_MOTORS_MAX_SPEED)
-    g_aeris_robot.motors.left =  AERIS_MOTORS_MAX_SPEED;
+      if (g_aeris_robot.motors.left > AERIS_MOTORS_MAX_SPEED)
+        g_aeris_robot.motors.left =  AERIS_MOTORS_MAX_SPEED;
 
-  if (g_aeris_robot.motors.right > AERIS_MOTORS_MAX_SPEED)
-    g_aeris_robot.motors.right = AERIS_MOTORS_MAX_SPEED;
+      if (g_aeris_robot.motors.right > AERIS_MOTORS_MAX_SPEED)
+        g_aeris_robot.motors.right = AERIS_MOTORS_MAX_SPEED;
 
-  ch1 = g_aeris_robot.motors.left;
-  ch2 = g_aeris_robot.motors.right;
+    ch1 = g_aeris_robot.motors.right;
+    ch2 = g_aeris_robot.motors.left;
+
 
   if (ch1 < 0)
     ch1 = -ch1;
@@ -232,12 +248,12 @@ void aeris_set_motors()
   if (ch2 < 0)
     ch2 = -ch2;
 
-  if (g_aeris_robot.motors.left > 0)
+  if (g_aeris_robot.motors.left < 0)
     GPIO_SetBits(AERIS_MOTORS_APHASE_GPIO_BASE, AERIS_MOTORS_APHASE);
   else
     GPIO_ResetBits(AERIS_MOTORS_APHASE_GPIO_BASE, AERIS_MOTORS_APHASE);
 
-  if (g_aeris_robot.motors.right > 0)
+  if (g_aeris_robot.motors.right < 0)
     GPIO_SetBits(AERIS_MOTORS_BPHASE_GPIO_BASE, AERIS_MOTORS_BPHASE);
   else
     GPIO_ResetBits(AERIS_MOTORS_BPHASE_GPIO_BASE, AERIS_MOTORS_BPHASE);
@@ -338,7 +354,7 @@ u32 aeris_read_key()
     return 0;
 }
 
-void aeris_init_surface_sensor(u32 sensor_id)
+u32 aeris_init_surface_sensor(u32 sensor_id)
 {
   /* select channel via i2c switch */
   i2cStart();
@@ -353,7 +369,21 @@ void aeris_init_surface_sensor(u32 sensor_id)
 
   i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_CONFIG, 0); 				/*dont wait long*/
   i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_ENABLE, (1<<1)|(1<<0));  /*power on, RGBC enable*/
-}
+
+  /*
+      60x GAIN
+  */
+  i2c_write_reg(AERIS_RGB_SENSOR_ADDRESS, AERIS_RGB_SENSOR_COMMAND|AERIS_RGB_SENSOR_CONTROL, (1<<0)|(1<<1));
+
+  aeris_read_surface_sensor(sensor_id);
+
+  //some error
+  if (g_aeris_robot.surface_sensors.w[sensor_id] == 0xffff)
+    return 1;
+
+  return 0;
+ }
+
 
 void aeris_read_surface_sensor(u32 sensor_id)
 {
@@ -477,16 +507,54 @@ void aeris_surface_sensors_test()
 
 void aeris_motor_test()
 {
-    while (1)
+    //while (1)
     {
-        g_aeris_robot.motors.left = 100;
-        g_aeris_robot.motors.right = 100;
+        g_aeris_robot.motors.left = 40;
+        g_aeris_robot.motors.right = 40;
         aeris_set_motors();
         timer_delay_ms(800);
+
 
         g_aeris_robot.motors.left = 0;
         g_aeris_robot.motors.right = 0;
         aeris_set_motors();
         timer_delay_ms(800);
+    }
+}
+
+
+void aeris_line_folower_test()
+{
+    float e0 = 0.0;
+    float e1 = 0.0;
+
+    float kp = 16.0;
+    float kd = 40.0;
+
+    i32 b_speed = 20;
+    i32 dif_speed = 0;
+
+    while (1)
+    {
+        g_aeris_robot.rgbw.g = 1;
+        aeris_set_rgbw();
+
+        aeris_read_surface_sensors();
+
+        g_aeris_robot.rgbw.g = 0;
+        aeris_set_rgbw();
+
+        read_line_position();
+        e1 = e0;
+        e0 = 0 - g_line_position.line_position;
+
+        dif_speed = kp*e0 + kd*(e0 - e1); 
+
+        i32 left_speed = b_speed + dif_speed;
+        i32 right_speed = b_speed - dif_speed;
+
+        g_aeris_robot.motors.left = left_speed;
+        g_aeris_robot.motors.right = right_speed;
+        aeris_set_motors();
     }
 }

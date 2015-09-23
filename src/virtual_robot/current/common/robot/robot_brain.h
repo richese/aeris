@@ -14,10 +14,12 @@
 #include "q_learning.h"
 
 #include "pheromone_brain.h"
-  
+
 #include "robot_red_brain.h"
 #include "robot_green_brain.h"
 #include "robot_blue_brain.h"
+
+#include "path_brain.h"
 
 
 
@@ -56,6 +58,9 @@ class CRobotBrain
 		class CRobotRedBrain *robot_red_brain;
 		class CRobotGreenBrain *robot_green_brain;
 		class CRobotBlueBrain *robot_blue_brain;
+
+
+        class CPathBrain *path_brain;
 
 	public:
 		CRobotBrain(struct sRobot robot, class CCollectiveBrain *collective_brain = NULL);

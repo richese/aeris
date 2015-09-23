@@ -9,8 +9,6 @@
 void pwm_init()
 {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
-   	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-
 
     GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -42,7 +40,7 @@ void pwm_init()
   TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
 
 
-  pwm_set(50, 30);
+  pwm_set(0, 0);
 
   /* TIM1 counter enable */
   TIM_Cmd(TIM5, ENABLE);
@@ -51,7 +49,7 @@ void pwm_init()
   TIM_CtrlPWMOutputs(TIM5, ENABLE);
 
 
-
+  /*
   GPIO_InitStructure.GPIO_Pin = (1<<2)|(1<<3);
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -60,7 +58,7 @@ void pwm_init()
 
   GPIO_Init(GPIOC, &GPIO_InitStructure);
   GPIO_SetBits(GPIOC, (1<<2)|(1<<3));
-
+  */
 }
 
 void pwm_set(u32 ch1, u32 ch2)

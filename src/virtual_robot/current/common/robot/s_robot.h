@@ -71,6 +71,7 @@
 #define REQUEST_ROBOT_ADD_RED_PHEROMONE			((u32)9)
 #define REQUEST_ROBOT_ADD_GREEN_PHEROMONE		((u32)10)
 #define REQUEST_ROBOT_ADD_BLUE_PHEROMONE		((u32)11)
+#define REQUEST_ROBOT_ADD_PATH					((u32)12)
 
 
 
@@ -177,13 +178,13 @@ struct sRobot
 	float sensors[ROBOT_SENSORS_COUNT];		//sensors input
 
 	float angles[ROBOT_SPACE_DIMENSION];				//angles
-	
+
 	float dt;						//time step
 	double time;					//real time
 
-	
+
 	// int parameter from map @see struct sMapField
-	i32 parameter_int;				
+	i32 parameter_int;
 
 	// float parameter from map @see struct sMapField
 	float parameter_f;

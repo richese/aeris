@@ -11,16 +11,20 @@ CRobotBrain::CRobotBrain(struct sRobot robot, class CCollectiveBrain *collective
 		case ROBOT_TYPE_RED_ROBOT:		robot_red_brain = new CRobotRedBrain(robot, collective_brain); break;
 		case ROBOT_TYPE_GREEN_ROBOT:	robot_green_brain = new CRobotGreenBrain(robot, collective_brain); break;
 		case ROBOT_TYPE_BLUE_ROBOT:		robot_blue_brain = new CRobotBlueBrain(robot, collective_brain); break;
-									
+
 
 		case ROBOT_TYPE_RED_PHEROMONE:
 		case ROBOT_TYPE_GREEN_PHEROMONE:
 		case ROBOT_TYPE_BLUE_PHEROMONE:
 										pheromone_brain = new CPheromoneBrain(this->robot, collective_brain);
 										break;
+
+		case ROBOT_TYPE_PATH:
+										path_brain = new CPathBrain(this->robot, collective_brain);
+										break;
 	}
 }
- 
+
 
 CRobotBrain::~CRobotBrain()
 {
@@ -34,6 +38,10 @@ CRobotBrain::~CRobotBrain()
 		case ROBOT_TYPE_GREEN_PHEROMONE:
 		case ROBOT_TYPE_BLUE_PHEROMONE:
 										delete pheromone_brain;
+										break;
+
+		case ROBOT_TYPE_PATH:
+										delete path_brain;
 										break;
 	}
 }
@@ -53,23 +61,25 @@ void CRobotBrain::process(struct sRobot *robot)
 		case ROBOT_TYPE_GREEN_ROBOT:	robot_green_brain->process(&this->robot); break;
 		case ROBOT_TYPE_BLUE_ROBOT: 	robot_blue_brain->process(&this->robot); break;
 
-		case ROBOT_TYPE_RED_PHEROMONE: 		
-		case ROBOT_TYPE_GREEN_PHEROMONE: 	
+		case ROBOT_TYPE_RED_PHEROMONE:
+		case ROBOT_TYPE_GREEN_PHEROMONE:
 		case ROBOT_TYPE_BLUE_PHEROMONE: pheromone_brain->process(&this->robot); break;
+
+		case ROBOT_TYPE_PATH: path_brain->process(&this->robot); break;
 
 		default : break;
 	}
 
 	*robot = this->robot;
-} 
+}
 
 /*
 void CRobotBrain::red_robot_process()
 {
 	u32 i;
- 
+
 	for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
-		this->robot.d[i] = sgn( this->robot.sensors[ROBOT_SENSOR_RED_TARGET_POSITION_0_IDX + i] - 
+		this->robot.d[i] = sgn( this->robot.sensors[ROBOT_SENSOR_RED_TARGET_POSITION_0_IDX + i] -
 									this->robot.sensors[ROBOT_SENSOR_POSITION_0_IDX + i]);
 
 
@@ -90,14 +100,14 @@ void CRobotBrain::green_robot_process()
 	u32 i;
 	for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
 		this->robot.d[i] = rnd_()*0.1;
-} 
+}
 
 
 void CRobotBrain::blue_robot_process()
 {
 	u32 i;
 	for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
-		this->robot.d[i] = sgn( this->robot.sensors[ROBOT_SENSOR_BLUE_TARGET_POSITION_0_IDX + i] - 
+		this->robot.d[i] = sgn( this->robot.sensors[ROBOT_SENSOR_BLUE_TARGET_POSITION_0_IDX + i] -
 									this->robot.sensors[ROBOT_SENSOR_POSITION_0_IDX + i]);
 
 
@@ -107,12 +117,12 @@ void CRobotBrain::blue_robot_process()
 
 	if ((rand()%10) == 0)
 		robot.request = REQUEST_ROBOT_ADD_BLUE_PHEROMONE;
-	
+
 	u32 tmp = 10000/robot.dt;
 
 	if ((rand()%tmp) == 0)
 		robot.request = REQUEST_ROBOT_RESPAWN;
-} 
+}
 */
 
 
