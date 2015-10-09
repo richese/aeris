@@ -198,7 +198,7 @@ u32 aeris_init()
     aeris_error(10);
 
  /*white leds*/
-  g_aeris_robot.rgbw.w = 0;
+ // g_aeris_robot.rgbw.w = 0;
   aeris_set_rgbw();
 
 
@@ -548,7 +548,7 @@ void aeris_line_folower_test()
         e1 = e0;
         e0 = 0 - g_line_position.line_position;
 
-        dif_speed = kp*e0 + kd*(e0 - e1); 
+        dif_speed = kp*e0 + kd*(e0 - e1);
 
         i32 left_speed = b_speed + dif_speed;
         i32 right_speed = b_speed - dif_speed;

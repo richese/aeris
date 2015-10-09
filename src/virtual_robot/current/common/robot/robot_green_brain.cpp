@@ -28,7 +28,7 @@ void CRobotGreenBrain::process(struct sRobot *robot_)
 						 robot.sensors[ROBOT_SENSOR_POSITION_0_IDX + i]);
 	*/
 
-	float speed = 0.2;
+	float speed = 0.6;
 	switch (state)
 	{
 		case 0: robot.d[0] = 1.0*speed; robot.d[1] = 0.0*speed; break;
@@ -38,8 +38,19 @@ void CRobotGreenBrain::process(struct sRobot *robot_)
 		case 3: robot.d[0] = 0.0*speed; robot.d[1] = -1.0*speed; break;
 	}
 
-	if (rand_() < 0.001)
-		state = (state+1)%4;
+	if (rand_() < 0.01)
+		//state = (state+1)%4;
+		{
+			u32 tmp;
+
+			do
+			{
+				tmp = rand()%4;
+			}
+			while (tmp == state);
+
+			state = tmp;
+		}
 
 	//robot.request = REQUEST_ROBOT_ADD_GREEN_PHEROMONE;
 	robot.request = REQUEST_ROBOT_ADD_PATH;

@@ -318,7 +318,7 @@ void CServer::robots_refresh()
                                     robot.type = ROBOT_TYPE_PATH;
                                     robot.parameter_int = 0.0;
                                     robot.parameter_f = 0.0;
-                                    robot.reward = 0.0; 
+                                    robot.reward = 0.0;
 
                                     for (i = 0; i < ROBOT_SPACE_DIMENSION; i++)
                                         robot.position[i] = robots[j].position[i];
