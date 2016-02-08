@@ -1,4 +1,4 @@
-SUBDIRS = common main map_editor
+SUBDIRS = common q_learning_test new_neural_network map_editor virtual_robot/current robot_server
 
 all: $(SUBDIRS)
 
