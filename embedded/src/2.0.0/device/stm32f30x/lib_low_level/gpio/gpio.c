@@ -16,7 +16,7 @@ void gpio_init()
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 
-	GPIO_Init(GPIO_BASE, &GPIO_InitStructure);
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 
   GPIO_InitStructure.GPIO_Pin = LED_1;
@@ -32,7 +32,7 @@ void gpio_init()
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 
-	GPIO_Init(GPIO_BASE, &GPIO_InitStructure);
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	led_on(LED_0);
   led_off(LED_1);
@@ -42,25 +42,25 @@ void led_on(u32 led)
 {
   //green led on
 	if (led&LED_0)
-		GPIO_BASE->BSRR = LED_0;
+		GPIOB->BSRR = LED_0;
 
   //white led on
   if (led&LED_1)
-  	GPIO_BASE->BRR = LED_1;
+  	GPIOA->BRR = LED_1;
 }
 
 void led_off(u32 led)
 {
   //green led off
 	if (led&LED_0)
-		GPIO_BASE->BRR = LED_0;
+		GPIOB->BRR = LED_0;
 
   //white led off
   if (led&LED_1)
-  	GPIO_BASE->BSRR = LED_1;
+  	GPIOA->BSRR = LED_1;
 }
 
 u32 get_key()
 {
-	return (~GPIO_BASE->IDR)&KEY;
+	return (~GPIOB->IDR)&KEY;
 }

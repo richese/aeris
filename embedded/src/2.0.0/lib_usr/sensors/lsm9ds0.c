@@ -86,6 +86,14 @@ u32 lsm9ds0_init()
     return 0;
 }
 
+void lsm9ds0_uninit()
+{
+  //TODO
+  i2c_write_reg(LSM9DS0_GYRO_ADDRESS, LSM9DS0_CTRL_REG1_G, 0); /*gyro power down*/
+  i2c_write_reg(LSM9DS0_ACC_MAG_ADDRESS, LSM9DS0_CTRL_REG1_XM, 0); /*accelerometer power down*/
+  i2c_write_reg(LSM9DS0_ACC_MAG_ADDRESS, LSM9DS0_CTRL_REG5_XM, 0); /*magnetometer power down*/
+}
+
 
 void lsm9ds0_read()
 {

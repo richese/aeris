@@ -1,7 +1,7 @@
 #ifndef _PID_H_
 #define _PID_H_
 
-/* 
+/*
 	universal PIDD2 controller
 
 	uses Takahashi PID form http://bestune.50megs.com/typeABC.htm :
@@ -15,6 +15,15 @@
 
 	antiwindup is implemented as u(n) limiter
 	there is also exponential error filter option
+
+	1st order low pass filter with unity gain (exponential filter)
+	 http://en.wikipedia.org/wiki/Exponential_smoothing
+
+	   filter equation :
+	   y(n) = c*y(n-1) + (1.0 - c)*e(n)
+
+		 where e(n) is controller input - error, and y(n) is filtered error - input
+		 for PID algorithm
 */
 
 /*
@@ -45,11 +54,11 @@
 /*use floating point math*/
 #define PID_FLOATING_POINT		1
 
-/*enable error filtering*/
+/*enable error filtering !!!!!!!! not tested*/
 //#define PID_ERROR_FILTER_ENABLE	1
 
 
-#include "../os/suzuha_os.h"
+#include "../lib_usr.h"
 
 #ifndef i32
 	// typedef signed int i32;		/*32bit signed integer*/
@@ -65,30 +74,6 @@
 #endif
 
 
-#ifdef PID_ERROR_FILTER_ENABLE
-
-	/* 1st order low pass filter with unity gain (exponential filter)
-	   http://en.wikipedia.org/wiki/Exponential_smoothing
-
-	   filter equation : 
-	   y(n) = (1.0 - c)*y(n-1) + c*x(n)
-	*/
-
-	#ifdef PID_FIXED_POINT
-	/* this value must be in range <1, PID_FRACTION) */
-	#define ERROR_FILTER_CONSTANT	(PID_NUM)76	/* PID_FRACTION*0.3 */
-	#endif
-
-	#ifdef PID_FLOATING_POINT
-	/* this value must be in range (0.0, 1.0) */
-	#define ERROR_FILTER_CONSTANT	(PID_NUM)0.3
-	#endif
-
-#endif
-
-
-
-
 #ifndef PID_FIXED_POINT
 #ifndef PID_FLOATING_POINT
  #error "No integer/float type specified."
@@ -100,24 +85,27 @@
 	call pid_init for initialization
 	pid_process for calculation
 	pid_synthetise for parameters modification
+
+	filter range <0, 1), close to 0 faster filter response
 */
 struct sPID
 {
+	PID_NUM filter;
 	PID_NUM e0, e1, e2, e3;
 	PID_NUM b0, b1, b2, b3;
 	PID_NUM	u, antiwindup;
 };
 
 /*
-	complete controller initialization, 
+	complete controller initialization,
 	sets b0, b1, b2, b3 depending on kp, ki, kd, kdd2
 	reset u(n) = 0
 */
-void pid_init(struct sPID *pid, PID_NUM antiwindup, PID_NUM kp,  PID_NUM ki,  PID_NUM kd,  PID_NUM kd2);
+void pid_init(struct sPID *pid, PID_NUM antiwindup, PID_NUM kp,  PID_NUM ki,  PID_NUM kd,  PID_NUM kd2, PID_NUM filter);
 
 /*
 	modify controller parameter, but dont reset u(n)
-	this function is usefull for direct controller synthetis from plant model, 
+	this function is usefull for direct controller synthetis from plant model,
 	include adaptive controll
 */
 void pid_synthetise(struct sPID *pid, PID_NUM b0, PID_NUM b1,  PID_NUM b2,  PID_NUM b3);

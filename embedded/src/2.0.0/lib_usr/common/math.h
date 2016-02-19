@@ -1,7 +1,7 @@
 #ifndef _MATH_H_
 #define _MATH_H_
 
-#include "../device/device.h"
+#include "../lib_usr.h"
 
 
 #define mint	float

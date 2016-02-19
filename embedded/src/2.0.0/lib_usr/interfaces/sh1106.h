@@ -2,7 +2,7 @@
 #define _SH1106_H_
 
 
-#include "../device/device.h"
+#include "../lib_usr.h"
 
 //#define SH1106_ADDRESS		(0x78 >> 1)
 #define SH1106_ADDRESS		(0x78)

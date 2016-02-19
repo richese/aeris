@@ -1,32 +1,41 @@
 #include "usr_main.h"
-#include "sensors.h"
-#include "test.h"
 
-#include "../lib_usr/drv8830.h"
+
 
 void main_thread()
 {
 	printf_(OS_WELCOME_MESSAGE);
 
 	timer_delay_ms(300);
+	device_wake_up();
 
-	drv8830_init();
+	create_thread(device_rgb_sensors_thread, device_rgb_sensors_thread_stack, sizeof(device_rgb_sensors_thread_stack), PRIORITY_MAX);
+	create_thread(device_i2c_thread, device_i2c_thread_stack, sizeof(device_i2c_thread_stack), PRIORITY_MAX);
 
-	create_thread(rgb_sensor_thread, rgb_sensor_thread_stack, sizeof(rgb_sensor_thread_stack), PRIORITY_MAX);
-	create_thread(i2c_sensor_thread, i2c_sensor_thread_stack, sizeof(i2c_sensor_thread_stack), PRIORITY_MAX);
-	create_thread(adc_sensor_thread, adc_sensor_thread_stack, sizeof(adc_sensor_thread_stack), PRIORITY_MAX);
+	timer_delay_ms(600);
 
-	while (get_key() == 0)
+	while (1) 
 	{
-		led_on(LED_0);
-		timer_delay_ms(100);
+		while (get_key() == 0)
+		{
+			led_on(LED_0);
+			timer_delay_ms(100);
 
-		led_off(LED_0);
-		timer_delay_ms(200);
-	}
+			led_off(LED_0);
+			timer_delay_ms(200);
 
-	while (1)
-	{
-		//user code here
+			device_sleep();
+		}
+
+		device_wake_up();
+
+		timer_delay_ms(600);
+
+
+
+		//sensor_test();
+		motors_test();
+
+		//your code here
 	}
 }

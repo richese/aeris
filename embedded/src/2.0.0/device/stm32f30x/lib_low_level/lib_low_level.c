@@ -21,10 +21,6 @@ void lib_low_level_init()
 	//pwm_init();
 	#endif
 
-	#ifdef _DRV8834_H_
-	//drv8834_init();
-	#endif
-
 	#ifdef _I2C_H_
 	i2c_0_init();
 	#endif

@@ -4,6 +4,9 @@
 
 #include "../os/suzuha_os.h"
 
+#include "sensors.h"
+#include "test.h"
+
 
 #define THREAD_STACK_SIZE	128
 

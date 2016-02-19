@@ -1,22 +1,7 @@
 #ifndef _RGB_I2C_H_
 #define _RGB_I2C_H_
 
-#include "../device/device.h"
-
-
-#define RGB_SENSORS_COUNT		(4)
-
-struct sRGBSensor
-{
-	i16 r[RGB_SENSORS_COUNT];
-	i16 g[RGB_SENSORS_COUNT];
-	i16 b[RGB_SENSORS_COUNT];
-
-	i16 ambient[RGB_SENSORS_COUNT];
-	i16 proximity[RGB_SENSORS_COUNT];
-};
-
-struct sRGBSensor g_rgb;
+#include "../lib_usr.h"
 
 /*this on GPIOA*/
 #define RGB_SDA_0     	4
@@ -69,11 +54,17 @@ struct sRGBSensor g_rgb;
 #define RGB_PDATAH 			0x1D
 
 
+
+void rgb_i2c_init();
+
+void rgb_i2cStart();
+void rgb_i2cStop();
+void rgb_i2cWrite(u8 a);
+void rgb_i2cRead(u8 ack, u8 *result);
+
 void rgb_i2c_write_reg(u8 dev_adr, u8 reg_adr, u8 value);
 void rgb_i2c_read_reg(u8 dev_adr, u8 reg_adr, u8 *res);
 
-void rgb_init();
 
-void rgb_read();
 
 #endif

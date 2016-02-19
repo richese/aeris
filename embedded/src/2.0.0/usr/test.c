@@ -8,83 +8,36 @@ void sensor_test()
 		led_on(LED_0);
 
 		printf_("LSM9DS0 : ");
-		#ifdef USE_LSM9DS0
 		printf_("%i %i %i , ", g_lsm9ds0_imu.gx, g_lsm9ds0_imu.gy, g_lsm9ds0_imu.gz);
 		printf_("%i %i %i , ", g_lsm9ds0_imu.mx, g_lsm9ds0_imu.my, g_lsm9ds0_imu.mz);
 		printf_("%i %i %i", g_lsm9ds0_imu.ax, g_lsm9ds0_imu.ay, g_lsm9ds0_imu.az);
 		printf_("\n");
-		#else
-		printf_("not present\n");
-		#endif
 
-		printf_("\n");
+		printf_("\nRGB surface : ");
+
+		u32 i;
+
+		printf_("\nR: ");
+		for (i = 0; i < RGB_SENSORS_COUNT; i++)
+			printf_("%i ", g_rgb.r[i]);
+
+		printf_("\nG: ");
+		for (i = 0; i < RGB_SENSORS_COUNT; i++)
+			printf_("%i ", g_rgb.g[i]);
+
+		printf_("\nB: ");
+		for (i = 0; i < RGB_SENSORS_COUNT; i++)
+			printf_("%i ", g_rgb.b[i]);
+
+		printf_("\nA: ");
+		for (i = 0; i < RGB_SENSORS_COUNT; i++)
+			printf_("%i ", g_rgb.ambient[i]);
+
+		printf_("\n\n");
 		led_off(LED_0);
-		timer_delay_ms(200);
+		timer_delay_ms(300);
 	}
 }
-
-void rgb_sensor_test()
-{
-	u32 i;
-	while (1)
-	{
-    led_on(LED_0);
-
-		for (i = 0; i < RGB_SENSORS_COUNT; i++)
-			printf_("%u ", g_rgb.ambient[i]);
-		printf_("\n");
-
-		for (i = 0; i < RGB_SENSORS_COUNT; i++)
-			printf_("%u ", g_rgb.r[i]);
-		printf_("\n");
-
-		for (i = 0; i < RGB_SENSORS_COUNT; i++)
-			printf_("%u ", g_rgb.g[i]);
-		printf_("\n");
-
-		for (i = 0; i < RGB_SENSORS_COUNT; i++)
-			printf_("%u ", g_rgb.b[i]);
-		printf_("\n");
-
-		for (i = 0; i < RGB_SENSORS_COUNT; i++)
-			printf_("%u ", g_rgb.proximity[i]);
-		printf_("\n");
-
-		printf_("\n");
-
-		led_off(LED_0);
-		timer_delay_ms(200);
-	}
-}
-
-
-void motor_test()
-{
-	drv8834_run(30, 30);
-	timer_delay_ms(1000);
-
-	drv8834_run(-30, -30);
-	timer_delay_ms(1000);
-
-	drv8834_run(0, 0);
-	timer_delay_ms(1000);
-}
-
-void rotation_test()
-{
-	i32 angle = 90;
-
-	obstacle_rotate_robot(-angle);
-	obstacle_rotate_robot(-angle);
-
-	timer_delay_ms(500);
-
-	obstacle_rotate_robot(angle);
-	obstacle_rotate_robot(angle);
-
-	timer_delay_ms(500);
-}
-
 
 void imu_test()
 {
@@ -117,4 +70,50 @@ void imu_test()
 
 		timer_delay_ms(dt);
 	}
+}
+
+void motors_test()
+{
+	u32 time = 800;
+
+	g_motors.left = SPEED_MAX;
+	g_motors.right = 0;
+	timer_delay_ms(time);
+
+
+	g_motors.left = -SPEED_MAX;
+	g_motors.right = 0;
+	timer_delay_ms(time);
+
+
+	g_motors.left = 0;
+	g_motors.right = SPEED_MAX;
+	timer_delay_ms(time);
+
+
+	g_motors.left = 0;
+	g_motors.right = -SPEED_MAX;
+	timer_delay_ms(time);
+
+
+	g_motors.left = SPEED_MAX/2;
+	g_motors.right = SPEED_MAX/2;
+	timer_delay_ms(time);
+
+	g_motors.left = -SPEED_MAX/2;
+	g_motors.right = -SPEED_MAX/2;
+	timer_delay_ms(time);
+
+
+	g_motors.left = SPEED_MAX;
+	g_motors.right = SPEED_MAX;
+	timer_delay_ms(100);
+
+	g_motors.left = -SPEED_MAX;
+	g_motors.right = -SPEED_MAX;
+	timer_delay_ms(100);
+
+
+	g_motors.left = 0;
+	g_motors.right = 0;
 }

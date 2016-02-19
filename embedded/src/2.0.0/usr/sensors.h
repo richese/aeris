@@ -3,23 +3,21 @@
 
 #include "error.h"
 
-#include "../lib_usr/lsm9ds0.h"
-#include "../lib_usr/rgb_sensor.h"
-#include "../lib_usr/adc_sensor.h"
+#include "../lib_usr/lib_usr.h"
+
+#define I2C_SAMPLIG_PERIOD 		(u32)10
+#define RGB_SAMPLIG_PERIOD 		(u32)10
 
 #define SENSOR_THREAD_STACK_SIZE  128
 
-#define RGB_SAMPLIG_PERIOD		   (u32)4
-#define I2C_SAMPLIG_PERIOD	     (u32)10
-#define ADC_SAMPLIG_PERIOD	     (u32)100
+thread_stack_t device_i2c_thread_stack[SENSOR_THREAD_STACK_SIZE];
+thread_stack_t device_rgb_sensors_thread_stack[SENSOR_THREAD_STACK_SIZE];
 
-thread_stack_t i2c_sensor_thread_stack[SENSOR_THREAD_STACK_SIZE];
-thread_stack_t rgb_sensor_thread_stack[SENSOR_THREAD_STACK_SIZE];
-thread_stack_t adc_sensor_thread_stack[SENSOR_THREAD_STACK_SIZE];
+void device_sleep();
+void device_wake_up();
 
-void rgb_sensor_thread();
-void i2c_sensor_thread();
-void adc_sensor_thread();
+void device_i2c_thread();
+void device_rgb_sensors_thread();
 
 
 #endif

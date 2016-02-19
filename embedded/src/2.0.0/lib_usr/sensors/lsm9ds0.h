@@ -1,7 +1,7 @@
 #ifndef _LSM9DS0_H_
 #define _LSM9DS0_H_
 
-#include "../device/device.h"
+#include "../lib_usr.h"
 
 #define USE_LSM9DS0 1
 
@@ -109,6 +109,8 @@ struct sLSM9DS0IMU g_lsm9ds0_imu;
 
 
 u32 lsm9ds0_init();
+void lsm9ds0_uninit();
+
 void lsm9ds0_read();
 
 
