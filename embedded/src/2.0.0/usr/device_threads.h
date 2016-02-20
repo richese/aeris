@@ -1,5 +1,5 @@
-#ifndef _SENSORS_H_
-#define _SENSORS_H_
+#ifndef _DEVICE_THREADS_H_
+#define _DEVICE_THREADS_H_
 
 #include "error.h"
 
@@ -12,12 +12,15 @@
 
 thread_stack_t device_i2c_thread_stack[SENSOR_THREAD_STACK_SIZE];
 thread_stack_t device_rgb_sensors_thread_stack[SENSOR_THREAD_STACK_SIZE];
+thread_stack_t device_wifi_thread_stack[SENSOR_THREAD_STACK_SIZE];
 
 void device_sleep();
 void device_wake_up();
 
 void device_i2c_thread();
 void device_rgb_sensors_thread();
+
+void device_wifi_thread();
 
 
 #endif

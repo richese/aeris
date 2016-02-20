@@ -73,14 +73,6 @@ u32 esp8266_init(u32 server_mode)
 {
   timer_delay_ms(3000);
 
-/*
-  esp8266_send((char*)"AT+RST\r\n");
-  if (esp8266_find_stream((char*)"OK", 2, 3000) == 0)
-  {
-    return ESP8266_RESET_ERROR;
-  }
-*/
-
   if (server_mode != 0)
     esp8266_send((char*)"AT+CIPMUX=1\r\n");
   else
@@ -106,7 +98,13 @@ u32 esp8266_init(u32 server_mode)
     esp8266_send((char*)"AT+CIPSERVER=1,80\r\n");
     timer_delay_ms(200);
   }
+
   return ESP8266_SUCCESS;
+}
+
+void esp8266_uninit()
+{
+  //TODO
 }
 
 
@@ -157,7 +155,7 @@ u32 esp8266_connect(char *ip, u32 port, char *tx_buffer, u32 tx_buffer_length, c
   if (esp8266_find_stream((char*)"OK", 7, 500) == 0)
     return ESP8266_SERVER_CONNECTING_ERROR;
 
-
+ 
 
   esp8266_send((char*)"AT+CIPSEND=");
   esp8266_send_uint(tx_buffer_length);

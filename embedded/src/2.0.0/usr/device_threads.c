@@ -1,4 +1,4 @@
-#include "sensors.h"
+#include "device_threads.h"
 
 volatile u8 device_sleep_flag = 0;
 
@@ -51,6 +51,7 @@ void device_i2c_thread()
 								state = 2;
 							break;
 
+			//sleep mode
 			case 2:
 							lsm9ds0_uninit();
 							motors_uninit();
@@ -99,8 +100,65 @@ void device_rgb_sensors_thread()
 								state = 2;
 							break;
 
+			//sleep mode
 			case 2:
 							rgb_sensor_uninit();
+
+							timer_delay_ms(100);
+
+							if (device_sleep_flag == 0)
+								state = 0;
+							break;
+		}
+	}
+}
+
+
+#define RX_BUFFER_LENGTH 	128
+
+
+void device_wifi_thread()
+{
+	u32 state = 0;
+	u32 init_res;
+
+	char tx_buffer[] = "esp8266 message";
+	u32 tx_buffer_length = strlen_(tx_buffer);
+	char rx_buffer[RX_BUFFER_LENGTH];
+
+
+	while (1) 
+	{
+		switch (state)
+		{
+			//init state
+			case 0:
+							led_on(WIFI_RST);
+							init_res = esp8266_init(0);
+							if (init_res != ESP8266_SUCCESS)
+							{
+								esp8266_uninit();
+								abort_error_(ERROR_WIFI, init_res);	/*init WIFI error*/
+							}
+
+							state = 1;
+							break;
+
+			//common mode
+			case 1:
+		  				 esp8266_connect(WIFI_SERVER_IP, WIFI_TERMINAL_PORT,
+																			tx_buffer,
+																			tx_buffer_length,
+																			rx_buffer,
+																			RX_BUFFER_LENGTH);
+
+						//	if (device_sleep_flag)
+							//	state = 2;
+							break;
+
+			//sleep mode
+			case 2:
+							esp8266_uninit();
 
 							timer_delay_ms(100);
 

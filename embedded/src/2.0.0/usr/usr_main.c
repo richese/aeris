@@ -11,10 +11,11 @@ void main_thread()
 
 	create_thread(device_rgb_sensors_thread, device_rgb_sensors_thread_stack, sizeof(device_rgb_sensors_thread_stack), PRIORITY_MAX);
 	create_thread(device_i2c_thread, device_i2c_thread_stack, sizeof(device_i2c_thread_stack), PRIORITY_MAX);
+	create_thread(device_wifi_thread, device_wifi_thread_stack, sizeof(device_wifi_thread_stack), PRIORITY_MAX);
 
 	timer_delay_ms(600);
 
-	while (1) 
+	while (1)
 	{
 		while (get_key() == 0)
 		{

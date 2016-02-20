@@ -13,6 +13,10 @@
 #define LED_1		((u32)(1<<3))
 #define LED_W		(LED_1)
 
+
+//GPIOA PA0, wifi RST
+#define WIFI_RST ((u32)(1<<0))
+
 //key on PB9
 #define KEY 		(1<<9)
 

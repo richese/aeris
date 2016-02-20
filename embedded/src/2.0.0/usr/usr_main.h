@@ -4,7 +4,7 @@
 
 #include "../os/suzuha_os.h"
 
-#include "sensors.h"
+#include "device_threads.h"
 #include "test.h"
 
 

@@ -2,15 +2,7 @@
 #define _ESP8266_H_
 
 #include "../lib_usr.h"
-
-
-/*
-#define ESP8266_WIFI_SSID   "disconnected"
-#define ESP8266_WIFI_PASS   "veryhard"
-*/
-#define ESP8266_WIFI_SSID   "NETGEAR83"
-#define ESP8266_WIFI_PASS   "melodichill546"
-
+#include "wifi_config.h"
 
 #define ESP8266_SUCCESS                   (u32)0
 #define ESP8266_RESET_ERROR               (u32)1
@@ -41,6 +33,7 @@ AT+CIFSR    //check IP
 
 
 u32 esp8266_init(u32 server_mode);
+void esp8266_uninit();
 u32 esp8266_connect(char *ip, u32 port, char *tx_buffer, u32 tx_buffer_length, char *rx_buffer, u32 rx_buffer_length);
 u32 server_loop(char *buf, u32 buf_length);
 

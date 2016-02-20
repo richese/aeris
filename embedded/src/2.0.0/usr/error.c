@@ -8,12 +8,12 @@ void abort_error_(u32 error_code, u32 error_param)
 	{
 		printf_("error code %u:%u\n", error_code, error_param);
 
-		for (i = 0; i < (3+error_code); i++)
+		for (i = 0; i < 8; i++)
 		{
 			led_on(LED_0);
-			timer_delay_ms(50);
+			timer_delay_ms(30);
 			led_off(LED_0);
-			timer_delay_ms(100);
+			timer_delay_ms(70);
 		}
 
 		timer_delay_ms(1000);
