@@ -76,9 +76,6 @@ void motors_test()
 {
 	u32 i;
 
-	go_forward(10000, SPEED_MAX/2, NULL);
-	return;
-
 	for (i = 0; i < 2; i++)
 	{
 		u32 time = 800;
@@ -109,4 +106,23 @@ void motors_test()
 		timer_delay_ms(time);
 
 	}
+}
+
+void go_forward_test()
+{
+	go_forward(1000000, SPEED_MAX, NULL);
+	go_forward(1000, -SPEED_MAX, NULL);
+}
+
+void rotation_test()
+{
+	rotate_angle(90, NULL);
+	rotate_angle(90, NULL);
+	rotate_angle(90, NULL);
+	rotate_angle(90, NULL);
+
+	rotate_angle(-90, NULL);
+	rotate_angle(-90, NULL);
+	rotate_angle(-90, NULL);
+	rotate_angle(-90, NULL);
 }

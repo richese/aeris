@@ -33,9 +33,11 @@ void main_thread()
 
 
 		//sensor_test();
-		motors_test();
-
+		//motors_test();
 		//imu_test();
+
+		go_forward_test();
+		//rotation_test();
 
 		//your code here
 	}
