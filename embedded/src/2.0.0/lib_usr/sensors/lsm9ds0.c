@@ -1,6 +1,6 @@
 #include "lsm9ds0.h"
 
-u32 lsm9ds0_init()
+u32 lsm9ds0_init(u8 calibrate)
 {
     u8 tmp;
 
@@ -19,12 +19,6 @@ u32 lsm9ds0_init()
     g_lsm9ds0_imu.gx_comp = 0;
     g_lsm9ds0_imu.gy_comp = 0;
     g_lsm9ds0_imu.gz_comp = 0;
-
-    g_lsm9ds0_imu.gx_ofs = 0;
-    g_lsm9ds0_imu.gy_ofs = 0;
-    g_lsm9ds0_imu.gz_ofs = 0;
-
-
 
     g_lsm9ds0_imu.temp = 0;
 
@@ -70,7 +64,8 @@ u32 lsm9ds0_init()
     lsm9ds0_read();
 
 
-    lsm9ds0_gyro_calibrate(100);
+    if (calibrate != 0)
+      lsm9ds0_calibrate(100);
 
     lsm9ds0_read();
 
@@ -79,7 +74,7 @@ u32 lsm9ds0_init()
     return 0;
 }
 
-void lsm9ds0_gyro_calibrate(u32 measurments)
+void lsm9ds0_calibrate(u32 measurments)
 {
   u32 i;
 
@@ -90,6 +85,7 @@ void lsm9ds0_gyro_calibrate(u32 measurments)
   for (i = 0; i < measurments; i++)
   {
       lsm9ds0_read();
+
       gx_ofs_sum+= g_lsm9ds0_imu.gx;
       gy_ofs_sum+= g_lsm9ds0_imu.gy;
       gz_ofs_sum+= g_lsm9ds0_imu.gz;

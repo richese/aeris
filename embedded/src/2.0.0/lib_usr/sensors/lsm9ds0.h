@@ -13,7 +13,7 @@ struct sLSM9DS0IMU
 
     i16 gx_ofs, gy_ofs, gz_ofs;
     i16 gx_comp, gy_comp, gz_comp;
-    
+
     i16 temp;
 };
 
@@ -109,8 +109,8 @@ volatile struct sLSM9DS0IMU g_lsm9ds0_imu;
 #define LSM9DS0_Act_DUR             0x3F
 
 
-u32 lsm9ds0_init();
-void lsm9ds0_gyro_calibrate(u32 measurments);
+u32 lsm9ds0_init(u8 calibrate);
+void lsm9ds0_calibrate(u32 measurments);
 void lsm9ds0_uninit();
 
 void lsm9ds0_read();

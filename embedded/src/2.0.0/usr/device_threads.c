@@ -21,6 +21,8 @@ void device_i2c_thread()
 
  	event_timer_set_period(EVENT_TIMER_0_ID, I2C_SAMPLIG_PERIOD);
 
+
+	u8 calibrate = 1;
  	while (1)
  	{
 		switch (state)
@@ -28,7 +30,8 @@ void device_i2c_thread()
 			//init state
 			case 0:
 							motors_init();
-							init_res = lsm9ds0_init();					/*IMU*/
+							init_res = lsm9ds0_init(calibrate);					/*IMU*/
+							calibrate = 0;
 
 							if (init_res != 0)
 							{
