@@ -16,7 +16,7 @@ struct sRGBSensor
 	i16 proximity[RGB_SENSORS_COUNT];
 };
 
-struct sRGBSensor g_rgb;
+volatile struct sRGBSensor g_rgb;
 
 
 u32 rgb_sensor_init();

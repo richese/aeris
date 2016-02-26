@@ -2,6 +2,7 @@
 #define _LIB_USR_H_
 
 #include "../device/device.h"
+#include "../os/suzuha_os.h"
 
 #include "common/math.h"          /*basic math*/
 #include "common/pid.h"           /*pid controller*/

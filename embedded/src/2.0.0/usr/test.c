@@ -74,46 +74,39 @@ void imu_test()
 
 void motors_test()
 {
-	u32 time = 800;
+	u32 i;
 
-	g_motors.left = SPEED_MAX;
-	g_motors.right = 0;
-	timer_delay_ms(time);
+	go_forward(10000, SPEED_MAX/2, NULL);
+	return;
 
+	for (i = 0; i < 2; i++)
+	{
+		u32 time = 800;
 
-	g_motors.left = -SPEED_MAX;
-	g_motors.right = 0;
-	timer_delay_ms(time);
+		g_motors.left = SPEED_MAX;
+		g_motors.right = -SPEED_MAX;
+		timer_delay_ms(time);
 
+		g_motors.left = -SPEED_MAX;
+		g_motors.right = SPEED_MAX;
+		timer_delay_ms(time);
 
-	g_motors.left = 0;
-	g_motors.right = SPEED_MAX;
-	timer_delay_ms(time);
+		g_motors.left = SPEED_MAX/2;
+		g_motors.right = SPEED_MAX/2;
+		timer_delay_ms(time);
 
+		g_motors.left = SPEED_MAX;
+		g_motors.right = SPEED_MAX;
+		timer_delay_ms(time);
 
-	g_motors.left = 0;
-	g_motors.right = -SPEED_MAX;
-	timer_delay_ms(time);
-
-
-	g_motors.left = SPEED_MAX/2;
-	g_motors.right = SPEED_MAX/2;
-	timer_delay_ms(time);
-
-	g_motors.left = -SPEED_MAX/2;
-	g_motors.right = -SPEED_MAX/2;
-	timer_delay_ms(time);
-
-
-	g_motors.left = SPEED_MAX;
-	g_motors.right = SPEED_MAX;
-	timer_delay_ms(100);
-
-	g_motors.left = -SPEED_MAX;
-	g_motors.right = -SPEED_MAX;
-	timer_delay_ms(100);
+		g_motors.left = -SPEED_MAX/2;
+		g_motors.right = -SPEED_MAX/2;
+		timer_delay_ms(time);
 
 
-	g_motors.left = 0;
-	g_motors.right = 0;
+		g_motors.left = 0;
+		g_motors.right = 0;
+		timer_delay_ms(time);
+
+	}
 }

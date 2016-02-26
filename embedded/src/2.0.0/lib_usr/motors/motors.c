@@ -21,8 +21,8 @@ void motors_uninit()
 
 void motors_update()
 {
-  i32 tmp_left = g_motors.left;
-  i32 tmp_right = g_motors.right;
+  i8 tmp_left = g_motors.left;
+  i8 tmp_right = g_motors.right;
 
 
   if (tmp_left > SPEED_MAX)
@@ -39,29 +39,32 @@ void motors_update()
 
 
 
-  u32 tmp = 0;
+  u8 tmp = 0;
 
   if (tmp_left == 0)
   {
     tmp = (6<<2)|(1<<1)|(1<<0); //break
   }
   else
-  if (tmp_left > 0)
   {
-    if (tmp_left < 6)           //minimum voltage, see datasheet
-      tmp_left = 6;
+    if (tmp_left > 0)
+    {
+      if (tmp_left < 6)           //minimum voltage, see datasheet
+        tmp_left = 6;
 
-    tmp = (tmp_left<<2)|(1<<1); //set speed and way
+      tmp = (tmp_left<<2)|(1<<1); //set speed and way
+    }
+    else
+    {
+      tmp_left = -tmp_left;
+      if (tmp_left < 6)           //minimum voltage, see datasheet
+        tmp_left = 6;
+
+      tmp = (tmp_left<<2)|(1<<0); //set speed and way
+    }
   }
-  else
-  {
-    tmp_left = -tmp_left;
-    if (tmp_left < 6)           //minimum voltage, see datasheet
-      tmp_left = 6;
 
-    tmp = (tmp_left<<2)|(1<<0); //set speed and way
-  }
-
+  i2c_write_reg(DRV8830_LEFT_ADDRESS, DRV8830_CONTROL_REG, 0);
   i2c_write_reg(DRV8830_LEFT_ADDRESS, DRV8830_CONTROL_REG, tmp);
 
 
@@ -86,5 +89,7 @@ void motors_update()
     tmp = (tmp_right<<2)|(1<<1); //set speed and way
   }
 
+  i2c_write_reg(DRV8830_RIGHT_ADDRESS, DRV8830_CONTROL_REG, 0);
   i2c_write_reg(DRV8830_RIGHT_ADDRESS, DRV8830_CONTROL_REG, tmp);
+
 }

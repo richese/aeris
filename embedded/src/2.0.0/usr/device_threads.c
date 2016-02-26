@@ -21,15 +21,14 @@ void device_i2c_thread()
 
  	event_timer_set_period(EVENT_TIMER_0_ID, I2C_SAMPLIG_PERIOD);
 
-
  	while (1)
  	{
 		switch (state)
 		{
 			//init state
 			case 0:
-							init_res = lsm9ds0_init();					/*IMU*/
 							motors_init();
+							init_res = lsm9ds0_init();					/*IMU*/
 
 							if (init_res != 0)
 							{
@@ -127,7 +126,7 @@ void device_wifi_thread()
 	char rx_buffer[RX_BUFFER_LENGTH];
 
 
-	while (1) 
+	while (1)
 	{
 		switch (state)
 		{

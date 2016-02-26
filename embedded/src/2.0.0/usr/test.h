@@ -3,6 +3,7 @@
 
 #include "../os/suzuha_os.h"
 #include "../lib_usr/lib_usr.h"
+#include "movements.h"
 
 
 void sensor_test();

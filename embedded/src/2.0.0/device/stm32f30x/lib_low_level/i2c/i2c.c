@@ -4,7 +4,7 @@
 
 void i2c_delay()
 {
-    u32 loops = 10;
+    u32 loops = 1;
     while (loops--)
         __asm("nop");
 }
