@@ -29,8 +29,8 @@ void go_forward(u32 time_ms, i32 speed, u8 (*term_function)())
     if (speed_ < 1.0)
       speed_+= MOTOR_FORWARD_KS;
 
-    g_motors.left = 0*speed*speed_ + SPEED_MAX*dif;
-    g_motors.right = 0*speed*speed_ - SPEED_MAX*dif;
+    g_motors.left = speed*speed_ + SPEED_MAX*dif;
+    g_motors.right = speed*speed_ - SPEED_MAX*dif;
 
     if (term_function != NULL)
     {
