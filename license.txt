@@ -1,7 +1,7 @@
     Aeris - hybrid multirobotics system for machine learning research
 
     Copyright (C) 2015  Authors :
-	Michal Chovanec - project founder and leader
+	Michal Chovanec - project founder and  leader
 
 
     This program is free software: you can redistribute it and/or modify
