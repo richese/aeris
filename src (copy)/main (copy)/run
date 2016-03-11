@@ -1,0 +1,30 @@
+rm -f server/bin/debug_log.txt
+rm -f server/bin/error_log.txt
+rm -f client_test/bin/debug_log.txt
+rm -f client_test/bin/error_log.txt
+rm -f node_test/bin/debug_log.txt
+rm -f node_test/bin/error_log.txt
+rm -f node_reader/bin/debug_log.txt
+rm -f node_reader/bin/error_log.txt
+rm -f virtual_robot/bin/debug_log.txt
+rm -f virtual_robot/bin/error_log.txt
+rm -f robot_visualisation/bin/debug_log.txt
+rm -f robot_visualisation/bin/error_log.txt
+
+cd server/bin
+./main.elf &
+cd ../..
+
+sleep 1
+
+cd client_test/bin
+# ./run &
+cd ../..
+
+cd node_test/bin
+# ./run &
+cd ../..
+
+cd virtual_robot/bin
+ ./main.elf &
+cd ../..

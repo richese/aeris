@@ -1,4 +1,4 @@
-SUBDIRS = common server visualisation null_bot
+SUBDIRS = common main map_editor
 
 all: $(SUBDIRS)
 

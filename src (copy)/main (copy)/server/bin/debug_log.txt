@@ -1,0 +1,9 @@
+main > 1457015866055.512939 > init done
+server > 1457015867059.797119 > new client connected with address 2411380327 , idx 0
+server > 1457015870124.335938 > new client connected with address 1113380199 , idx 1
+server > 1457015928269.799072 > new client connected with address 3429827431 , idx 2
+server > 1457015949305.308105 > new client connected with address 3014780775 , idx 3
+server > 1457015970754.798096 > new client connected with address 2973129575 , idx 4
+server > 1457016051252.092041 > new client connected with address 1871609959 , idx 5
+server > 1457016060022.017090 > new client connected with address 2051288423 , idx 6
+server > 1457016098285.867920 > new client connected with address 1661289575 , idx 7

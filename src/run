@@ -1,0 +1,19 @@
+rm -f server/bin/debug_log.txt
+rm -f server/bin/error_log.txt
+rm -f null_bot/bin/debug_log.txt
+rm -f null_bot/bin/error_log.txt
+rm -f visualisation/bin/debug_log.txt
+rm -f visualisation/bin/error_log.txt
+
+cd server/bin
+./main.elf &
+sleep 1
+cd ../..
+
+cd null_bot/bin
+./main.elf &
+cd ../..
+
+cd visualisation/bin
+ ./main.elf &
+cd ../..

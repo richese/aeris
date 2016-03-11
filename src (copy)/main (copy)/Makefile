@@ -1,5 +1,4 @@
-SUBDIRS = common server visualisation null_bot
-
+SUBDIRS = common packet server client_test node_test node_reader virtual_robot robot_visualisation
 all: $(SUBDIRS)
 
 $(SUBDIRS):

@@ -1,4 +1,0 @@
-main > 1454329980174.416992 > init done
-server > 1454329981180.790039 > new client connected with address 100745831 , idx 0
-server > 1454329987924.789062 > new client connected with address 2509580391 , idx 1
-server > 1454330010051.120117 > new client connected with address 3116869735 , idx 2

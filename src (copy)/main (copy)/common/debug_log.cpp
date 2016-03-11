@@ -1,6 +1,5 @@
 #include "debug_log.h"
 
-#define DEBUG_LOG_ENABLE 1
 
 pthread_mutex_t g_debug_log_mutex;
 char g_debug_log_file_name[1024];
