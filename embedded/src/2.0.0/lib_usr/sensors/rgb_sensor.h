@@ -24,4 +24,6 @@ void rgb_sensor_uninit();
 
 void rgb_sensor_read();
 
+i32 rgb_get_line_position();
+
 #endif

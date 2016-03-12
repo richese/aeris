@@ -115,3 +115,26 @@ void rgb_sensor_read()
 
   rgb_i2cStop();
 }
+
+i32 rgb_get_line_position()
+{
+  i32 res = 0;
+
+  u32 i;
+  u32 max_idx = 0;
+  for (i = 0; i < RGB_SENSORS_COUNT; i++)
+    if (g_rgb.ambient[i] > g_rgb.ambient[max_idx])
+    {
+      max_idx = i;
+    }
+
+  switch (max_idx)
+  {
+    case 0: res = -2; break;
+    case 1: res = -1; break;
+    case 2: res = 1; break;
+    case 3: res = 2; break;
+  }
+
+  return res;
+}

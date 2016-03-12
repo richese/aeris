@@ -172,9 +172,9 @@ void CRobotVisualisation::visualise_paint_agent(struct sAgentInterface agent_int
   float height = agent_interface.size*cm_size*0.1;
 
   struct sBotColor color = bot_to_color(agent_interface);
-  float r = color.r;
-  float g = color.g;
-  float b = color.b;
+  float r = color.r*agent_interface.color_intensity;
+  float g = color.g*agent_interface.color_intensity;
+  float b = color.b*agent_interface.color_intensity;
 
   float ax, ay;
   float bx, by;

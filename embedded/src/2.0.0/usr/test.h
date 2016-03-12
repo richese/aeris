@@ -14,4 +14,6 @@ void motors_test();
 void go_forward_test();
 void rotation_test();
 
+void line_follower_test();
+
 #endif

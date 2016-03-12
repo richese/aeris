@@ -126,3 +126,31 @@ void rotation_test()
 	rotate_angle(-90, NULL);
 	rotate_angle(-90, NULL);
 }
+
+void line_follower_test()
+{
+	u32 dt = 10;
+
+	float base_speed = 30;
+
+	float error = 0.0;
+	float error_prev = 0.0;
+
+	float Kp = 10.0;
+	float Kd = 50.0;
+
+	//struct sLinePosition line_position;
+
+	while (1)
+	{
+		error = 0.0 - rgb_get_line_position();
+
+		float dif_speed = Kp*error + Kd*(error - error_prev);
+		error_prev = error;
+
+
+		g_motors.left = base_speed - dif_speed;;
+		g_motors.right = base_speed + dif_speed;;
+		timer_delay_ms(dt);
+	}
+}

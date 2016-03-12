@@ -21,6 +21,7 @@ struct sAgentInterface
   u32 type_interaction;
 
   i32 value;
+  float color_intensity;
 
 
   //position

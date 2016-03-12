@@ -6,8 +6,11 @@ float rnd()
   return ((rand()%200000) - 100000)/100000.0;
 }
 
-CVirtualRobot::CVirtualRobot()
+CVirtualRobot::CVirtualRobot(float init_x, float init_y)
 {
+  this->init_x = init_x;
+  this->init_y = init_y;
+
   agent_interface.id = cfg_get_unique_id() + rand();
 
   agent_interface.param = 0;
@@ -16,13 +19,13 @@ CVirtualRobot::CVirtualRobot()
 
   agent_interface.time_stamp = get_ms_time();
   agent_interface.type = AGENT_TYPE_BOT;
-  agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_TYPE_0 + (rand()%2);
-  agent_interface.type_interaction = AGENT_TYPE_INTERACTION_STRONG;
-  agent_interface.size = AGENT_BOT_SIZE;
+  agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_NULL;
+  agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
+  agent_interface.size = AGENT_BOT_SIZE*10.0;
 
-  agent_interface.x = rnd_()*POSITION_MAX_X; //*x_max;
-  agent_interface.y = rnd_()*POSITION_MAX_Y; //*y_max;
-  agent_interface.z = 0.0*rnd_()*0.99;//*z_max;
+  agent_interface.x = init_x;
+  agent_interface.y = init_y;
+  agent_interface.z = 0.0;
 
   agent_interface.roll = 0.0;
   agent_interface.pitch = 0.0;
@@ -39,6 +42,9 @@ CVirtualRobot::CVirtualRobot()
   dyaw = 0.0;
 
   client = new CClient();
+
+  state = 100;
+  t = 0.0;
 }
 
 CVirtualRobot::~CVirtualRobot()
@@ -49,26 +55,37 @@ CVirtualRobot::~CVirtualRobot()
 
 void CVirtualRobot::process()
 {
-  if ((rand()%100) < 2)
+  t+= 1.0;
+
+  /*
+  if ((rand()%100) < 3)
   {
-      dx = rnd_();
-      dy = rnd_();
-      dz = 0.0*rnd_();
-      dyaw = 0.1*rnd_();
+    dx = sgn(rnd_());
+    dy = sgn(rnd_());
   }
+  */
+
+  dy = sin(t*0.05 + init_x/100.0);
+
+  agent_interface.size = AGENT_BOT_SIZE*2.0;
 
   agent_interface.action[0] = dx;
   agent_interface.action[1] = dy;
   agent_interface.action[2] = dz;
 
-  agent_interface.action[5] = dyaw;
-
   agent_interface.time_stamp = get_ms_time();
-
-
-  u32 id1 = agent_interface.id;
   i32 res  = client->process(&agent_interface);
-  u32 id2 = agent_interface.id;
+
+  if ((rand()%100) < 1)
+  {
+    state = rand()%100;
+  }
+
+  if (state < 10)
+    agent_interface.color_intensity = 0.0;
+  else
+    agent_interface.color_intensity = 1.0;
+
 
   if (res < 0)
   {

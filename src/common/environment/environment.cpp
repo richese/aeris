@@ -181,7 +181,7 @@ void CEnvironment::process_bot_collisions(struct sAgentInterface *agent_interfac
           agent_interface->state[STATE_POSITION_X_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0+i)*3] = agent_interface_tmp.x;
           agent_interface->state[STATE_POSITION_Y_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0+i)*3] = agent_interface_tmp.y;
           agent_interface->state[STATE_POSITION_Z_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0+i)*3] = agent_interface_tmp.z;
-        } 
+        }
 
   }
 

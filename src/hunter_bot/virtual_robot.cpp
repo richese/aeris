@@ -13,6 +13,8 @@ CVirtualRobot::CVirtualRobot()
   agent_interface.param = 0;
   agent_interface.value = 0;
   agent_interface.time_stamp = get_ms_time();
+  agent_interface.color_intensity = 1.0;
+
   agent_interface.type = AGENT_TYPE_BOT;
   agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_TYPE_1;
   agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
