@@ -14,14 +14,14 @@
 */
 #define AGENT_TYPE_BEHAVIOUR_NULL             ((u32)0)
 #define AGENT_TYPE_BEHAVIOUR_TYPE_0           ((u32)1)
-#define AGENT_TYPE_BEHAVIOUR_TYPE_1           ((u32)3)
-#define AGENT_TYPE_BEHAVIOUR_TYPE_2           ((u32)4)
-#define AGENT_TYPE_BEHAVIOUR_TYPE_3           ((u32)5)
-#define AGENT_TYPE_BEHAVIOUR_TYPE_4           ((u32)6)
-#define AGENT_TYPE_BEHAVIOUR_TYPE_5           ((u32)7)
-#define AGENT_TYPE_BEHAVIOUR_TYPE_6           ((u32)8)
-#define AGENT_TYPE_BEHAVIOUR_TYPE_7           ((u32)9)
-#define AGENT_TYPE_BEHAVIOUR_TYPE_8           ((u32)10)
+#define AGENT_TYPE_BEHAVIOUR_TYPE_1           ((u32)2)
+#define AGENT_TYPE_BEHAVIOUR_TYPE_2           ((u32)3)
+#define AGENT_TYPE_BEHAVIOUR_TYPE_3           ((u32)4)
+#define AGENT_TYPE_BEHAVIOUR_TYPE_4           ((u32)5)
+#define AGENT_TYPE_BEHAVIOUR_TYPE_5           ((u32)6)
+#define AGENT_TYPE_BEHAVIOUR_TYPE_6           ((u32)7)
+#define AGENT_TYPE_BEHAVIOUR_TYPE_7           ((u32)8)
+#define AGENT_TYPE_BEHAVIOUR_TYPE_8           ((u32)9)
 
 #define AGENT_TYPE_BEHAVIOUR_TYPE_COUNT       ((u32)10)
 
@@ -53,6 +53,12 @@
 
 
 #define AGENT_TYPE_INTERACTION_COUNT          ((u32)4)
+
+
+
+#define STATE_POSITION_X_OFS                  ((u32)0)
+#define STATE_POSITION_Y_OFS                  ((u32)1)
+#define STATE_POSITION_Z_OFS                  ((u32)2)
 
 
 #endif

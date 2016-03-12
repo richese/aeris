@@ -10,6 +10,6 @@ struct sBotColor
 };
 
 struct sBotColor bot_to_color(struct sAgentInterface agent_interface);
-
+struct sBotColor uint_to_color(u32 color, u32 colors_count);
 
 #endif

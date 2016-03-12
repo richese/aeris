@@ -20,6 +20,9 @@ struct sAgentInterface
   u32 type_behaviour;
   u32 type_interaction;
 
+  i32 value;
+
+
   //position
   float x, y, z;
 

@@ -19,6 +19,10 @@ class CEnvironment
     i32 call_back(struct sAgentInterface *agent_interface);
 
     void kill_zombies();
+
+  private:
+    void process_bot_collisions(struct sAgentInterface *agent_interface);
+
 };
 
 #endif

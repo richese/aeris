@@ -36,6 +36,9 @@ class CRobotVisualisation
 
       void kill_zombies();
 
+      void print(float x, float y, float r, float g, float b, void *font, char *string);
+
+
 };
 
 #endif

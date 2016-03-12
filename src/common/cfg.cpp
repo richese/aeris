@@ -14,6 +14,8 @@ i32 cfg_init(char *cfg_file_name)
 {
   FILE *f;
 
+  srand(time(NULL));
+
   f = fopen(cfg_file_name, "r");
   if (f == NULL)
     return -1;

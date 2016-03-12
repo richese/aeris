@@ -10,6 +10,7 @@ CMap::CMap(class CAgentGroup *agent_group, struct sMapInit map_init, char *map_f
 
     agent_interface.id = cfg_get_unique_id();
     agent_interface.param = 0;
+    agent_interface.value = 0;
     agent_interface.time_stamp = 0.0;
     agent_interface.type = AGENT_TYPE_BOT;
     agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_NULL;
@@ -63,7 +64,7 @@ CMap::CMap(class CAgentGroup *agent_group, struct sMapInit map_init, char *map_f
 
         agent_interface.type = AGENT_TYPE_BOT;
         agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_NULL;
-        agent_interface.type_interaction = rand()%AGENT_TYPE_INTERACTION_COUNT;
+        agent_interface.type_interaction = AGENT_TYPE_INTERACTION_STRONG; //rand()%AGENT_TYPE_INTERACTION_COUNT;
       }
 
       // printf("%u  %f %f %f\n", agent_interface.id, agent_interface.x, agent_interface.y, agent_interface.z);

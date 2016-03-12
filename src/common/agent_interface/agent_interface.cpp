@@ -4,6 +4,7 @@ CAgentInterface::CAgentInterface(u32 id)
 {
   agent_interface.id = 0;
   agent_interface.param = 0;
+  agent_interface.value = 0;
   agent_interface.time_stamp = get_ms_time();
   agent_interface.type = AGENT_TYPE_NULL;
   agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_NULL;

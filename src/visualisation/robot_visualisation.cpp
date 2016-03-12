@@ -194,10 +194,12 @@ void CRobotVisualisation::visualise_paint_agent(struct sAgentInterface agent_int
   glVertex3f(x + cx, y + cy, z + 0.001);
   glVertex3f(x + dx, y + dy, z + 0.001);
 
+  /*
   glVertex3f(x + ax, y + ay, z + height);
   glVertex3f(x + bx, y + by, z + height);
   glVertex3f(x + cx, y + cy, z + height);
   glVertex3f(x + dx, y + dy, z + height);
+  */
 
   glEnd();
 
@@ -205,6 +207,27 @@ void CRobotVisualisation::visualise_paint_agent(struct sAgentInterface agent_int
   glVertex3f(x, y, z + 0.001);
   glVertex3f(x, y, z + 0.001 + height);
   glEnd();
+
+  char str[256];
+//  sprintf(str,"%i %i", agent_interface.id, agent_interface.value);
+  sprintf(str,"g%i", agent_interface.value);
+
+  struct sBotColor font_color = uint_to_color(agent_interface.value, 8);
+
+  print(x, y, font_color.r, font_color.g, font_color.b, GLUT_BITMAP_8_BY_13, str);
+
+
+}
+
+void CRobotVisualisation::print(float x, float y, float r, float g, float b, void *font, char *string)
+{
+  glColor3f( r, g, b );
+  glRasterPos2f(x, y);
+  int len, i;
+  len = (int)strlen(string);
+  for (i = 0; i < len; i++) {
+    glutBitmapCharacter(font, string[i]);
+  }
 }
 
 void CRobotVisualisation::visualise_refresh()
@@ -222,7 +245,7 @@ void CRobotVisualisation::visualise_refresh()
 
   glMatrixMode(GL_MODELVIEW);
 
-  u32 g_view_state = 2;
+  u32 g_view_state = 0;
 
   switch (g_view_state)
   {

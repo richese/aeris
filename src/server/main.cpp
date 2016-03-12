@@ -27,8 +27,8 @@ int main()
   double agent_life_time_ms = 2000.0;
 
   map_init.random_map = true;
-  map_init.random_items_count = 100;
-  map_init.group_leave_probality = 0.9; //0.2;
+  map_init.random_items_count = 8;
+  map_init.group_leave_probality = 0.8; //0.2;
 
 
   class CEnvironment *environment;

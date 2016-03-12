@@ -42,5 +42,7 @@
 #include "map/map.h"
 #include "environment/environment.h"
 
+#include "neural_network/kohonen_layer.h"
+
 
 #endif

@@ -23,6 +23,7 @@ COMMON+= $(COMMON_PATH)/client/client.o
 COMMON+= $(COMMON_PATH)/map/map.o
 COMMON+= $(COMMON_PATH)/environment/environment.o
 
+COMMON+= $(COMMON_PATH)/neural_network/kohonen_layer.o
 
 
 
@@ -42,7 +43,7 @@ OBJDUMP = objdump
 SIZE = size
 
 CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++0x
-LDFLAGS = -lm -lpthread -pthread -std=c++0x
+LDFLAGS = -lm -lpthread -pthread -std=c++0x -lglut -lGL -lGLU
 
 SRCS = $(shell find -name '*.cpp')
 

@@ -1,4 +1,4 @@
-SUBDIRS = common server visualisation null_bot
+SUBDIRS = common server visualisation null_bot prey_bot hunter_bot
 
 all: $(SUBDIRS)
 

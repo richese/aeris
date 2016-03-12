@@ -11,8 +11,17 @@ sleep 1
 cd ../..
 
 cd null_bot/bin
+#./main.elf &
+cd ../..
+
+cd prey_bot/bin
 ./main.elf &
 cd ../..
+
+cd hunter_bot/bin
+./main.elf &
+cd ../..
+
 
 cd visualisation/bin
  ./main.elf &

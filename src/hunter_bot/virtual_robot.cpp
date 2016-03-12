@@ -14,8 +14,8 @@ CVirtualRobot::CVirtualRobot()
   agent_interface.value = 0;
   agent_interface.time_stamp = get_ms_time();
   agent_interface.type = AGENT_TYPE_BOT;
-  agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_TYPE_0 + (rand()%2);
-  agent_interface.type_interaction = AGENT_TYPE_INTERACTION_STRONG;
+  agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_TYPE_1;
+  agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
   agent_interface.size = AGENT_BOT_SIZE;
 
   agent_interface.x = rnd_()*POSITION_MAX_X; //*x_max;
@@ -47,26 +47,15 @@ CVirtualRobot::~CVirtualRobot()
 
 void CVirtualRobot::process()
 {
-  if ((rand()%100) < 2)
-  {
-      dx = rnd_();
-      dy = rnd_();
-      dz = 0.0*rnd_();
-      dyaw = 0.1*rnd_();
-  }
+  dx = sgn(agent_interface.state[STATE_POSITION_X_OFS + AGENT_TYPE_BEHAVIOUR_TYPE_0*3] - agent_interface.x);
+  dy = sgn(agent_interface.state[STATE_POSITION_Y_OFS + AGENT_TYPE_BEHAVIOUR_TYPE_0*3] - agent_interface.y);
 
-  agent_interface.action[0] = dx;
-  agent_interface.action[1] = dy;
-  agent_interface.action[2] = dz;
-
-  agent_interface.action[5] = dyaw;
+  agent_interface.action[0] = dx*0.2;
+  agent_interface.action[1] = dy*0.2;
+  agent_interface.action[2] = dz*0.2;
 
   agent_interface.time_stamp = get_ms_time();
-
-
-  u32 id1 = agent_interface.id;
   i32 res  = client->process(&agent_interface);
-  u32 id2 = agent_interface.id;
 
   if (res < 0)
   {
