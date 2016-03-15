@@ -25,7 +25,8 @@ COMMON+= $(COMMON_PATH)/environment/environment.o
 
 COMMON+= $(COMMON_PATH)/neural_network/kohonen_layer.o
 
-
+COMMON+= $(COMMON_PATH)/visualisation/robot_visualisation.o
+COMMON+= $(COMMON_PATH)/bot_to_color.o
 
 
 

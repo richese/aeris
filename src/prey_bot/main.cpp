@@ -31,7 +31,7 @@ int main()
 
   class CKohonenLayer *knn = new CKohonenLayer(kohonen_init);
 
-  u32 j, robots_count = 64;
+  u32 j, robots_count = 128;
   std::vector<class CVirtualRobot*> robots;
 
   for (j = 0; j < robots_count; j++)

@@ -20,22 +20,49 @@ CEnvironment::CEnvironment( struct sMapInit map_init, char *map_file_name,
 
   server = new CServer(agent_group, call_back_handler);
   server->start();
+
+  this->visualisation_enabled = visualisation_enabled;
+  visualisation_thread = NULL;
+  if (visualisation_enabled)
+      visualisation_thread = new std::thread(&CEnvironment::visualisation_refresh, this);
 }
 
 
 CEnvironment::~CEnvironment()
 {
-  delete server;
-  delete map;
-  delete agent_group;
+    visualisation_enabled = false;
+    if (visualisation_thread != NULL)
+        delete visualisation_thread;
+    delete server;
+    delete map;
+    delete agent_group;
 }
 
-/*
+
 void CEnvironment::visualisation_refresh()
 {
-  agent_group
+    class CRobotVisualisation *robot_visualisation;
+    robot_visualisation = new CRobotVisualisation(1, agent_group);
+    robot_visualisation->clear();
+
+    double time = get_ms_time();
+    double k = 0.9;
+
+    while (visualisation_enabled)
+    {
+        double time_start = get_ms_time();
+        robot_visualisation->visualise_refresh();
+        double time_stop = get_ms_time();
+
+        time = k*time + (1.0-k)*(time_stop - time_start);
+
+        printf("FPS %f\n", 1.0/(0.001*time) );
+        usleep(1000*20);
+    }
+
+    delete robot_visualisation;
 }
-*/
+
 
 i32 CEnvironment::call_back(struct sAgentInterface *agent_interface)
 {
@@ -105,9 +132,9 @@ void CEnvironment::process_bot_collisions(struct sAgentInterface *agent_interfac
   float interaction_strong_dist = 1000000.0;
   float interaction_move_dist = 1000000.0;
 
-  float dx = agent_interface->action[0]*0.1;
-  float dy = agent_interface->action[1]*0.1;
-  float dz = agent_interface->action[2]*0.1;
+  float dx = agent_interface->action[0]*0.3;
+  float dy = agent_interface->action[1]*0.3;
+  float dz = agent_interface->action[2]*0.3;
 
   float droll = agent_interface->action[3];
   float dpitch = agent_interface->action[4];

@@ -13,7 +13,7 @@ int main()
   {
     printf("error log opening error\n");
     return -1;
-  } 
+  }
 
   if (cfg_init((char*)"../../configure.txt") != 0)
   {
@@ -21,7 +21,7 @@ int main()
     return -1;
   }
 
-  u32 j, robots_count = 4;
+  u32 j, robots_count = 8;
   std::vector<class CVirtualRobot*> robots;
 
   for (j = 0; j < robots_count; j++)

@@ -28,7 +28,7 @@ int main()
 
   map_init.random_map = true;
   map_init.random_items_count = 0;
-  map_init.group_leave_probality = 0.8; //0.2;
+  map_init.group_leave_probality = 0.5; //0.2;
 
 
   class CEnvironment *environment;

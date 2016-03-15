@@ -23,7 +23,8 @@ COMMON+= $(COMMON_PATH)/client/client.o
 COMMON+= $(COMMON_PATH)/map/map.o
 COMMON+= $(COMMON_PATH)/environment/environment.o
 
-
+COMMON+= $(COMMON_PATH)/visualisation/robot_visualisation.o
+COMMON+= $(COMMON_PATH)/bot_to_color.o
 
 
 

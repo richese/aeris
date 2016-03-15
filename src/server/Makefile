@@ -23,6 +23,8 @@ COMMON+= $(COMMON_PATH)/client/client.o
 COMMON+= $(COMMON_PATH)/map/map.o
 COMMON+= $(COMMON_PATH)/environment/environment.o
 
+COMMON+= $(COMMON_PATH)/visualisation/robot_visualisation.o
+COMMON+= $(COMMON_PATH)/bot_to_color.o
 
 
 
@@ -42,7 +44,7 @@ OBJDUMP = objdump
 SIZE = size
 
 CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++0x
-LDFLAGS = -lm -lpthread -pthread -std=c++0x
+LDFLAGS = -lm -lpthread -pthread -std=c++0x  -lglut -lGL -lGLU
 
 SRCS = $(shell find -name '*.cpp')
 
