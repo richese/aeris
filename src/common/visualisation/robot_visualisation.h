@@ -1,8 +1,8 @@
 #ifndef _ROBOT_VISUALISATION_H_
 #define _ROBOT_VISUALISATION_H_
 
-#include "../common/common.h"
-
+#include "../common.h"
+ 
 
 class CRobotVisualisation
 {
@@ -21,7 +21,7 @@ class CRobotVisualisation
 
 
   public:
-      CRobotVisualisation(u32 enable_opengl = 0);
+      CRobotVisualisation(u32 enable_opengl = 0, class CAgentGroup *agent_group = NULL);
       ~CRobotVisualisation();
 
       i32 read_from_server();

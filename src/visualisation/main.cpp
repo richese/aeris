@@ -1,5 +1,4 @@
 #include "../common/common.h"
-#include "robot_visualisation.h"
 
 int main()
 {

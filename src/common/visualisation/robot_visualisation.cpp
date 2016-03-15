@@ -10,7 +10,7 @@
 #include <GL/glut.h>
 
 
-CRobotVisualisation::CRobotVisualisation(u32 enable_opengl)
+CRobotVisualisation::CRobotVisualisation(u32 enable_opengl, class CAgentGroup *agent_group)
 {
   terminal_width = 128;
   terminal_height = 32;
@@ -36,7 +36,10 @@ CRobotVisualisation::CRobotVisualisation(u32 enable_opengl)
   u32 maximum_agents_count = 2048;
   double agent_life_time_ms = 2000.0;
 
-  agent_group = new CAgentGroup(maximum_agents_count, agent_life_time_ms);
+  if (agent_group == NULL)
+    this->agent_group = new CAgentGroup(maximum_agents_count, agent_life_time_ms);
+  else
+    this->agent_group = agent_group;
 
   clear();
   if (enable_opengl == true)

@@ -9,7 +9,8 @@ i32 call_back_handler(struct sAgentInterface *agent_interface)
 
 
 CEnvironment::CEnvironment( struct sMapInit map_init, char *map_file_name,
-                u32 maximum_agents_count, double agent_life_time_ms
+                u32 maximum_agents_count, double agent_life_time_ms,
+                bool visualisation_enabled
               )
 {
   g_env = this;
@@ -28,6 +29,13 @@ CEnvironment::~CEnvironment()
   delete map;
   delete agent_group;
 }
+
+/*
+void CEnvironment::visualisation_refresh()
+{
+  agent_group
+}
+*/
 
 i32 CEnvironment::call_back(struct sAgentInterface *agent_interface)
 {

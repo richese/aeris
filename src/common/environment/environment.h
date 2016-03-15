@@ -12,7 +12,8 @@ class CEnvironment
     class CServer *server;
   public:
     CEnvironment( struct sMapInit map_init, char *map_file_name = NULL,
-                  u32 maximum_agents_count = 1024, double agent_life_time_ms = 2000.0
+                  u32 maximum_agents_count = 1024, double agent_life_time_ms = 2000.0,
+                  bool visualisation_enabled = false
                 );
     ~CEnvironment();
 

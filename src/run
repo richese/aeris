@@ -15,19 +15,19 @@ cd null_bot/bin
 cd ../..
 
 cd prey_bot/bin
-#./main.elf &
+./main.elf &
 cd ../..
 
 cd hunter_bot/bin
-#./main.elf &
-cd ../..
-
-
-cd line/bin
 ./main.elf &
 cd ../..
 
 
+cd line/bin
+#./main.elf &
+cd ../..
+
+
 cd visualisation/bin
- ./main.elf &
+ #./main.elf &
 cd ../..

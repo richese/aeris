@@ -44,5 +44,7 @@
 
 #include "neural_network/kohonen_layer.h"
 
+#include "visualisation/robot_visualisation.h"
+
 
 #endif

@@ -13,7 +13,7 @@ int main()
   {
     printf("error log opening error\n");
     return -1;
-  }
+  } 
 
   if (cfg_init((char*)"../../configure.txt") != 0)
   {

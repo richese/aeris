@@ -32,7 +32,7 @@ int main()
 
 
   class CEnvironment *environment;
-  environment = new CEnvironment(map_init, map_file_name, maximum_agents_count, agent_life_time_ms);
+  environment = new CEnvironment(map_init, map_file_name, maximum_agents_count, agent_life_time_ms, true);
 
   g_debug_log_add((char*)"main",(char*)"init done");
 
