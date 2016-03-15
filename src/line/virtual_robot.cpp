@@ -21,7 +21,7 @@ CVirtualRobot::CVirtualRobot(float init_x, float init_y)
   agent_interface.type = AGENT_TYPE_BOT;
   agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_NULL;
   agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
-  agent_interface.size = AGENT_BOT_SIZE*10.0;
+  agent_interface.size = AGENT_BOT_SIZE*2.0;
 
   agent_interface.x = init_x;
   agent_interface.y = init_y;
@@ -65,9 +65,8 @@ void CVirtualRobot::process()
   }
   */
 
-  dy = sin(t*0.05 + init_x/100.0);
+  dy = sin(t*0.2 + init_x/100.0);
 
-  agent_interface.size = AGENT_BOT_SIZE*2.0;
 
   agent_interface.action[0] = dx;
   agent_interface.action[1] = dy;

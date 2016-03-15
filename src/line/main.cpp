@@ -19,9 +19,9 @@ int main()
   {
     printf("config file opening error\n");
     return -1;
-  }
- 
-  u32 j, robots_count = 128;
+  } 
+
+  u32 j, robots_count = 300;
   std::vector<class CVirtualRobot*> robots;
 
   for (j = 0; j < robots_count; j++)

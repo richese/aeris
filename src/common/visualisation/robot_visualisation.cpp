@@ -17,19 +17,20 @@ CRobotVisualisation::CRobotVisualisation(u32 enable_opengl, class CAgentGroup *a
 
   cm_size = 10.0*100.0/81.0;
 
-  /*
+
   screen_width = 1920;
   screen_height = 1080;
-  */
+
 
   /*
   screen_width = 640;
   screen_height = screen_width*9.0/16.0;
   */
 
+/*
   screen_width = 1024;
   screen_height = screen_width*9.0/16.0;
-
+*/
 
   agent_idx = 0;
 
