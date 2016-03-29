@@ -7,14 +7,14 @@
 
 struct sLSM9DS0IMU
 {
-    i16 ax, ay, az;
-    i16 mx, my, mz;
-    i16 gx, gy, gz;
+	i16 ax, ay, az;
+	i16 mx, my, mz;
+	i16 gx, gy, gz;
 
-    i16 gx_ofs, gy_ofs, gz_ofs;
-    i16 gx_comp, gy_comp, gz_comp;
+	i16 gx_ofs, gy_ofs, gz_ofs;
+	i16 gx_comp, gy_comp, gz_comp;
 
-    i16 temp;
+	i16 temp;
 };
 
 volatile struct sLSM9DS0IMU g_lsm9ds0_imu;

@@ -77,7 +77,7 @@ void LCD_SH1106_flush_buffer()
 		for(j = 0; j < 8; j++)
 		{
 			i2cStart();
-    		i2cWrite(SH1106_ADDRESS);
+			i2cWrite(SH1106_ADDRESS);
 			i2cWrite(0x40);
 			for (k = 0; k < (LCD_SH1106_WIDTH>>3); k++)
 				i2cWrite(LCD_SH1106_frame_buffer[i][ptr++]);
@@ -117,7 +117,7 @@ void LCD_SH1106_init()
 	LCD_SH1106_write_command(0x40);
 	LCD_SH1106_write_command(0xAF); /*display ON*/
 
- 	LCD_SH1106_clear_buffer(0);
+	LCD_SH1106_clear_buffer(0);
 	LCD_SH1106_flush_buffer();
 
 	/*
@@ -131,10 +131,10 @@ void LCD_SH1106_init()
 	}
 	while (1)
 	{
- 		lcd_put_s((char*)"testing string 0123456789 next line <>!@#$ ABCDEFGHIJKLMNOPQRSTUVWXZ I .");
- 		// lcd_put_s((char*)"ABqK .0123456788!");
+		lcd_put_s((char*)"testing string 0123456789 next line <>!@#$ ABCDEFGHIJKLMNOPQRSTUVWXZ I .");
+		// lcd_put_s((char*)"ABqK .0123456788!");
 
- 		//lcd_put_s((char*)".KI");
+		//lcd_put_s((char*)".KI");
 
 
 		LCD_SH1106_flush_buffer();

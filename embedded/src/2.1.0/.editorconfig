@@ -1,0 +1,20 @@
+# Default for source files
+[**.{c,h}]
+indent_style = tab
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# overide for files form STM driver libraries which use softtabs and crlf
+[{stm32,misc,startup}*.{c,h}]
+indent_style = space
+indent_size = 2
+end_of_line = crlf
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+[Makefile*]
+indent_style = tab
+indent_size = 8

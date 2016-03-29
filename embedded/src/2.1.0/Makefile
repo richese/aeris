@@ -7,7 +7,7 @@ GCCDIR=
 
 LDSCRIPT = $(DEVICE_LIBS)/ldscript.ld
 ELF = bin/main.elf
- 
+
 CC = $(GCCDIR)arm-none-eabi-gcc
 LD = $(GCCDIR)arm-none-eabi-gcc
 OBJCOPY = $(GCCDIR)arm-none-eabi-objcopy
@@ -26,7 +26,7 @@ SRCS = $(shell find -name '*.c' -not -path "*/device/*")
 SRCS+= $(SRCS_DEVICE_LIBS)
 OBJS = $(SRCS:.c=.o)
 OBJS+= $(THIRD_PARTY_LIBS_OBJ)
- 
+
 all: $(ELF)
 	$(OBJDUMP) --disassemble $< > bin/main.asm
 	$(OBJCOPY) -O srec $< bin/main.s19
@@ -38,7 +38,7 @@ $(ELF): $(OBJS)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
- 
+
 %.o: %.s
 	$(CC) -c $(CFLAGS) $< -o $@
 

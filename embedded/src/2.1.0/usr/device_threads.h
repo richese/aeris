@@ -5,8 +5,8 @@
 
 #include "../lib_usr/lib_usr.h"
 
-#define I2C_SAMPLIG_PERIOD 		(u32)10
-#define RGB_SAMPLIG_PERIOD 		(u32)10
+#define I2C_SAMPLIG_PERIOD    (u32)10
+#define RGB_SAMPLIG_PERIOD    (u32)10
 
 #define SENSOR_THREAD_STACK_SIZE  128
 
