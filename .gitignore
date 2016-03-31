@@ -3,6 +3,7 @@
 *.ko
 *.obj
 *.elf
+**/bin/main.asm
 
 # Precompiled Headers
 *.gch

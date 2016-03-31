@@ -4,5 +4,5 @@
 #include "../suzuha_os.h"
 
 #define NULL      0
- 
+
 #endif

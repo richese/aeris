@@ -11,7 +11,7 @@ mutex_t mutex_putc_, mutex_getc_, mutex_puts_, mutex_printf_;
 
 void stdio_init()
 {
-	u32 i; 
+	u32 i;
 
 	#ifdef LIB_MUTEX
 	mutex_init(&mutex_putc_);
@@ -95,7 +95,7 @@ void puti_(i32 n)
 
 	if (n < 0)
  	{
-  		n = -n;
+		n = -n;
 		flag = 1;
 	}
 
@@ -104,11 +104,11 @@ void puti_(i32 n)
 
 	do
 	{
-    	s[ptr] = '0' + (n%10);
-    	n/= 10;
-    	ptr--;
+		s[ptr] = '0' + (n%10);
+		n/= 10;
+		ptr--;
 	}
-    while (n != 0);
+		while (n != 0);
 
 	if (flag)
 		s[ptr] = '-';
@@ -130,11 +130,11 @@ void putui_(u32 n)
 
 	do
 	{
-    	s[ptr] = '0' + (n%10);
-    	n/= 10;
-    	ptr--;
+		s[ptr] = '0' + (n%10);
+		n/= 10;
+		ptr--;
 	}
-    while (n != 0);
+	while (n != 0);
 
 	ptr++;
 	puts_(s + ptr);
@@ -154,19 +154,19 @@ void putx_(u32 n)
 
 	do
 	{
-    	tmp=n&0x0F;		/*modulo 16*/
-    	if (tmp < 10)
-     		s[ptr] = '0' + tmp;
-    	else
-     		s[ptr] = 'a' + tmp - 10;
+		tmp=n&0x0F;		/*modulo 16*/
+		if (tmp < 10)
+			s[ptr] = '0' + tmp;
+		else
+			s[ptr] = 'a' + tmp - 10;
 
-    	n>>= 4;		/*div 16*/
-    	ptr--;
-   	}
-    while (n != 0);
+		n>>= 4;		/*div 16*/
+		ptr--;
+		}
+		while (n != 0);
 
 	ptr++;
- 	puts_(s + ptr);
+	puts_(s + ptr);
 }
 
 
@@ -187,29 +187,29 @@ void printf_(char *s, ...)
 	s_ptr = 0;
 
 	while (s[s_ptr] != '\0')			/*scan string*/
- 	{
+	{
 		if (s[s_ptr] != '%')
 		{
 			putc_(s[s_ptr]);			/*if no % print char*/
 			s_ptr++;
-   		}
+			}
 		else
-		{					/*switch %? argumet*/
-	    	s_ptr++;
-							/*print correct argument, get value from stack : va_arg*/
+		{ /*switch %? argumet*/
+			s_ptr++;
+			/*print correct argument, get value from stack : va_arg*/
 
-	    	switch (s[s_ptr])
-	    	{
-	     		case 'i': puti_(va_arg(args, int)); break;
-	     		case 'u': putui_(va_arg(args, int)); break;
-	     		case 'x': putx_(va_arg(args, int)); break;
-	     		case 'c': putc_(va_arg(args, int)); break;		/*yeah, stack is 32bit alligment, dont take char or u16*/
-	     		case 's': puts_((char*)va_arg(args, int)); break;
-	     		case '%': putc_('%'); break;
-	    	}
+			switch (s[s_ptr])
+			{
+				case 'i': puti_(va_arg(args, int)); break;
+				case 'u': putui_(va_arg(args, int)); break;
+				case 'x': putx_(va_arg(args, int)); break;
+				case 'c': putc_(va_arg(args, int)); break;		/*yeah, stack is 32bit alligment, dont take char or u16*/
+				case 's': puts_((char*)va_arg(args, int)); break;
+				case '%': putc_('%'); break;
+			}
 
 			s_ptr++;
-	   	}
+		}
 	}
 
 	va_end(args);				/*stack working end*/

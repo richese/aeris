@@ -2,7 +2,7 @@
 #include "usr/usr_main.h"
 
 
-int main(void) 
+int main(void)
 {
 	lib_low_level_init();
 	lib_os_init();
