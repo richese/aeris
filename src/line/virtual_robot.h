@@ -21,7 +21,7 @@ class CVirtualRobot
     struct sAgentInterface agent_interface;
 
   public:
-    CVirtualRobot(float init_x, float init_y);
+    CVirtualRobot(float init_x, float init_y, u32 type_behaviour = AGENT_TYPE_BEHAVIOUR_NULL);
     ~CVirtualRobot();
 
     void process();

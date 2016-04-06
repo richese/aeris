@@ -21,11 +21,10 @@ CRobotVisualisation::CRobotVisualisation(u32 enable_opengl, class CAgentGroup *a
   screen_width = 1920;
   screen_height = 1080;
 
-
-  /*
+/*
   screen_width = 640;
   screen_height = screen_width*9.0/16.0;
-  */
+*/
 
 /*
   screen_width = 1024;
@@ -212,6 +211,7 @@ void CRobotVisualisation::visualise_paint_agent(struct sAgentInterface agent_int
   glVertex3f(x, y, z + 0.001 + height);
   glEnd();
 
+/*
   char str[256];
 //  sprintf(str,"%i %i", agent_interface.id, agent_interface.value);
   sprintf(str,"g%i", agent_interface.value);
@@ -219,7 +219,7 @@ void CRobotVisualisation::visualise_paint_agent(struct sAgentInterface agent_int
   struct sBotColor font_color = uint_to_color(agent_interface.value, 8);
 
   print(x, y, font_color.r, font_color.g, font_color.b, GLUT_BITMAP_8_BY_13, str);
-
+*/
 
 }
 

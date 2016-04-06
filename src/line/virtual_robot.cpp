@@ -6,7 +6,7 @@ float rnd()
   return ((rand()%200000) - 100000)/100000.0;
 }
 
-CVirtualRobot::CVirtualRobot(float init_x, float init_y)
+CVirtualRobot::CVirtualRobot(float init_x, float init_y, u32 type_behaviour)
 {
   this->init_x = init_x;
   this->init_y = init_y;
@@ -19,7 +19,7 @@ CVirtualRobot::CVirtualRobot(float init_x, float init_y)
 
   agent_interface.time_stamp = get_ms_time();
   agent_interface.type = AGENT_TYPE_BOT;
-  agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_NULL;
+  agent_interface.type_behaviour = type_behaviour;
   agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
   agent_interface.size = AGENT_BOT_SIZE*2.0;
 
@@ -45,6 +45,13 @@ CVirtualRobot::CVirtualRobot(float init_x, float init_y)
 
   state = 100;
   t = 0.0;
+
+  switch (type_behaviour)
+  {
+    case AGENT_TYPE_BEHAVIOUR_TYPE_0 : t = 0.0; break;
+    case AGENT_TYPE_BEHAVIOUR_TYPE_1 : t = 1000.0; break;
+    case AGENT_TYPE_BEHAVIOUR_TYPE_2 : t = 2000.0; break;
+  }
 }
 
 CVirtualRobot::~CVirtualRobot()

@@ -43,7 +43,9 @@ void main_thread()
 		//rotation_test();
 
 
-		line_follower_test();
+		//line_follower_test(LINE_RED);
+		//line_follower_test(LINE_GREEN);
+		//line_follower_test(LINE_BLUE);
 		//your code here
 		while (get_key() == 0)
 		{

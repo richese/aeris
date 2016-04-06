@@ -17,6 +17,7 @@ void sensor_test()
 
 		u32 i;
 
+		/*
 		printf_("\nR: ");
 		for (i = 0; i < RGB_SENSORS_COUNT; i++)
 			printf_("%i ", g_rgb.r[i]);
@@ -32,6 +33,20 @@ void sensor_test()
 		printf_("\nA: ");
 		for (i = 0; i < RGB_SENSORS_COUNT; i++)
 			printf_("%i ", g_rgb.ambient[i]);
+		*/
+
+
+		printf_("\nR: ");
+		for (i = 0; i < RGB_SENSORS_COUNT; i++)
+			printf_("%i ", g_rgb.r_color_normalised[i]);
+
+		printf_("\nG: ");
+		for (i = 0; i < RGB_SENSORS_COUNT; i++)
+			printf_("%i ", g_rgb.g_color_normalised[i]);
+
+		printf_("\nB: ");
+		for (i = 0; i < RGB_SENSORS_COUNT; i++)
+			printf_("%i ", g_rgb.b_color_normalised[i]);
 
 		printf_("\n\n");
 		led_off(LED_0);
@@ -127,7 +142,7 @@ void rotation_test()
 	rotate_angle(-90, NULL);
 }
 
-void line_follower_test()
+void line_follower_test(u32 line_color)
 {
 	u32 dt = 10;
 
@@ -147,7 +162,15 @@ void line_follower_test()
 	while (1)
 	{
 		rgb_get_line_position();
-		error = 0.0 - g_line_position.white/70.0;
+
+		switch (line_color)
+		{
+			case LINE_WHITE: error = 0.0 - g_line_position.white/70.0; break;
+			case LINE_RED: error = 0.0 - g_line_position.red/70.0; break;
+			case LINE_GREEN: error = 0.0 - g_line_position.green/70.0; break;
+			case LINE_BLUE: error = 0.0 - g_line_position.blue/70.0; break;
+		}
+
 
 		if (error > 1.0)
 			error = 1.0;

@@ -15,6 +15,10 @@ u32 rgb_sensor_init()
 
 		g_rgb.proximity[i] = 0x00;
 		g_rgb.ambient[i] = 0x00;
+
+		g_rgb.r_color_normalised[i] = 0;
+		g_rgb.g_color_normalised[i] = 0;
+		g_rgb.b_color_normalised[i] = 0;
 	}
 
 	led_on(LED_W);
@@ -114,6 +118,19 @@ void rgb_sensor_read()
 		g_rgb.proximity[i]|= ((u16)rgb_raw[i])<<8;
 
 	rgb_i2cStop();
+
+
+	for (i = 0; i < RGB_SENSORS_COUNT; i++)
+	{
+		i32 sum = 0;
+		sum+= g_rgb.r[i];
+		sum+= g_rgb.g[i];
+		sum+= g_rgb.b[i]; 
+
+		g_rgb.r_color_normalised[i] = (g_rgb.r[i]*100)/sum;
+		g_rgb.g_color_normalised[i] = (g_rgb.g[i]*100)/sum;
+		g_rgb.b_color_normalised[i] = (g_rgb.b[i]*100)/sum;
+	}
 }
 
 void rgb_get_line_position()
@@ -121,18 +138,18 @@ void rgb_get_line_position()
 	u32 i;
 
 	i32 w[] = {32, 64, 96, 128};
+	i32 rgb_sum, pos_value, w_tmp;
 
-	i32 rgb_sum = 0;
-	i32 pos_value = 0;
-	i32 w_tmp = 0;
+	rgb_sum = 0;
+	pos_value = 0;
+	w_tmp = 0;
 	for (i = 0; i< RGB_SENSORS_COUNT; i++)
 	{
-		w_tmp += (g_rgb.ambient[i] - g_rgb.background_norm[i])*w[i];
-		rgb_sum += (g_rgb.ambient[i] - g_rgb.background_norm[i]);
+		w_tmp += (g_rgb.ambient[i] - g_rgb.background_norm_white[i])*w[i];
+		rgb_sum += (g_rgb.ambient[i] - g_rgb.background_norm_white[i]);
 	}
 
 	pos_value = w_tmp/rgb_sum - 32 - 39;
-
 	g_line_position.white_on_line = 0;
 
 	if (rgb_sum > RGB_WHITE_LINE_TRESHOLD)
@@ -142,26 +159,62 @@ void rgb_get_line_position()
 	}
 
 
-//	printf_("%i %i\n", g_line_position.white_on_line, g_line_position.white);
-/*
-	i32 res = 0;
-	u32 max_idx = 0;
-	for (i = 0; i < RGB_SENSORS_COUNT; i++)
-		if (g_rgb.ambient[i] > g_rgb.ambient[max_idx])
-		{
-			max_idx = i;
-		}
 
-	switch (max_idx)
+	rgb_sum = 0;
+	pos_value = 0;
+	w_tmp = 0;
+	for (i = 0; i< RGB_SENSORS_COUNT; i++)
 	{
-		case 0: res = -2; break;
-		case 1: res = -1; break;
-		case 2: res = 1; break;
-		case 3: res = 2; break;
+		w_tmp += (g_rgb.r[i] - g_rgb.background_norm_red[i])*w[i];
+		rgb_sum += (g_rgb.r[i] - g_rgb.background_norm_red[i]);
 	}
 
-return res;
-	*/
+	pos_value = w_tmp/rgb_sum - 32 - 39;
+	g_line_position.red_on_line = 0;
+
+	if (rgb_sum > RGB_RED_LINE_TRESHOLD)
+	{
+		g_line_position.red_on_line = 1;
+		g_line_position.red = pos_value;
+	}
+
+
+	rgb_sum = 0;
+	pos_value = 0;
+	w_tmp = 0;
+	for (i = 0; i< RGB_SENSORS_COUNT; i++)
+	{
+		w_tmp += (g_rgb.g[i] - g_rgb.background_norm_green[i])*w[i];
+		rgb_sum += (g_rgb.g[i] - g_rgb.background_norm_green[i]);
+	}
+
+	pos_value = w_tmp/rgb_sum - 32 - 39;
+	g_line_position.green_on_line = 0;
+
+	if (rgb_sum > RGB_GREEN_LINE_TRESHOLD)
+	{
+		g_line_position.green_on_line = 1;
+		g_line_position.green = pos_value;
+	}
+
+	rgb_sum = 0;
+	pos_value = 0;
+	w_tmp = 0;
+	for (i = 0; i< RGB_SENSORS_COUNT; i++)
+	{
+		w_tmp += (g_rgb.b[i] - g_rgb.background_norm_blue[i])*w[i];
+		rgb_sum += (g_rgb.b[i] - g_rgb.background_norm_blue[i]);
+	}
+
+	pos_value = w_tmp/rgb_sum - 32 - 39;
+	g_line_position.blue_on_line = 0;
+
+	if (rgb_sum > RGB_BLUE_LINE_TRESHOLD)
+	{
+		g_line_position.blue_on_line = 1;
+		g_line_position.blue = pos_value;
+	}
+
 }
 
 void rgb_set_background()
@@ -170,19 +223,29 @@ void rgb_set_background()
 //clear
 	for (j=0; j<RGB_SENSORS_COUNT; j++)
 	{
-		g_rgb.background_norm[j]=0;
+		g_rgb.background_norm_white[j] = 0;
+		g_rgb.background_norm_red[j] = 0;
+		g_rgb.background_norm_blue[j] = 0;
+		g_rgb.background_norm_green[j] = 0;
 	}
-//count new value
+
+	//count new value
 	for (i=0; i<SET_BACKGROUND_COUNT; i++)
 	{
 		for (j=0; j<RGB_SENSORS_COUNT; j++)
 		{
-			g_rgb.background_norm[j]+=g_rgb.ambient[j];
+			g_rgb.background_norm_white[j]+= g_rgb.ambient[j];
+			g_rgb.background_norm_red[j]+= g_rgb.r[j];
+			g_rgb.background_norm_blue[j]+= g_rgb.g[j];
+			g_rgb.background_norm_green[j]+= g_rgb.b[j];
 		}
 	}
 
 	for (j=0; j<RGB_SENSORS_COUNT; j++)
 	{
-		g_rgb.background_norm[j]=g_rgb.background_norm[j]/SET_BACKGROUND_COUNT;
+		g_rgb.background_norm_white[j]=g_rgb.background_norm_white[j]/SET_BACKGROUND_COUNT;
+		g_rgb.background_norm_red[j]=g_rgb.background_norm_red[j]/SET_BACKGROUND_COUNT;
+		g_rgb.background_norm_blue[j]=g_rgb.background_norm_blue[j]/SET_BACKGROUND_COUNT;
+		g_rgb.background_norm_green[j]=g_rgb.background_norm_green[j]/SET_BACKGROUND_COUNT;
 	}
 }
