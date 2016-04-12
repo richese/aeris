@@ -17,19 +17,19 @@ CRobotVisualisation::CRobotVisualisation(u32 enable_opengl, class CAgentGroup *a
 
   cm_size = 10.0*100.0/81.0;
 
-
+/*
   screen_width = 1920;
   screen_height = 1080;
+*/
 
 /*
   screen_width = 640;
   screen_height = screen_width*9.0/16.0;
 */
 
-/*
+
   screen_width = 1024;
   screen_height = screen_width*9.0/16.0;
-*/
 
   agent_idx = 0;
 
@@ -197,12 +197,12 @@ void CRobotVisualisation::visualise_paint_agent(struct sAgentInterface agent_int
   glVertex3f(x + cx, y + cy, z + 0.001);
   glVertex3f(x + dx, y + dy, z + 0.001);
 
-  /*
+
   glVertex3f(x + ax, y + ay, z + height);
   glVertex3f(x + bx, y + by, z + height);
   glVertex3f(x + cx, y + cy, z + height);
   glVertex3f(x + dx, y + dy, z + height);
-  */
+
 
   glEnd();
 
@@ -249,7 +249,7 @@ void CRobotVisualisation::visualise_refresh()
 
   glMatrixMode(GL_MODELVIEW);
 
-  u32 g_view_state = 0;
+  u32 g_view_state = 2;
 
   switch (g_view_state)
   {
