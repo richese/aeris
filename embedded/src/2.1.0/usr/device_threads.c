@@ -79,8 +79,6 @@ void device_rgb_sensors_thread()
 	while (1)
 	{
 		event_timer_wait(EVENT_TIMER_1_ID);
-		rgb_sensor_read();
-
 
 		switch (state)
 		{
@@ -97,7 +95,6 @@ void device_rgb_sensors_thread()
 
 			//common reading mode
 			case 1:
-				event_timer_wait(EVENT_TIMER_1_ID);
 				rgb_sensor_read();
 
 				if (device_sleep_flag != 0)

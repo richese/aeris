@@ -147,7 +147,7 @@ void line_follower_test(u32 line_color)
 	u32 dt = 10;
 
 	float base_speed = 0;
-	float base_speed_max = 50;
+	float base_speed_max = 20;
 
 	float Ks = 0.2;
 
