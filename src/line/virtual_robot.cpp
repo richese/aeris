@@ -23,6 +23,8 @@ CVirtualRobot::CVirtualRobot(float init_x, float init_y, u32 type_behaviour)
   agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
   agent_interface.size = AGENT_BOT_SIZE*2.0;
 
+  agent_interface.request =  AGENT_REQUEST_NULL;
+
   agent_interface.x = init_x;
   agent_interface.y = init_y;
   agent_interface.z = 0.0;

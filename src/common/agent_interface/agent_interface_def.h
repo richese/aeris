@@ -9,6 +9,8 @@
 #define STATE_VECTOR_SIZE     ((u32)64)
 
 
+
+
 struct sAgentInterface
 {
   u32 id;
@@ -19,6 +21,8 @@ struct sAgentInterface
   u32 type;
   u32 type_behaviour;
   u32 type_interaction;
+
+  u32 request;
 
   i32 value;
   float color_intensity;
@@ -46,6 +50,12 @@ struct sAgentInterface
 #define AGENT_STATE_ROLL_IDX      ((u32)3)
 #define AGENT_STATE_PITCH_IDX     ((u32)4)
 #define AGENT_STATE_DYAW_IDX      ((u32)5)
+
+
+#define AGENT_REQUEST_NULL           ((u32)0)
+#define AGENT_REQUEST_RESPAWN       ((u32)1)
+#define AGENT_REQUEST_SPAWN_OTHER   ((u32)2)
+#define AGENT_REQUEST_KILL          ((u32)3)
 
 
 #endif

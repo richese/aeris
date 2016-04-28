@@ -11,6 +11,8 @@ CAgentInterface::CAgentInterface(u32 id)
   agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_NULL;
   agent_interface.type_interaction = AGENT_TYPE_INTERACTION_NULL;
 
+  agent_interface.request =  AGENT_REQUEST_NULL;
+
   agent_interface.x = 0.0;
   agent_interface.y = 0.0;
   agent_interface.z = 0.0;

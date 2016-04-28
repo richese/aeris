@@ -1,12 +1,7 @@
-#include "virtual_robot.h"
+#include "food_bot.h"
+#include "ant_config.h"
 
-
-float rnd()
-{
-  return ((rand()%200000) - 100000)/100000.0;
-}
-
-CVirtualRobot::CVirtualRobot()
+CFoodBot::CFoodBot()
 {
   agent_interface.id = cfg_get_unique_id() + rand();
 
@@ -16,9 +11,9 @@ CVirtualRobot::CVirtualRobot()
 
   agent_interface.time_stamp = get_ms_time();
   agent_interface.type = AGENT_TYPE_BOT;
-  agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_TYPE_0 + (rand()%2);
-  agent_interface.type_interaction = AGENT_TYPE_INTERACTION_STRONG;
-  agent_interface.size = AGENT_BOT_SIZE;
+  agent_interface.type_behaviour = ROBOT_TYPE_FOOD;
+  agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
+  agent_interface.size = AGENT_BOT_SIZE*3.0;
 
   agent_interface.request =  AGENT_REQUEST_NULL;
 
@@ -30,7 +25,6 @@ CVirtualRobot::CVirtualRobot()
   agent_interface.pitch = 0.0;
   agent_interface.yaw = 0.0;
 
-  agent_interface.size = AGENT_BOT_SIZE;
   agent_interface.dt = cfg_get_dt();
 
   agent_interface.action_type = ACTION_TYPE_NULL;
@@ -43,21 +37,17 @@ CVirtualRobot::CVirtualRobot()
   client = new CClient();
 }
 
-CVirtualRobot::~CVirtualRobot()
+CFoodBot::~CFoodBot()
 {
   delete client;
 }
 
 
-void CVirtualRobot::process()
+void CFoodBot::process()
 {
-  if ((rand()%100) < 2)
-  {
-      dx = rnd_();
-      dy = rnd_();
-      dz = 0.0*rnd_();
-      dyaw = 0.1*rnd_();
-  }
+  dx = 0.0;
+  dy = 0.0;
+  dz = 0.0;
 
   agent_interface.action[0] = dx;
   agent_interface.action[1] = dy;
@@ -66,6 +56,9 @@ void CVirtualRobot::process()
   agent_interface.action[5] = dyaw;
 
   agent_interface.time_stamp = get_ms_time();
+
+  if (rand_() < 0.003)
+    agent_interface.request = AGENT_REQUEST_RESPAWN;
 
 
   u32 id1 = agent_interface.id;

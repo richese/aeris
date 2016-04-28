@@ -61,4 +61,7 @@
 #define STATE_POSITION_Z_OFS                  ((u32)2)
 
 
+#define STATE_PHEROMONE_OFS                   ((u32)STATE_VECTOR_SIZE-1)
+
+
 #endif

@@ -23,6 +23,8 @@ CVirtualRobot::CVirtualRobot(class CKohonenLayer *knn)
   agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
   agent_interface.size = AGENT_BOT_SIZE;
 
+  agent_interface.request =  AGENT_REQUEST_NULL;
+
   agent_interface.x = rnd_()*POSITION_MAX_X; //*x_max;
   agent_interface.y = rnd_()*POSITION_MAX_Y; //*y_max;
   agent_interface.z = 0.0*rnd_()*0.99;//*z_max;

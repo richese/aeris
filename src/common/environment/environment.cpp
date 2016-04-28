@@ -66,8 +66,6 @@ void CEnvironment::visualisation_refresh()
 
 i32 CEnvironment::call_back(struct sAgentInterface *agent_interface)
 {
-  (void)agent_interface;
-
   //it's visualisation request
   if (agent_interface->type == AGENT_TYPE_VISUALISATION)
   {
@@ -101,11 +99,28 @@ i32 CEnvironment::call_back(struct sAgentInterface *agent_interface)
     return 0;
   }
 
+  /*
+  u32 i;
+  for (i = 0; i <STATE_VECTOR_SIZE; i++)
+    agent_interface->state[i] = 0.0;
+    */
+
+  if (agent_interface->request == AGENT_REQUEST_RESPAWN)
+  {
+    agent_interface->request = AGENT_REQUEST_NULL;
+    agent_interface->x = rnd_()*POSITION_MAX_X; //*x_max;
+    agent_interface->y = rnd_()*POSITION_MAX_Y; //*y_max;
+    agent_interface->z = 0.0*rnd_()*0.99;//*z_max;
+  }
+
+
   if (agent_interface->type == AGENT_TYPE_BOT)
   {
     process_bot_collisions(agent_interface);
     return 0;
   }
+
+
 
   //TODO
   //implement map objects colisions and actions executing
@@ -144,6 +159,7 @@ void CEnvironment::process_bot_collisions(struct sAgentInterface *agent_interfac
 
   std::vector<float> behaviour_distance(AGENT_TYPE_BEHAVIOUR_TYPE_COUNT);
 
+  agent_interface->state[STATE_PHEROMONE_OFS] = 0.0;
   for (j = 0; j < behaviour_distance.size(); j++)
     behaviour_distance[j] = 1000000.0;
 
@@ -206,17 +222,19 @@ void CEnvironment::process_bot_collisions(struct sAgentInterface *agent_interfac
       }
     }
 
-    for (i = 0; i < AGENT_TYPE_BEHAVIOUR_TYPE_COUNT; i++)
-      if (
-          (agent_interface_tmp.type_behaviour == (AGENT_TYPE_BEHAVIOUR_TYPE_0+i))
-          && (dist < behaviour_distance[AGENT_TYPE_BEHAVIOUR_TYPE_0+i])
-        )
-        {
-          behaviour_distance[AGENT_TYPE_BEHAVIOUR_TYPE_0+i] = dist;
-          agent_interface->state[STATE_POSITION_X_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0+i)*3] = agent_interface_tmp.x;
-          agent_interface->state[STATE_POSITION_Y_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0+i)*3] = agent_interface_tmp.y;
-          agent_interface->state[STATE_POSITION_Z_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0+i)*3] = agent_interface_tmp.z;
-        }
+    u32 type_idx = agent_interface_tmp.type_behaviour;
+
+    if (interaction_weak_dist < behaviour_distance[AGENT_TYPE_BEHAVIOUR_TYPE_0+type_idx])
+    {
+      behaviour_distance[AGENT_TYPE_BEHAVIOUR_TYPE_0 + type_idx] = dist;
+      agent_interface->state[STATE_POSITION_X_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0 + type_idx)*3] = agent_interface_tmp.x;
+      agent_interface->state[STATE_POSITION_Y_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0 + type_idx)*3] = agent_interface_tmp.y;
+      agent_interface->state[STATE_POSITION_Z_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0 + type_idx)*3] = agent_interface_tmp.z;
+
+
+      if (type_idx ==  AGENT_TYPE_BEHAVIOUR_TYPE_3)
+        agent_interface->state[STATE_PHEROMONE_OFS] = agent_interface->color_intensity;
+    }
 
   }
 
@@ -263,6 +281,10 @@ void CEnvironment::process_bot_collisions(struct sAgentInterface *agent_interfac
       agent_interface_tmp.z = POSITION_MAX_Z;
     if (agent_interface_tmp.z < -POSITION_MAX_Z)
       agent_interface_tmp.z = -POSITION_MAX_Z;
+
+
+    for (i = 0; i < STATE_VECTOR_SIZE; i++)
+      agent_interface_tmp.state[i] = agent_interface->state[i];
 
     agent_group->update_agent(&agent_interface_tmp, NULL);
 

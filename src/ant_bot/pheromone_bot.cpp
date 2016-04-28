@@ -1,12 +1,7 @@
-#include "virtual_robot.h"
+#include "pheromone_bot.h"
+#include "ant_config.h"
 
-
-float rnd()
-{
-  return ((rand()%200000) - 100000)/100000.0;
-}
-
-CVirtualRobot::CVirtualRobot()
+CPheromoneBot::CPheromoneBot()
 {
   agent_interface.id = cfg_get_unique_id() + rand();
 
@@ -16,9 +11,9 @@ CVirtualRobot::CVirtualRobot()
 
   agent_interface.time_stamp = get_ms_time();
   agent_interface.type = AGENT_TYPE_BOT;
-  agent_interface.type_behaviour = AGENT_TYPE_BEHAVIOUR_TYPE_0 + (rand()%2);
-  agent_interface.type_interaction = AGENT_TYPE_INTERACTION_STRONG;
-  agent_interface.size = AGENT_BOT_SIZE;
+  agent_interface.type_behaviour = ROBOT_TYPE_PHEROMONE;
+  agent_interface.type_interaction = AGENT_TYPE_INTERACTION_WEAK;
+  agent_interface.size = AGENT_BOT_SIZE*1.3;
 
   agent_interface.request =  AGENT_REQUEST_NULL;
 
@@ -30,7 +25,6 @@ CVirtualRobot::CVirtualRobot()
   agent_interface.pitch = 0.0;
   agent_interface.yaw = 0.0;
 
-  agent_interface.size = AGENT_BOT_SIZE;
   agent_interface.dt = cfg_get_dt();
 
   agent_interface.action_type = ACTION_TYPE_NULL;
@@ -41,23 +35,39 @@ CVirtualRobot::CVirtualRobot()
   dyaw = 0.0;
 
   client = new CClient();
+
+  life_time = 0.0;
 }
 
-CVirtualRobot::~CVirtualRobot()
+CPheromoneBot::~CPheromoneBot()
 {
   delete client;
 }
 
 
-void CVirtualRobot::process()
+void CPheromoneBot::process()
 {
-  if ((rand()%100) < 2)
-  {
-      dx = rnd_();
-      dy = rnd_();
-      dz = 0.0*rnd_();
-      dyaw = 0.1*rnd_();
-  }
+  dx = 0.0;
+  dy = 0.0;
+  dz = 0.0;
+
+  float k1 = 0.02;
+  float k2 = 0.3;
+
+  float ant_dx =   agent_interface.state[STATE_POSITION_X_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0 + ROBOT_TYPE_ANT)*3] - agent_interface.x;
+  float ant_dy =   agent_interface.state[STATE_POSITION_Y_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0 + ROBOT_TYPE_ANT)*3] - agent_interface.y;
+  float ant_dz =   agent_interface.state[STATE_POSITION_Z_OFS + (AGENT_TYPE_BEHAVIOUR_TYPE_0 + ROBOT_TYPE_ANT)*3] - agent_interface.z;
+
+
+  float ant_distance = sqrt(ant_dx*ant_dx + ant_dy*ant_dy + ant_dz*ant_dz);
+  if (ant_distance < 8.0)
+    life_time = (1.0 - k2)*life_time + k2*1.0;
+  else
+    life_time = (1.0 - k1)*life_time + k1*0.0;
+
+
+  agent_interface.color_intensity = life_time;
+
 
   agent_interface.action[0] = dx;
   agent_interface.action[1] = dy;
@@ -66,6 +76,7 @@ void CVirtualRobot::process()
   agent_interface.action[5] = dyaw;
 
   agent_interface.time_stamp = get_ms_time();
+
 
 
   u32 id1 = agent_interface.id;
