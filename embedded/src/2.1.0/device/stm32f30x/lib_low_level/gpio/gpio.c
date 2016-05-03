@@ -46,6 +46,11 @@ void gpio_init()
 	led_on(LED_0);
   led_off(LED_1);
 	led_off(WIFI_RST);
+
+	u32 loops = 10000;
+	while (loops--)
+		__asm("nop");
+	led_on(WIFI_RST);
 }
 
 void led_on(u32 led)

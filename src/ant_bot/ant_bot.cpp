@@ -94,11 +94,10 @@ void CAntBot::process()
             dy = (1.0 - alpha)*sgn(pheromone_dy) + alpha*ry;
             dz = 0.0;
 
-            /*
+
             dx = sgn(food_dx);
             dy = sgn(food_dy);
             dz = sgn(food_dz);
-            */
 
             agent_interface.type_interaction = AGENT_TYPE_INTERACTION_NULL;
 

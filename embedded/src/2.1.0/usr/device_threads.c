@@ -117,15 +117,16 @@ void device_rgb_sensors_thread()
 
 #define RX_BUFFER_LENGTH 	128
 
+char tx_buffer[] = "aeris robot esp8266 message";
+char rx_buffer[RX_BUFFER_LENGTH];
+
 
 void device_wifi_thread()
 {
 	u32 state = 0;
 	u32 init_res;
 
-	char tx_buffer[] = "esp8266 message";
 	u32 tx_buffer_length = strlen_(tx_buffer);
-	char rx_buffer[RX_BUFFER_LENGTH];
 
 
 	while (1)
@@ -141,6 +142,8 @@ void device_wifi_thread()
 					esp8266_uninit();
 					abort_error_(ERROR_WIFI, init_res);	/*init WIFI error*/
 				}
+
+				timer_delay_ms(100);
 
 				state = 1;
 				break;
