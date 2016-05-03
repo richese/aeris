@@ -72,7 +72,20 @@ CKohonenLayer::CKohonenLayer(struct sKohonenLayerInit init_struct)
 
 CKohonenLayer::~CKohonenLayer()
 {
-  //TODO
+  u32 i;
+
+  free(v);
+  free(output_lc);
+  free(distances);
+  for (i = 0; i < init_struct.neurons_count; i++) {
+    free(output[i]);
+  }
+  free(output);
+  free(input);
+  for (i = 0; i < init_struct.neurons_count; i++) {
+    free(w[i]);
+  }
+  free(w);
 }
 
 
