@@ -5,13 +5,14 @@ OBJCOPY = objcopy
 OBJDUMP = objdump
 SIZE = size
 
-CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++0x
+CFLAGS = -Wall -Wextra -pedantic -std=c++0x
+CFLAGS += $(OPTIM)
 LDFLAGS = -lm -lpthread -pthread -std=c++0x
 
 
 
 SRCS = $(shell find -name '*.cpp')
-OBJS = $(SRCS:.cpp=.o) 
+OBJS = $(SRCS:.cpp=.o)
 
 all: $(OBJS)
 
