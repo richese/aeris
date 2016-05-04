@@ -7,6 +7,8 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/time.h>
+#include <sys/select.h>
 
 
 CServer::CServer(class CAgentGroup *agent_group, i32(*call_back)(struct sAgentInterface *))
@@ -21,8 +23,10 @@ CServer::CServer(class CAgentGroup *agent_group, i32(*call_back)(struct sAgentIn
 CServer::~CServer()
 {
   server_run = 0;
-  if (server_thread != NULL)
+  if (server_thread != NULL) {
+    server_thread->join();
     delete server_thread;
+  }
 }
 
 i32 CServer::start()
@@ -62,27 +66,44 @@ i32 CServer::start_()
 
   while (server_run)
   {
-    struct sockaddr_in client;
-    int c = sizeof(struct sockaddr_in);
+    fd_set listen_fd_set;
+    struct timeval listen_timeout;
 
-    int connfd = accept(server_listen_fd, (struct sockaddr *)&client, (socklen_t*)&c);
+    FD_ZERO(&listen_fd_set);
+    FD_SET(server_listen_fd, &listen_fd_set);
+    listen_timeout.tv_sec = 1;
+    listen_timeout.tv_usec = 0;
 
-    if (connfd < 0)
+    if (select(server_listen_fd + 1, &listen_fd_set, NULL, NULL, &listen_timeout) < 0) {
       error(-6);
+    }
 
-    struct sAgentInterface agent_interface;
-    //read data from connection
-    if (read(connfd, (u8*)(&agent_interface), sAgentInterfaceSIZE) < 0)
-      error(-7);
+    if (FD_ISSET(server_listen_fd, &listen_fd_set)) {
+      int conn_fd;
+      struct sockaddr_in client;
+      int c = sizeof(struct sockaddr_in);
 
-    i32 error_res = agent_group->update_agent(&agent_interface, call_back);
-    (void)error_res;
+      conn_fd = accept(server_listen_fd, (struct sockaddr *)&client, (socklen_t*)&c);
 
-    if (write(connfd, (u8*)(&agent_interface), sAgentInterfaceSIZE) < 0)
-      error(-8);
+      if (conn_fd < 0)
+        error(-7);
 
-    close(connfd);
+      struct sAgentInterface agent_interface;
+      //read data from connection
+      if (read(conn_fd, (u8*)(&agent_interface), sAgentInterfaceSIZE) < 0)
+        error(-8);
+
+      i32 error_res = agent_group->update_agent(&agent_interface, call_back);
+      (void)error_res;
+
+      if (write(conn_fd, (u8*)(&agent_interface), sAgentInterfaceSIZE) < 0)
+        error(-9);
+
+      close(conn_fd);
+    }
   }
+
+  close(server_listen_fd);
 
   return 0;
 }

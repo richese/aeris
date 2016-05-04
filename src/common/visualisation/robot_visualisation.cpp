@@ -50,7 +50,6 @@ CRobotVisualisation::CRobotVisualisation(u32 enable_opengl, class CAgentGroup *a
 CRobotVisualisation::~CRobotVisualisation()
 {
   delete client;
-  delete agent_group;
 }
 
 i32 CRobotVisualisation::read_from_server()

@@ -24,18 +24,20 @@ CEnvironment::CEnvironment( struct sMapInit map_init, char *map_file_name,
   this->visualisation_enabled = visualisation_enabled;
   visualisation_thread = NULL;
   if (visualisation_enabled)
-      visualisation_thread = new std::thread(&CEnvironment::visualisation_refresh, this);
+    visualisation_thread = new std::thread(&CEnvironment::visualisation_refresh, this);
 }
 
 
 CEnvironment::~CEnvironment()
 {
-    visualisation_enabled = false;
-    if (visualisation_thread != NULL)
-        delete visualisation_thread;
-    delete server;
-    delete map;
-    delete agent_group;
+  visualisation_enabled = false;
+  if (visualisation_thread != NULL) {
+    visualisation_thread->join();
+    delete visualisation_thread;
+  }
+  delete server;
+  delete map;
+  delete agent_group;
 }
 
 
