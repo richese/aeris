@@ -1,6 +1,9 @@
 #include "esp8266.h"
 
+#define ST_NO_CONNECTED			(u32)0
+#define ST_CONNECTED			(u32)1
 
+u32 esp8266_state;
 
 void esp8266_send(char *buf)
 {
@@ -69,8 +72,10 @@ u32 esp8266_find_stream(char *pattern_buf, u32 pattern_buf_size, u32 time_out)
 
 
 
-u32 esp8266_init(u32 server_mode)
+i32 esp8266_init(u32 server_mode)
 {
+	esp8266_state = ST_NO_CONNECTED;
+
 	timer_delay_ms(3000);
 
 	if (server_mode != 0)
@@ -142,19 +147,27 @@ i32 esp8266_get_nonblocking(char *buf, u32 buf_length, u32 time_out)
 	return ptr; /*OK*/
 }
 
-u32 esp8266_connect(char *ip, u32 port, char *tx_buffer, u32 tx_buffer_length, char *rx_buffer, u32 rx_buffer_length)
+i32 esp8266_connect(char *ip, u32 port, char *tx_buffer, u32 tx_buffer_length, char *rx_buffer, u32 rx_buffer_length)
 {
-	esp8266_send((char*)"AT+CIPSTART=\"TCP\",\"");
-	esp8266_send((char*)ip);
-	esp8266_send((char*)"\",");
-	esp8266_send_uint(port);
-	esp8266_send((char*)"\r\n");
+	if (esp8266_state != ST_CONNECTED)
+	{
+		esp8266_send((char*)"AT+CIPCLOSE\r\n");
+		timer_delay_ms(10);
 
-	// AT+CIPSTART="TCP","192.168.2.2",2000
+		esp8266_send((char*)"AT+CIPSTART=\"TCP\",\"");
+		esp8266_send((char*)ip);
+		esp8266_send((char*)"\",");
+		esp8266_send_uint(port);
+		esp8266_send((char*)"\r\n");
 
-	if (esp8266_find_stream((char*)"OK", 7, 500) == 0)
-		return ESP8266_SERVER_CONNECTING_ERROR;
+		if (esp8266_find_stream((char*)"CONNECT", 7, 900) == 0)
+		{
+			esp8266_state = ST_NO_CONNECTED;
+			return ESP8266_SERVER_CONNECTING_ERROR;
+		}
 
+		esp8266_state = ST_CONNECTED;
+	}
 
 
 	esp8266_send((char*)"AT+CIPSEND=");
@@ -164,7 +177,8 @@ u32 esp8266_connect(char *ip, u32 port, char *tx_buffer, u32 tx_buffer_length, c
 	if (esp8266_find_stream((char*)">", 1, 1000) == 0)
 	{
 		esp8266_send((char*)"AT+CIPCLOSE\r\n");
-		timer_delay_ms(100);
+		timer_delay_ms(10);
+		esp8266_state = ST_NO_CONNECTED;
 		return ESP8266_SERVER_CONNECTING_ERROR2;
 	}
 
@@ -172,17 +186,19 @@ u32 esp8266_connect(char *ip, u32 port, char *tx_buffer, u32 tx_buffer_length, c
 	for (i = 0; i < tx_buffer_length; i++)
 		uart_write(tx_buffer[i]);
 
-	if (esp8266_find_stream((char*)"SEND OK", 7, 100) == 0)
+	if (esp8266_find_stream((char*)"SEND OK", 7, 1000) == 0)
 	{
 		esp8266_send((char*)"AT+CIPCLOSE\r\n");
-		timer_delay_ms(100);
+		timer_delay_ms(10);
+		esp8266_state = ST_NO_CONNECTED;
 		return ESP8266_SERVER_SENDING_ERROR;
 	}
 
-	if (esp8266_find_stream((char*)"+IPD,", 5, 100) == 0)
+	if (esp8266_find_stream((char*)"+IPD,", 5, 800) == 0)
 	{
 		esp8266_send((char*)"AT+CIPCLOSE\r\n");
-		timer_delay_ms(100);
+		timer_delay_ms(10);
+		esp8266_state = ST_NO_CONNECTED;
 		return ESP8266_SERVER_RESPONSE_ERROR;
 	}
 
@@ -191,12 +207,10 @@ u32 esp8266_connect(char *ip, u32 port, char *tx_buffer, u32 tx_buffer_length, c
 	while ((c = uart_read()) != ':')
 		count = 10*count + (c - '0');
 
-	esp8266_get_nonblocking(rx_buffer, rx_buffer_length, 500);
+	esp8266_get_nonblocking(rx_buffer, rx_buffer_length, 800);
 
-	esp8266_send((char*)"AT+CIPCLOSE\r\n");
-	timer_delay_ms(100);
 
-	return (1000 + count);
+	return (count);
 }
 /*
 u32 server_loop(char *buf, u32 buf_length)
