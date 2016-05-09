@@ -19,6 +19,9 @@ struct sBotColor bot_to_color(struct sAgentInterface agent_interface)
     case AGENT_TYPE_BEHAVIOUR_TYPE_6: r = 0.0, g = 1.0, b = 0.5; break;
     case AGENT_TYPE_BEHAVIOUR_TYPE_7: r = 0.5, g = 1.0, b = 0.0; break;
     case AGENT_TYPE_BEHAVIOUR_TYPE_8: r = 1.0, g = 0.0, b = 0.0; break;
+    case AGENT_TYPE_BEHAVIOUR_COLOR_CALIB:
+      agent_interface.type_behaviour = agent_interface.action[32];
+      return bot_to_color(agent_interface);
   }
 
   struct sBotColor res;

@@ -25,6 +25,7 @@
 
 #define AGENT_TYPE_BEHAVIOUR_TYPE_COUNT       ((u32)10)
 
+#define AGENT_TYPE_BEHAVIOUR_COLOR_CALIB      ((u32)255)
 
 /*
   this is object which can't be seen by virtual or real bot
